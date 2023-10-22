@@ -4,7 +4,7 @@
 
 #include <FastLED.h>
 
-#define LED_PIN 14
+#define LEDPIN 14
 #define PHOTO_PIN 0
 //#define BUTTON_PIN 5
 
@@ -18,5 +18,5 @@ void project_number(uint16_t number);
 void allLEDSoff();
 void backGroundEvent();
 void adjustBrightness(uint16_t brightness);
-
+void initialiseLedMapBorders();
 #endif
