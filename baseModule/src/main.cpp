@@ -14,6 +14,10 @@ void setup() {
 
     pinMode(BUTTON_PIN, INPUT);
 
+    // initialise connection to the led-wall
+    buildLedConnection();
+    initialiseLedMap();
+
     currentButtonState = digitalRead(BUTTON_PIN);
 }
 
@@ -24,5 +28,16 @@ void loop() {
     if(lastButtonState == HIGH && currentButtonState == LOW){
         // detected button press
         // show time
+        Serial.println("showing time");
+        uint8_t hour = 9;
+        uint8_t minute = 45;
+        projectTime(hour, minute);
+        delay(5000);
+        clearActiveLeds();
+
+        Serial.println("showing time again");
+        projectTime(hour + 6, minute + 4);
+        delay(5000);
+        allLEDSoff();
     }
 }

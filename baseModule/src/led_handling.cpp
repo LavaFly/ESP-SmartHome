@@ -113,6 +113,10 @@ void allLEDSoff(){
 
 }
 
+void clearActiveLeds(){
+
+}
+
 void backGroundEvent(){
 
 }
