@@ -83,8 +83,20 @@ void updateLedWall(){
 
 }
 
-void projectPattern(){
-
+void projectDigit(uint8_t digit, uint8_t xOffset, uint8_t yOffset){
+    uint8_t yPosition, xPosition, ledIndex;
+    for(uint8_t y = 0; y < 5; y++){
+        for(uint8_t x = 0; x < 3; x++){
+            if(numbers[digit][y][x]){
+                yPosition = y + yOffset;
+                xPosition = x + xOffset - ((yPosition > wallHeight / 2) ? (yPosition - wallHeight / 2) : 0);
+                if(yPosition < wallHeight || xPosition < wallWidth - abs(-(wallHeight / 2) + yPosition)){
+                    ledIndex = ledMap[yPosition][xPosition];
+                    leds[ledIndex] = CRGB::White;
+                }
+            }
+        }
+    }
 }
 
 void projectNumber(uint16_t number){
