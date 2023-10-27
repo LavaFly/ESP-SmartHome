@@ -8,7 +8,11 @@
 #define PHOTO_PIN 0
 //#define BUTTON_PIN 5
 
-// partly copied from an old project, should hopefully gradually be improved
+struct activeLed {
+   uint8_t value;
+   uint8_t xPosition;
+   uint8_t yPosition;
+};
 
 void led_map_init();
 void init_leds();

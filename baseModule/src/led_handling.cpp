@@ -99,8 +99,20 @@ void projectDigit(uint8_t digit, uint8_t xOffset, uint8_t yOffset){
     }
 }
 
+uint8_t getNumberOfDigits(uint16_t number){
+    if(number == 0) return 1;
+    return floor(log10(abs(number))) + 1;
+}
 void projectNumber(uint16_t number){
+    uint8_t numberOfDigits = getNumberOfDigits(number);
 
+    uint8_t xOffset;
+    uint8_t digit;
+    for(uint8_t i = 0; i < numberOfDigits; i++){
+        xOffset = 4 * i + 2;
+        digit = number / ((int)pow(10, i)) % 10;
+        projectDigit(digit, xOffset, 2);
+    }
 }
 
 void projectWord(uint8_t numberOfCharacters, char* string){
