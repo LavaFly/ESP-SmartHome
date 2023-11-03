@@ -1,43 +1,53 @@
 #include <Arduino.h>
 #include "led_handling.h"
 
-// show time on led-wall when button is pressed
-
-#define BUTTON_PIN 5
-
-int currentButtonState;
-int lastButtonState;
-
 void setup() {
     Serial.begin(9600);
     Serial.println("Starting...");
-
-    pinMode(BUTTON_PIN, INPUT);
 
     // initialise connection to the led-wall
     buildLedConnection();
     initialiseLedMap();
 
-    currentButtonState = digitalRead(BUTTON_PIN);
+    clearActiveLeds();
+    projectDigit(4, 3, 1);
+    projectDigit(2, 8, 1);
+    projectDigit(0, 17, 1);
+    delay(4000);
+    clearActiveLeds();
+    projectNumber(4203);
+    delay(4000);
+    clearActiveLeds();
+    projectNumber(420);
+    delay(4000);
+    clearActiveLeds();
+    projectNumber(42);
+    delay(4000);
+    clearActiveLeds();
+    projectNumber(4);
+    delay(4000);
+    clearActiveLeds();
 }
 
 void loop() {
-    lastButtonState = currentButtonState;
-    currentButtonState = digitalRead(BUTTON_PIN);
 
-    if(lastButtonState == HIGH && currentButtonState == LOW){
-        // detected button press
-        // show time
-        Serial.println("showing time");
-        uint8_t hour = 9;
-        uint8_t minute = 45;
-        projectTime(hour, minute);
+    if(false){
+    //if(Serial.available() > 0){
+        Serial.readStringUntil('\n');
+        Serial.println("got input");
+
+        projectDigit(5, 6, 1);
+        projectDigit(3, 12, 1);
+        //projectTest();
+        Serial.println("got printing");
         delay(5000);
         clearActiveLeds();
+        Serial.println("claeed");
 
-        Serial.println("showing time again");
-        projectTime(hour + 6, minute + 4);
-        delay(5000);
-        allLEDSoff();
+        //Serial.println("showing time again");
+        projectNumber(456);
+        //projectTime(hour + 6, minute + 4);
+        //delay(5000);
+        //clearActiveLeds();
     }
 }

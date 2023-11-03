@@ -12,6 +12,7 @@ uint8_t activeLeds[numberOfLeds];
 
 uint8_t* ledMap[7];
 
+//extern uint8_t numbers[10][5][3];
 
 // width = ((num - (height + 1)/2)^2) / height + (height + 1/2)
 
@@ -45,6 +46,16 @@ void initialiseLedMap(){
                 ledMap[y][x + 1] = ledMap[y][x] + (2 * y + 1);
             }
         }
+    }
+
+    Serial.println("starting pattern");
+    for(uint8_t y = 0; y < wallHeight; y++){
+        segmentWidth = wallWidth - abs(-(wallHeight / 2) + y);
+        //Serial.printf("segmentWidth = %d\ty = %d\n", segmentWidth, y);
+        for(uint8_t x = 0; x < segmentWidth; x++){
+            Serial.printf("%d ", ledMap[y][x]);
+        }
+        Serial.println("");
     }
 }
 
