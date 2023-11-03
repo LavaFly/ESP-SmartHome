@@ -19,10 +19,18 @@ uint8_t* ledMap[7];
 void initialiseLedMap(){
     // i will clean this mess up another time, it works for now
     // docu will also follow soon
+
     uint8_t segmentWidth = 0;
     for(uint8_t i = 0; i < wallHeight; i++){
         segmentWidth = wallWidth - abs(-(wallHeight / 2) + i);
         *(ledMap + i) = new uint8_t[segmentWidth];
+    }
+
+    for(uint8_t y = 0; y < wallHeight; y++){
+        segmentWidth = wallWidth - abs(-(wallHeight / 2) + y);
+        for(uint8_t x = 0; x < segmentWidth; x++){
+            ledMap[y][x] = 0;
+        }
     }
 
     initialiseLedMapBorders();
@@ -124,21 +132,12 @@ void projectTime(uint8_t hour, uint8_t minute){
 
 }
 
-void project_number(uint16_t number){
-
-}
-
-void project_multiple_chars(uint8_t num_of_chars, uint8_t* char_list, uint8_t* x_offset_list, uint8_t y_offset){
-    uint8_t counter, x_pos, y_pos, ledIndex;
-    //for(uint8_t z = 0; z <
-}
-
-void allLEDSoff(){
-
-}
 
 void clearActiveLeds(){
-
+    for(uint8_t i = 0; i < numberOfLeds; i++){
+        leds[i] = CRGB::Black;
+    }
+    FastLED.show();
 }
 
 void backGroundEvent(){
