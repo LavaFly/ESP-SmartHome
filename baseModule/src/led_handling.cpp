@@ -81,17 +81,20 @@ void buildLedConnection(){
     pinMode(LEDPIN, OUTPUT);
     FastLED.addLeds<WS2812, LEDPIN, GRB>(leds, numberOfLeds);
 }
-
-uint8_t getNumOfDigits(uint16_t number){
-    if(number == 0) return 1;
-    return floor(log10(abs(number))) + 1;
-}
-
-void updateLedWall(){
-
+void projectTest(){
+    uint8_t index = 0;
+    for(uint8_t i = 0; i < 3; i++){
+        for(uint8_t j = 0; j < 5; j++){
+            index = ledMap[j][i + 3];
+            //Serial.printf("%d %d = %d\n", j, i, index);
+            leds[index] = CRGB::White;
+        }
+    }
+    FastLED.show();
 }
 
 void projectDigit(uint8_t digit, uint8_t xOffset, uint8_t yOffset){
+    Serial.println("got here");
     uint8_t yPosition, xPosition, ledIndex;
     for(uint8_t y = 0; y < 5; y++){
         for(uint8_t x = 0; x < 3; x++){
@@ -105,22 +108,25 @@ void projectDigit(uint8_t digit, uint8_t xOffset, uint8_t yOffset){
             }
         }
     }
+    FastLED.show();
 }
 
 uint8_t getNumberOfDigits(uint16_t number){
     if(number == 0) return 1;
     return floor(log10(abs(number))) + 1;
 }
+
 void projectNumber(uint16_t number){
     uint8_t numberOfDigits = getNumberOfDigits(number);
 
     uint8_t xOffset;
     uint8_t digit;
     for(uint8_t i = 0; i < numberOfDigits; i++){
-        xOffset = 4 * i + 2;
+        xOffset = wallWidth - (4 * i) - 6;
         digit = number / ((int)pow(10, i)) % 10;
-        projectDigit(digit, xOffset, 2);
+        projectDigit(digit, xOffset, 1);
     }
+    FastLED.show();
 }
 
 void projectWord(uint8_t numberOfCharacters, char* string){
