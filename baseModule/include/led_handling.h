@@ -14,16 +14,19 @@ struct activeLed {
    uint8_t yPosition;
 };
 
-void led_map_init();
-void init_leds();
-void buildLedConnection();
-void project_multiple_chars(uint8_t num_of_chars, uint8_t* char_list, uint8_t* x_offset_list, uint8_t y_offset);
-void project_number(uint16_t number);
-void allLEDSoff();
-void backGroundEvent();
-void adjustBrightness(uint16_t brightness);
-void initialiseLedMapBorders();
-void clearActiveLeds();
 void initialiseLedMap();
+void initialiseLedMapBorders();
+uint8_t getNumberOfDigits(uint16_t number);
+void projectDigit(uint8_t digit, uint8_t xOffset, uint8_t yOffset);
+void projectNumber(uint16_t number);
+void projectNumber(uint16_t number, uint8_t xOffset, uint8_t yOffset);
+void projectWord(uint16_t numberOfCharacters, char* string);
 void projectTime(uint8_t hour, uint8_t minute);
+
+void projectTest();
+void buildLedConnection();
+void clearActiveLeds();
+void backgroundEvent();
+void adjustBrightness(uint16_t brighness);
+
 #endif
