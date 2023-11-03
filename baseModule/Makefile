@@ -1,6 +1,9 @@
 #########################################################################
-upload: website
+compile: #website
 	pio run -e d1_mini
+
+upload:
+	pio run -e d1_mini -t upload
 
 website: include/webpage.html converter
 	java -jar toByteArray.jar
