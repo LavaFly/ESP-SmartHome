@@ -47,16 +47,6 @@ void initialiseLedMap(){
             }
         }
     }
-
-    Serial.println("starting pattern");
-    for(uint8_t y = 0; y < wallHeight; y++){
-        segmentWidth = wallWidth - abs(-(wallHeight / 2) + y);
-        //Serial.printf("segmentWidth = %d\ty = %d\n", segmentWidth, y);
-        for(uint8_t x = 0; x < segmentWidth; x++){
-            Serial.printf("%d ", ledMap[y][x]);
-        }
-        Serial.println("");
-    }
 }
 
 void initialiseLedMapBorders(){
@@ -173,7 +163,7 @@ void projectPattern(uint8_t *pattern, uint8_t xOffset, uint8_t yOffset){
     // this is true for all digits
     //projectPattern(pattern, xOffset, yOffset, 3, 4);
 }
-
+/**
 void projectPattern(uint8_t *pattern, uint8_t xOffset, uint8_t yOffset, uint8_t patternWidth, uint8_t patternHeight){
     uint8_t yPosition, xPosition, ledIndex;
     for(uint8_t y = 0; y < patternHeight; y++){
@@ -188,7 +178,7 @@ void projectPattern(uint8_t *pattern, uint8_t xOffset, uint8_t yOffset, uint8_t 
             }
         }
     }
-}
+}**/
 
 void clearActiveLeds(){
     for(uint8_t i = 0; i < numberOfLeds; i++){
