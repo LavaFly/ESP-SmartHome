@@ -147,19 +147,47 @@ void projectWord(uint8_t numberOfCharacters, char* string){
 
 void projectTime(uint8_t hour, uint8_t minute){
     // This is ugly, but i just want something working
-    uint8_t doublePoint[3][1] = {{1}, {0}, {1}};
     projectNumber(hour, 1, 1);
     projectNumber(minute, 11, 1);
-    //projectPattern(&doublePoint, 9, 2, 1, 3);
+    projectCharacter(0, 10, 1);
+}
+
+void projectCharacter(uint8_t asciiCode, uint8_t xOffset, uint8_t yOffset){
+    uint8_t yPosition, xPosition, ledIndex;
+    for(uint8_t y = 0; y < 5; y++){
+        for(uint8_t x = 0; x < 3; x++){
+            if(characters[asciiCode][y][x]){
+                yPosition = y + yOffset;
+                xPosition = x + xOffset - ((yPosition > wallHeight / 2) ? (yPosition - wallHeight / 2) : 0);
+                if(yPosition < wallHeight || xPosition < wallWidth - abs(-(wallHeight / 2) + yPosition)){
+                    ledIndex = ledMap[yPosition][xPosition];
+                    leds[ledIndex] = CRGB::White;
+                }
+            }
+        }
+    }
+    FastLED.show();
 }
 
 void projectPattern(uint8_t *pattern, uint8_t xOffset, uint8_t yOffset){
     // this is true for all digits
-    projectPattern(pattern, xOffset, yOffset, 3, 4);
+    //projectPattern(pattern, xOffset, yOffset, 3, 4);
 }
 
 void projectPattern(uint8_t *pattern, uint8_t xOffset, uint8_t yOffset, uint8_t patternWidth, uint8_t patternHeight){
-
+    uint8_t yPosition, xPosition, ledIndex;
+    for(uint8_t y = 0; y < patternHeight; y++){
+        for(uint8_t x = 0; x < patternWidth; x++){
+            if(pattern[y][x]){
+                yPosition = y + yOffset;
+                xPosition = x + xOffset - ((yPosition > wallHeight / 2) ? (yPosition - wallHeight / 2) : 0);
+                if(yPosition < wallHeight || xPosition < wallWidth - abs(-(wallHeight / 2) + yPosition)){
+                    ledIndex = ledMap[yPosition][xPosition];
+                    leds[ledIndex] = CRGB::White;
+                }
+            }
+        }
+    }
 }
 
 void clearActiveLeds(){

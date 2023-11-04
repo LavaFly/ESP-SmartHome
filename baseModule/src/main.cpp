@@ -10,18 +10,8 @@ void setup() {
     initialiseLedMap();
     clearActiveLeds();
     projectTime(12, 34);
-    delay(4000);
-    clearActiveLeds();
 }
 
 void loop() {
-    if(false){
-    //if(Serial.available() > 0){
-        String input = Serial.readStringUntil('\n');
-        Serial.println("showing time");
 
-        projectTime(12, 34);
-        delay(4000);
-        clearActiveLeds();
-    }
 }
