@@ -131,14 +131,28 @@ void projectNumber(uint16_t number, uint8_t xOffset, uint8_t yOffset){
     FastLED.show();
 }
 
+void projectNumber(uint16_t number, uint8_t xOffset, uint8_t yOffset, uint8_t zeroPad){
+    // not even gonna hide my awful code, i swear i will prettify this later on and even might document something
+    uint8_t numberOfDigits = max(getNumberOfDigits(number), zeroPad);
+
+    uint8_t xPosition;
+    uint8_t digit;
+    for(uint8_t i = 0; i < numberOfDigits; i++){
+        xPosition = 2 + xOffset + (numberOfDigits - (i + 1)) * 4;
+        digit = number / ((int)pow(10, i)) % 10;
+        projectDigit(digit, xPosition, yOffset);
+    }
+    FastLED.show();
+}
+
 void projectWord(uint8_t numberOfCharacters, char* string){
 
 }
 
 void projectTime(uint8_t hour, uint8_t minute){
     // This is ugly, but i just want something working
-    projectNumber(hour, 1, 1);
-    projectNumber(minute, 11, 1);
+    projectNumber(hour, 1, 1, 2);
+    projectNumber(minute, 11, 1, 2);
     projectCharacter(0, 10, 1);
 }
 

@@ -8,7 +8,6 @@ void setup() {
 
     buildRouterConnection();
     buildTimeConnection();
-    // initialise connection to the led-wall
     buildLedConnection();
     initialiseLedMap();
     clearActiveLeds();
@@ -16,6 +15,7 @@ void setup() {
 
 void loop() {
     if(Serial.available() > 0){
+        clearActiveLeds();
         int byte = Serial.read();
 
         Serial.println("Got content");
