@@ -92,20 +92,8 @@ void buildLedConnection(){
     pinMode(LEDPIN, OUTPUT);
     FastLED.addLeds<WS2812, LEDPIN, GRB>(leds, numberOfLeds);
 }
-void projectTest(){
-    uint8_t index = 0;
-    for(uint8_t i = 0; i < 3; i++){
-        for(uint8_t j = 0; j < 5; j++){
-            index = ledMap[j][i + 3];
-            //Serial.printf("%d %d = %d\n", j, i, index);
-            leds[index] = CRGB::White;
-        }
-    }
-    FastLED.show();
-}
 
 void projectDigit(uint8_t digit, uint8_t xOffset, uint8_t yOffset){
-    Serial.println("got here");
     uint8_t yPosition, xPosition, ledIndex;
     for(uint8_t y = 0; y < 5; y++){
         for(uint8_t x = 0; x < 3; x++){
@@ -140,15 +128,39 @@ void projectNumber(uint16_t number){
     FastLED.show();
 }
 
+void projectNumber(uint16_t number, uint8_t xOffset, uint8_t yOffset){
+    uint8_t numberOfDigits = getNumberOfDigits(number);
+
+    uint8_t xPosition;
+    uint8_t digit;
+    for(uint8_t i = 0; i < numberOfDigits; i++){
+        xPosition = 2 + xOffset + (numberOfDigits - (i + 1)) * 4;
+        digit = number / ((int)pow(10, i)) % 10;
+        projectDigit(digit, xPosition, yOffset);
+    }
+    FastLED.show();
+}
+
 void projectWord(uint8_t numberOfCharacters, char* string){
 
 }
 
 void projectTime(uint8_t hour, uint8_t minute){
     // This is ugly, but i just want something working
-
+    uint8_t doublePoint[3][1] = {{1}, {0}, {1}};
+    projectNumber(hour, 1, 1);
+    projectNumber(minute, 11, 1);
+    //projectPattern(&doublePoint, 9, 2, 1, 3);
 }
 
+void projectPattern(uint8_t *pattern, uint8_t xOffset, uint8_t yOffset){
+    // this is true for all digits
+    projectPattern(pattern, xOffset, yOffset, 3, 4);
+}
+
+void projectPattern(uint8_t *pattern, uint8_t xOffset, uint8_t yOffset, uint8_t patternWidth, uint8_t patternHeight){
+
+}
 
 void clearActiveLeds(){
     for(uint8_t i = 0; i < numberOfLeds; i++){
