@@ -173,6 +173,53 @@ void projectCharacter(uint8_t asciiCode, uint8_t xOffset, uint8_t yOffset){
     FastLED.show();
 }
 
+void projectExampleString(){
+    uint8_t yPosition, xPosition, ledIndex;
+    uint8_t xOffsetFirstWord[5] = {3, 8, 13, 15, 17};
+    uint8_t firstWord[5] = {0, 1, 2, 2, 3};
+    for(uint8_t z = 0; z < 5; z++){
+        for(uint8_t y = 0; y < 6; y++){
+            for(uint8_t x = 0; x < 5; x++){
+                if(exampleChars[firstWord[z]][y][x]){
+                    yPosition = y + 1;
+                    xPosition = x + xOffsetFirstWord[z] - ((yPosition > wallHeight / 2) ? (yPosition - wallHeight / 2) : 0);
+                    if(yPosition < wallHeight || xPosition < wallWidth - abs(-(wallHeight / 2) + yPosition)){
+                        ledIndex = ledMap[yPosition][xPosition];
+                        leds[ledIndex] = CRGB::White;
+                    }
+                }
+            }
+        }
+    }
+
+    FastLED.show();
+
+    delay(3000);
+    clearActiveLeds();
+
+    uint8_t xOffsetSecondWord[5] = {3, 8, 13, 17, 21};
+    uint8_t secondWord[5] = {5, 1, 6, 7, 2};
+    for(uint8_t z = 0; z < 5; z++){
+        for(uint8_t y = 0; y < 6; y++){
+            for(uint8_t x = 0; x < 5; x++){
+                if(exampleChars[secondWord[z]][y][x]){
+                    yPosition = y + 1;
+                    xPosition = x + xOffsetSecondWord[z] - ((yPosition > wallHeight / 2) ? (yPosition - wallHeight / 2) : 0);
+                    if(yPosition < wallHeight || xPosition < wallWidth - abs(-(wallHeight / 2) + yPosition)){
+                        ledIndex = ledMap[yPosition][xPosition];
+                        leds[ledIndex] = CRGB::White;
+                    }
+                }
+            }
+        }
+    }
+
+    FastLED.show();
+
+    delay(3000);
+    clearActiveLeds();
+}
+
 void projectPattern(uint8_t *pattern, uint8_t xOffset, uint8_t yOffset){
     // this is true for all digits
     //projectPattern(pattern, xOffset, yOffset, 3, 4);

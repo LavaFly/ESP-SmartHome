@@ -27,6 +27,8 @@ void projectCharacter(uint8_t asciiCode, uint8_t xOffset, uint8_t yOffset);
 void projectWord(uint16_t numberOfCharacters, char* string);
 void projectTime(uint8_t hour, uint8_t minute);
 
+void projectExampleString();
+
 void projectTest();
 void buildLedConnection();
 void clearActiveLeds();
