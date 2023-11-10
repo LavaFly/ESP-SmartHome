@@ -6,10 +6,8 @@
 #include <ESPAsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 
-struct simpleTime {
-    uint8_t hour;
-    uint8_t minute;
-};
+extern uint8_t lightingBrightness;
+extern bool lightingStatus;
 
 /**
  * @brief
@@ -17,19 +15,16 @@ struct simpleTime {
  */
 void buildRouterConnection();
 
+void lightingOn(AsyncWebServerRequest* request);
 
-/**
- * @brief Serves the Client the gzipped webpage from the FLASH Memory
- *  Client will afterwards call handleJSONRequest() to fill the Chart with data
- *
- */
-void handleHTMLRequest(AsyncWebServerRequest*);
+void lightingOff(AsyncWebServerRequest* request);
 
-/**
- * @brief Serves the Sensor Readings Array as an JSON structure
- * JSON structure is manually constructed without the use of the ArduinoJSON Library
- *
- */
-void handleJSONRequest(AsyncWebServerRequest*);
+void raiseBrightness(AsyncWebServerRequest* request);
+
+void lowerBrightness(AsyncWebServerRequest* request);
+
+void handleUnkownRequest(AsyncWebServerRequest* request);
+
+void initWebserver();
 
 #endif

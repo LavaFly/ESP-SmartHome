@@ -3,6 +3,9 @@
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
 
+AsyncWebServer server(80);
+
+
 void buildRouterConnection(){
     Serial.println("Connecting to WiFi");
 
@@ -14,10 +17,52 @@ void buildRouterConnection(){
     Serial.println(WiFi.localIP());
 }
 
-void handleHTMLRequest(AsyncWebServerRequest *request){
+void lightingOn(AsyncWebServerRequest* request){
+    lightingStatus = true;
+
+    Serial.printf("lightingStatus = %d\n", lightingStatus);
+
+    request->send(200);
+}
+
+void lightingOff(AsyncWebServerRequest* request){
+    lightingStatus = false;
+
+    Serial.printf("lightingStatus = %d\n", lightingStatus);
+
+    request->send(200);
+}
+
+void raiseBrightness(AsyncWebServerRequest* request){
+    if(lightingBrightness < 3) lightingBrightness++;
+
+    Serial.printf("brightness = %d\n", lightingBrightness);
+
+    request->send(200);
 
 }
 
-void handleJSONRequest(AsyncWebServerRequest *request){
+void lowerBrightness(AsyncWebServerRequest* request){
+    if(lightingBrightness > 0) lightingBrightness--;
 
+    Serial.printf("brightness = %d\n", lightingBrightness);
+
+    request->send(200);
+
+}
+
+void handleUnkownRequest(AsyncWebServerRequest* request){
+    request->send(404);
+}
+
+void initWebserver(){
+    if(WiFi.status() != WL_CONNECTED){
+        return;
+    }
+
+    server.on("/lightingOn", lightingOn);
+    server.on("/lightingOff", lightingOff);
+    server.on("/raiseBrightness", raiseBrightness);
+    server.on("/lowerBrightness", lowerBrightness);
+    server.begin();
 }
