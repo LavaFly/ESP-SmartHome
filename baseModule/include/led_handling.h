@@ -4,7 +4,7 @@
 
 #include <FastLED.h>
 
-#define LEDPIN 14
+#define LEDPIN 12
 #define PHOTO_PIN 0
 //#define BUTTON_PIN 5
 

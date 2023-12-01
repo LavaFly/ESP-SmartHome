@@ -8,6 +8,7 @@ String serialInput;
 void setup() {
     Serial.begin(9600);
     Serial.println("Starting...");
+    buildIrConnection();
     buildRouterConnection();
     buildTimeConnection();
     buildLedConnection();
@@ -16,7 +17,30 @@ void setup() {
 }
 
 void loop() {
-    if(Serial.available() > 0){
+    uint8_t irInput = decodeIR();
+    // will later be replaced by some proper mapping of each button to a
+    // function, but havent decided most of them yet so this will suffice
+    switch (irInput) {
+        case 0x12:
+            Serial.println("lighting on");
+            break;
+        case 0x1e:
+            Serial.println("lighting off");
+            break;
+        case 0x01:
+            Serial.println("background");
+            backgroundEvent();
+            break;
+        case 0x03:
+            Serial.println("projecting time");
+            struct simpleTime * currentTime = (struct simpleTime*)malloc(sizeof(struct simpleTime));
+            getSimpleTime(currentTime);
+            projectTime(currentTime->hour, currentTime->minute);
+            free(currentTime);
+            break;
+    }
+
+    if(false){//Serial.available() > 0
         clearActiveLeds();
         serialInput = Serial.readStringUntil('\n');
         if(serialInput.equals("bg")){
