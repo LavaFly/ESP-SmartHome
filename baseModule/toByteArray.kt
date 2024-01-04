@@ -4,7 +4,7 @@ import java.util.zip.GZIPOutputStream
 
 val charset = Charsets.UTF_8
 
-fun ByteArray.toHexString() : String = joinToString(separator = ",", postfix = "}") {eachByte -> "0x%02X".format(eachByte)}
+fun ByteArray.toHexString() : String = joinToString(separator = ",", postfix = "};") {eachByte -> "0x%02X".format(eachByte)}
 
 fun gzip(content: String): ByteArray {
     val byteArray = ByteArrayOutputStream()

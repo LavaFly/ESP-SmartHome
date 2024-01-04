@@ -8,6 +8,7 @@
 #include <time.h>
 #include <NTPClient.h>
 #include <WiFiUdp.h>
+#include <ESP8266mDNS.h>
 
 struct simpleTime {
     uint8_t hour;
@@ -26,6 +27,10 @@ void buildRouterConnection();
  */
 void buildTimeConnection(); // find fitting location for this method
 
+
+void initWebserver();
+
+void setupMDNS();
 
 void getSimpleTime(struct simpleTime *currentTime);
 

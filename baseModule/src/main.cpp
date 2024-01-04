@@ -8,20 +8,22 @@ String serialInput;
 void setup() {
     Serial.begin(9600);
     Serial.println("Starting...");
-    buildIrConnection();
-    if(false){ // to lazy for feature branch, this will do
-        buildRouterConnection();
-        buildTimeConnection();
-        buildLedConnection();
-        initialiseLedMap();
-        clearActiveLeds();
-    }
+    //buildIrConnection();
+    buildRouterConnection();
+    initWebserver();
+    setupMDNS();
+    //buildTimeConnection();
+    //buildLedConnection();
+    //initialiseLedMap();
+    //clearActiveLeds();
+
 }
 
 void loop() {
-    uint16_t irData = decodeIR();
+    MDNS.update();
 
     if(false){
+        uint16_t irData = decodeIR();
         if(Serial.available() > 0){
             clearActiveLeds();
             serialInput = Serial.readStringUntil('\n');
