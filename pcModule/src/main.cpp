@@ -1,18 +1,28 @@
 #include <Arduino.h>
+#include "led_handling.h"
+#include "webserver_handling.h"
+#include "ir_handling.h"
 
-// put function declarations here:
-int myFunction(int, int);
+#define STATUSPIN 0
+#define POWERPIN 0
+
+bool pcStatus = false;
 
 void setup() {
-  // put your setup code here, to run once:
-  int result = myFunction(2, 3);
+    Serial.begin(9600);
+    Serial.println("Starting...");
+    buildRouterConnection();
+    initWebserver();
+    setupMDNS();
+    //buildTimeConnection();
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-}
-
-// put function definitions here:
-int myFunction(int x, int y) {
-  return x + y;
+    MDNS.update();
+    if(Serial.available() > 0){
+        serialInput = Serial.readStringUntil('\n');
+        if(serialInput.equals("bg")){
+            Serial.println("background");
+        }
+    }
 }
