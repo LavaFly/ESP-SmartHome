@@ -49,4 +49,8 @@ void handleHTMLRequest(AsyncWebServerRequest*);
  */
 void handleJSONRequest(AsyncWebServerRequest*);
 
+void handleStatusRequest(AsyncWebServerRequest*);
+
+void handlePowerOn(AsyncWebServerRequest*);
+
 #endif

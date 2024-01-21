@@ -57,6 +57,27 @@ void loop() {
             if(serialNumber) {
                 Serial.printf("got number %d", serialNumber);
                 projectNumber(serialNumber);
+    
+            }
+        }
+    }
+}
+/**
+void loop() {
+    MDNS.update();
+
+    if(false){
+        uint16_t irData = decodeIR();
+        if(Serial.available() > 0){
+            clearActiveLeds();
+            serialInput = Serial.readStringUntil('\n');
+            if(serialInput.equals("bg")){
+                // toggle background
+                Serial.println("background");
+            } else if (serialInput.equals("ra")) {
+                // print example string message
+                Serial.println("Example String");
+                projectExampleString();
             } else {
                 Serial.println("projecting time");
                 struct simpleTime * currentTime = (struct simpleTime*)malloc(sizeof(struct simpleTime));
@@ -67,3 +88,4 @@ void loop() {
         }
     }
 }
+*/

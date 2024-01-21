@@ -1,6 +1,6 @@
 webpage := include/webpage.html
 
-all: webpage upload
+all: upload
 
 webpage: toByteArray.jar $(webpage)
 	java -jar toByteArray.jar $(webpage)

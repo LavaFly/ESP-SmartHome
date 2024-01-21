@@ -1,14 +1,16 @@
 #include "webserver_handling.h"
-#include "webpage.h"
 #include "internet_settings.h"
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
 #include <WiFiClient.h>
 #include <NTPClient.h>
 
+#define POWERPIN 14
+
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "europe.pool.ntp.org", 3600, 120000);
 AsyncWebServer server(80);
+
 
 void buildRouterConnection(){
     Serial.println("Connecting to WiFi");
@@ -26,6 +28,8 @@ void initWebserver(){
         return;
     }
     server.on("/", handleHTMLRequest);
+    server.on("/pcStatus", handleStatusRequest);
+    server.on("/pcPowerOn", handlePowerOn);
     server.begin();
 }
 
@@ -36,7 +40,7 @@ void buildTimeConnection(){
 }
 
 void setupMDNS(){
-    if(!MDNS.begin("baseModule")){
+    if(!MDNS.begin("pcModule")){
         Serial.println("Error setting up mDNS responder!");
         while(1){ delay(1000); }
     }
@@ -57,5 +61,17 @@ void handleHTMLRequest(AsyncWebServerRequest *request){
 }
 
 void handleJSONRequest(AsyncWebServerRequest *request){
+
+}
+
+void handlePowerOn(AsyncWebServerRequest *request){
+    Serial.println("powerOn");
+    request->send(200);
+    digitalWrite(POWERPIN, HIGH);
+    delay(100);
+    digitalWrite(POWERPIN, LOW);
+}
+
+void handleStatusRequest(AsyncWebServerRequest *request){
 
 }
