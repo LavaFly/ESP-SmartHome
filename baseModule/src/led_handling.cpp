@@ -248,8 +248,26 @@ void clearActiveLeds(){
     FastLED.show();
 }
 
-void backGroundEvent(){
-
+void backgroundEvent(){
+    CHSV color(0, 255, 180);
+    uint8_t counter = 0;
+    uint8_t counter2 = 0;
+    while(counter < 200) {
+        if(counter2 < 10) {
+            counter2++;
+        } else {
+            color.hue = (color.hue + 3) % 256;
+            counter2 = 0;
+        }
+        for(int i = 0; i < numberOfLeds; i++){
+            color.hue = (color.hue + 1) % 256;
+            leds[i] = color;
+        }
+        color.hue = (color.hue + 128) % 256;
+        FastLED.show();
+        delay(80);
+    }
+    Serial.println("background done");
 }
 
 void adjustBrightness(uint16_t brightness){

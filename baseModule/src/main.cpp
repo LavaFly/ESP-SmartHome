@@ -9,42 +9,60 @@ void setup() {
     Serial.begin(9600);
     Serial.println("Starting...");
     buildIrConnection();
-    if(false){ // to lazy for feature branch, this will do
-        buildRouterConnection();
-        buildTimeConnection();
-        buildLedConnection();
-        initialiseLedMap();
-        clearActiveLeds();
-    }
+    buildRouterConnection();
+    buildTimeConnection();
+    buildLedConnection();
+    initialiseLedMap();
+    clearActiveLeds();
 }
 
 void loop() {
-    uint16_t irData = decodeIR();
+    uint8_t irInput = decodeIR();
+    // will later be replaced by some proper mapping of each button to a
+    // function, but havent decided most of them yet so this will suffice
+    switch (irInput) {
+        case 0x12:
+            Serial.println("lighting on");
+            break;
+        case 0x1e:
+            Serial.println("lighting off");
+            break;
+        case 0x01:
+            Serial.println("background");
+            backgroundEvent();
+            break;
+        case 0x03:
+            Serial.println("projecting time");
+            struct simpleTime * currentTime = (struct simpleTime*)malloc(sizeof(struct simpleTime));
+            getSimpleTime(currentTime);
+            projectTime(currentTime->hour, currentTime->minute);
+            free(currentTime);
+            break;
+    }
 
-    if(false){
-        if(Serial.available() > 0){
-            clearActiveLeds();
-            serialInput = Serial.readStringUntil('\n');
-            if(serialInput.equals("bg")){
-                // toggle background
-                Serial.println("background");
-            } else if (serialInput.equals("ra")) {
-                // print example string message
-                Serial.println("Example String");
-                projectExampleString();
+    if(false){//Serial.available() > 0
+        clearActiveLeds();
+        serialInput = Serial.readStringUntil('\n');
+        if(serialInput.equals("bg")){
+            // toggle background
+            Serial.println("background");
+            backgroundEvent();
+        } else if (serialInput.equals("ra")) {
+            // print example string message
+            Serial.println("Example String");
+            projectExampleString();
+        } else {
+            Serial.println("got number");
+            uint16_t serialNumber = serialInput.toInt() % 65535;
+            if(serialNumber) {
+                Serial.printf("got number %d", serialNumber);
+                projectNumber(serialNumber);
             } else {
-                Serial.println("got number");
-                uint16_t serialNumber = serialInput.toInt() % 65535;
-                if(serialNumber) {
-                    Serial.printf("got number %d", serialNumber);
-                    projectNumber(serialNumber);
-                } else {
-                    Serial.println("projecting time");
-                    struct simpleTime * currentTime = (struct simpleTime*)malloc(sizeof(struct simpleTime));
-                    getSimpleTime(currentTime);
-                    projectTime(currentTime->hour, currentTime->minute);
-                    free(currentTime);
-                }
+                Serial.println("projecting time");
+                struct simpleTime * currentTime = (struct simpleTime*)malloc(sizeof(struct simpleTime));
+                getSimpleTime(currentTime);
+                projectTime(currentTime->hour, currentTime->minute);
+                free(currentTime);
             }
         }
     }
