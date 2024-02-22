@@ -16,7 +16,7 @@ upload:
 
 characters:
 	kotlinc toNumArray.kt -include-runtime -d toNumArray.jar
-	java -jar toNumArray.jar alphabet
+	java -jar toNumArray.jar alphabet_lower
 
 clean:
 	rm -f toByteArray.jar
