@@ -5,7 +5,7 @@
 #include <WiFiClient.h>
 #include <NTPClient.h>
 
-#define POWERPIN 14
+#define POWERPIN 5
 
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "europe.pool.ntp.org", 3600, 120000);
