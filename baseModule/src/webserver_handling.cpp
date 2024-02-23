@@ -10,15 +10,25 @@ WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "europe.pool.ntp.org", 3600, 120000);
 AsyncWebServer server(80);
 
+
+// only for ap-mode
+IPAddress local_IP(192,168,4,22);
+IPAddress gateway(192,168,4,9);
+IPAddress subnet(255,255,255,0);
+
 void buildRouterConnection(){
     Serial.println("Connecting to WiFi");
 
     WiFi.begin(SSID, PASS);
-    while(WiFi.status() != WL_CONNECTED){
-        Serial.print("-");
-        delay(100);
+    if(WiFi.waitForConnectResult() == WL_CONNECTED){
+        Serial.println("Connected to local network");
+        Serial.println(WiFi.localIP());
+    } else {
+        Serial.println("Starting AP-Mode");
+        WiFi.softAPConfig(local_IP, gateway, subnet);
+        WiFi.softAP(APSSID, APPASS, 1, 7);
+        Serial.println(WiFi.softAPIP());
     }
-    Serial.println(WiFi.localIP());
 }
 
 void initWebserver(){
