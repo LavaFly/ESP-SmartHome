@@ -16,19 +16,22 @@ IPAddress local_IP(192,168,4,22);
 IPAddress gateway(192,168,4,9);
 IPAddress subnet(255,255,255,0);
 
-void buildRouterConnection(){
+bool buildRouterConnection(){
     Serial.println("Connecting to WiFi");
 
     WiFi.begin(SSID, PASS);
     if(WiFi.waitForConnectResult() == WL_CONNECTED){
         Serial.println("Connected to local network");
         Serial.println(WiFi.localIP());
+        return true;
     } else {
         Serial.println("Starting AP-Mode");
         WiFi.softAPConfig(local_IP, gateway, subnet);
         WiFi.softAP(APSSID, APPASS, 1, 7);
         Serial.println(WiFi.softAPIP());
+        return true;
     }
+    return false;
 }
 
 void initWebserver(){

@@ -11,16 +11,22 @@ WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "europe.pool.ntp.org", 3600, 120000);
 AsyncWebServer server(80);
 
-
-void buildRouterConnection(){
+bool buildRouterConnection(){
     Serial.println("Connecting to WiFi");
 
     WiFi.begin(SSID, PASS);
-    while(WiFi.status() != WL_CONNECTED){
-        Serial.print("-");
-        delay(100);
+    if(WiFi.waitForConnectResult() == WL_CONNECTED){
+        Serial.println("Connected to local network");
+        Serial.println(WiFi.localIP());
+        return true;
     }
-    Serial.println(WiFi.localIP());
+    WiFi.begin(APSSID, APPASS);
+    if(WiFi.waitForConnectResult() == WL_CONNECTED){
+        Serial.println("Connected to ap network");
+        Serial.println(WiFi.localIP());
+        return true;
+    }
+    return false;
 }
 
 void initWebserver(){

@@ -19,7 +19,7 @@ struct simpleTime {
  * @brief
  *
  */
-void buildRouterConnection();
+bool buildRouterConnection();
 
 /**
  * @brief

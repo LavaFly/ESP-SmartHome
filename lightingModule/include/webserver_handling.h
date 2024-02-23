@@ -13,7 +13,7 @@ extern bool lightingStatus;
  * @brief
  *
  */
-void buildRouterConnection();
+bool buildRouterConnection();
 
 void lightingOn(AsyncWebServerRequest* request);
 
