@@ -4,6 +4,7 @@
 #include <WiFiUdp.h>
 #include <WiFiClient.h>
 #include <NTPClient.h>
+#include "sensor_handling.h"
 
 #define POWERPIN 5
 
@@ -36,6 +37,7 @@ void initWebserver(){
     server.on("/", handleHTMLRequest);
     server.on("/pcStatus", handleStatusRequest);
     server.on("/pcPowerOn", handlePowerOn);
+    server.on("/sensorReading", handleSensorReading);
     server.begin();
 }
 
@@ -78,6 +80,18 @@ void handlePowerOn(AsyncWebServerRequest *request){
     digitalWrite(POWERPIN, LOW);
 }
 
+void handleSensorReading(AsyncWebServerRequest *request){
+    Serial.println("Sending sensor data");
+    char* sensorData = (char*)malloc(sizeof(char) * 100);
+
+    getSensorReading(sensorData, 100);
+
+
+    AsyncWebServerResponse *response = request->beginResponse(200, "application/json", sensorData);
+    request->send(response);
+
+    free(sensorData);
+}
 void handleStatusRequest(AsyncWebServerRequest *request){
 
 }

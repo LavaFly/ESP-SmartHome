@@ -6,11 +6,12 @@
 #include <inttypes.h>
 #include <Adafruit_Sensor.h>
 #include "DHT.h"
+#include <ArduinoJson.h>
 
 #define DHTTYPE DHT22
 
 void initSensor();
-float getSensorReading();
+void getSensorReading(char* formattedResponse, size_t maxResponseLen);
 void printReading();
 
 #endif

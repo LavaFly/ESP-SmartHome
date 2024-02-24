@@ -53,4 +53,6 @@ void handleStatusRequest(AsyncWebServerRequest*);
 
 void handlePowerOn(AsyncWebServerRequest*);
 
+void handleSensorReading(AsyncWebServerRequest *request);
+
 #endif

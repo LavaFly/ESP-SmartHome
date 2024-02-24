@@ -12,14 +12,14 @@ void setup() {
     Serial.begin(9600);
     Serial.println("Starting...");
     pinMode(POWERPIN, OUTPUT);
-    //buildRouterConnection();
-    //initWebserver();
+    buildRouterConnection();
+    initWebserver();
     //setupMDNS();
     initSensor();
 }
 
 void loop() {
-    /**
+    /*
     MDNS.update();
     if(Serial.available() > 0){
         serialInput = Serial.readStringUntil('\n');
@@ -32,6 +32,4 @@ void loop() {
         }
     }
     */
-    delay(10000);
-    printReading();
 }
