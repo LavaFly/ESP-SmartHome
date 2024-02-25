@@ -55,4 +55,8 @@ void handlePowerOn(AsyncWebServerRequest*);
 
 void handleSensorReading(AsyncWebServerRequest *request);
 
+extern void getSensorReading(char* formattedResponse, size_t maxResponseLen);
+
+void updateTimeClient();
+
 #endif

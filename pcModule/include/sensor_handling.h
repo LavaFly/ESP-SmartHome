@@ -13,5 +13,8 @@
 void initSensor();
 void getSensorReading(char* formattedResponse, size_t maxResponseLen);
 void printReading();
+float getTemp();
+float getHumid();
+void updateSensorValues();
 
 #endif

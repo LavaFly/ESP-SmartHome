@@ -4,7 +4,9 @@
 #include <WiFiUdp.h>
 #include <WiFiClient.h>
 #include <NTPClient.h>
-#include "sensor_handling.h"
+
+#include <StackThunk.h>
+
 
 #define POWERPIN 5
 
@@ -86,7 +88,6 @@ void handleSensorReading(AsyncWebServerRequest *request){
 
     getSensorReading(sensorData, 100);
 
-
     AsyncWebServerResponse *response = request->beginResponse(200, "application/json", sensorData);
     request->send(response);
 
@@ -94,4 +95,8 @@ void handleSensorReading(AsyncWebServerRequest *request){
 }
 void handleStatusRequest(AsyncWebServerRequest *request){
 
+}
+
+void updateTimeClient(){
+    timeClient.update();
 }
