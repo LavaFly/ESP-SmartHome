@@ -19,7 +19,7 @@ void setup() {
     pinMode(POWERPIN, OUTPUT);
     buildRouterConnection();
     initWebserver();
-    //setupMDNS();
+    setupMDNS();
     initSensor();
 }
 
@@ -31,6 +31,7 @@ void loop() {
         updateSensorValues();
         updateTimeClient();
     }
+    MDNS.update();
     /*
     MDNS.update();
     if(Serial.available() > 0){

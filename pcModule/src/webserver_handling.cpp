@@ -50,7 +50,7 @@ void buildTimeConnection(){
 }
 
 void setupMDNS(){
-    if(!MDNS.begin("pcModule")){
+    if(!MDNS.begin("test")){
         Serial.println("Error setting up mDNS responder!");
         while(1){ delay(1000); }
     }
