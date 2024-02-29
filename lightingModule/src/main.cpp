@@ -10,11 +10,11 @@ void setup() {
     Serial.begin(9600);
     Serial.println("Starting...");
 
-
     buildRouterConnection();
     initWebserver();
+    setupMDNS();
 }
 
 void loop() {
-
+    MDNS.update();
 }

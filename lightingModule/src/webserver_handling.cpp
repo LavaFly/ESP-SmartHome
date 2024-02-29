@@ -1,6 +1,6 @@
 #include "webserver_handling.h"
 #include "internet_settings.h"
-#include "sd_handling.h"
+//#include "sd_handling.h"
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
 
@@ -24,42 +24,55 @@ bool buildRouterConnection(){
     return false;
 }
 
-void lightingOn(AsyncWebServerRequest* request){
-    lightingStatus = true;
+void setupMDNS(){
+    if(!MDNS.begin("lightingModule")){
+        Serial.println("Error setting up mDNS responder!");
+        while(1){ delay(1000); }
+    }
+    Serial.println("mDNS responder started");
 
-    Serial.printf("lightingStatus = %d\n", lightingStatus);
+    // assumes the server has been started, but should be checked for
+    MDNS.addService("http", "tcp", 80);
+}
+
+void lightingOn(AsyncWebServerRequest* request){
+    Serial.println("lighting on");
+
+    sendOnSignal();
 
     request->send(200);
 }
 
 void lightingOff(AsyncWebServerRequest* request){
-    lightingStatus = false;
+    Serial.println("lighting off");
 
-    Serial.printf("lightingStatus = %d\n", lightingStatus);
+    sendOffSignal();
 
     request->send(200);
 }
 
 void raiseBrightness(AsyncWebServerRequest* request){
-    if(lightingBrightness < 3) lightingBrightness++;
-
-    Serial.printf("brightness = %d\n", lightingBrightness);
+    Serial.println("lighting raise");
+    sendHigherSignal();
 
     request->send(200);
-
 }
 
 void lowerBrightness(AsyncWebServerRequest* request){
-    if(lightingBrightness > 0) lightingBrightness--;
+    Serial.println("lighting lower");
 
-    Serial.printf("brightness = %d\n", lightingBrightness);
+    sendLowerSignal();
 
     request->send(200);
-
 }
 
 void handleUnkownRequest(AsyncWebServerRequest* request){
     request->send(404);
+}
+
+void baseResponse(AsyncWebServerRequest* request){
+    Serial.println("got request");
+    request->send(200);
 }
 
 void initWebserver(){
@@ -67,14 +80,17 @@ void initWebserver(){
         return;
     }
 
+    server.on("/", baseResponse);
     server.on("/lightingOn", lightingOn);
     server.on("/lightingOff", lightingOff);
     server.on("/raiseBrightness", raiseBrightness);
     server.on("/lowerBrightness", lowerBrightness);
 
+    /*
     server.on("/", HTTP_GET, [](AsyncWebserverRequest *request){
               request->send(SD, "/index.html", "text/html");
     });
     server.serveStatic("/", SD, "/");
+    */
     server.begin();
 }

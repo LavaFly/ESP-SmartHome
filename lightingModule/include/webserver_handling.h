@@ -5,6 +5,7 @@
 #include <ESP8266WiFi.h>
 #include <ESPAsyncTCP.h>
 #include <ESPAsyncWebServer.h>
+#include <ESP8266mDNS.h>
 
 extern uint8_t lightingBrightness;
 extern bool lightingStatus;
@@ -14,6 +15,8 @@ extern bool lightingStatus;
  *
  */
 bool buildRouterConnection();
+
+void setupMDNS();
 
 void lightingOn(AsyncWebServerRequest* request);
 
@@ -25,6 +28,13 @@ void lowerBrightness(AsyncWebServerRequest* request);
 
 void handleUnkownRequest(AsyncWebServerRequest* request);
 
+void baseResponse(AsyncWebServerRequest* request);
+
 void initWebserver();
+
+extern void sendOffSignal();
+extern void sendOnSignal();
+extern void sendHigherSignal();
+extern void sendLowerSignal();
 
 #endif
