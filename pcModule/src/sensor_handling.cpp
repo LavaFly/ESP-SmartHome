@@ -1,6 +1,6 @@
 #include "sensor_handling.h"
 
-DHT dht(2, DHTTYPE);
+DHT dht(0, DHTTYPE);
 
 JsonDocument jsonResponse;
 

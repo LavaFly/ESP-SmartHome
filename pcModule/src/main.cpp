@@ -26,7 +26,7 @@ void setup() {
 void loop() {
     timeNow = millis()/1000;
     seconds = timeNow - timeLast;
-    if(seconds >= 10){
+    if(seconds >= 5){
         timeLast = timeNow;
         updateSensorValues();
         updateTimeClient();
