@@ -9,6 +9,8 @@
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "europe.pool.ntp.org", 3600, 120000);
 AsyncWebServer server(80);
+WiFiClient client;
+HTTPClient http;
 
 
 // only for ap-mode
@@ -71,4 +73,15 @@ void handleHTMLRequest(AsyncWebServerRequest *request){
 
 void handleJSONRequest(AsyncWebServerRequest *request){
 
+}
+
+int httpGetRequestIgnoreResponse(const char* path){
+    if(http.begin(client, path)){
+        int httpCode = http.GET();
+        if( httpCode == HTTP_CODE_OK){
+            return 1;
+        }
+        http.end();
+    }
+    return 0;
 }

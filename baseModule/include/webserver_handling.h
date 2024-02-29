@@ -9,6 +9,8 @@
 #include <NTPClient.h>
 #include <WiFiUdp.h>
 #include <ESP8266mDNS.h>
+#include <ESP8266HTTPClient.h>
+#include <WiFiClient.h>
 
 struct simpleTime {
     uint8_t hour;
@@ -48,5 +50,7 @@ void handleHTMLRequest(AsyncWebServerRequest*);
  *
  */
 void handleJSONRequest(AsyncWebServerRequest*);
+
+int httpGetRequestIgnoreResponse(const char* path);
 
 #endif
