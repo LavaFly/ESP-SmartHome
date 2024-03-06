@@ -34,7 +34,7 @@ void initWebserver();
 
 extern void sendOffSignal();
 extern void sendOnSignal();
-extern void sendHigherSignal();
-extern void sendLowerSignal();
+extern void sendBrighterSignal();
+extern void sendDarkerSignal();
 
 #endif

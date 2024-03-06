@@ -7,15 +7,19 @@ void buildIrConnection(){
 }
 
 void sendOffSignal(){
-    IrSender.sendNEC(3, 0x80, 0x1e);
+    signalBuffer = LIGHT_OFF;
 }
 void sendOnSignal(){
-    IrSender.sendNEC(3, 0x80, 0x12);
-};
-void sendHigherSignal(){
-    IrSender.sendNEC(3, 0x80, 0x0e);
+    signalBuffer = LIGHT_ON;
 }
-void sendLowerSignal(){
-    IrSender.sendNEC(3, 0x80, 0x0c);
+void sendBrigherSignal(){
+    signalBuffer = LIGHT_BRIGHTER;
+}
+void sendDarkerSignal(){
+    signalBuffer = LIGHT_DARKER;
+}
+void sendSignal(){
+    IrSender.sendNEC(2, IR_ADDRESS, signalBuffer);
+    signalBuffer = 0;
 }
 
