@@ -1,9 +1,9 @@
 #include "ir_handling.h"
-#include <IRremote.hpp>
 
+int signalBuffer = 0;
 
 void buildIrConnection(){
-    IrSender.begin(false);
+    //IrSender.begin(false);
 }
 
 void sendOffSignal(){
@@ -12,14 +12,19 @@ void sendOffSignal(){
 void sendOnSignal(){
     signalBuffer = LIGHT_ON;
 }
-void sendBrigherSignal(){
+void sendBrighterSignal(){
     signalBuffer = LIGHT_BRIGHTER;
 }
 void sendDarkerSignal(){
     signalBuffer = LIGHT_DARKER;
 }
 void sendSignal(){
-    IrSender.sendNEC(2, IR_ADDRESS, signalBuffer);
+    //IrSender.sendNEC(2, IR_ADDRESS, signalBuffer);
+    Serial.print(signalBuffer);
     signalBuffer = 0;
+}
+
+int readSignalBuffer(){
+    return signalBuffer;
 }
 
