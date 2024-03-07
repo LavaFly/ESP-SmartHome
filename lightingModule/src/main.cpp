@@ -1,20 +1,19 @@
-#include <Arduino.h>
+//#include <Arduino.h>
+#include "ir_handling.h"
 #include "webserver_handling.h"
-
-uint8_t lightingBrightness;
-bool lightingStatus;
-
-String serialInput;
 
 void setup() {
     Serial.begin(9600);
-    Serial.println("Starting...");
 
     buildRouterConnection();
+    buildIrConnection();
     initWebserver();
     setupMDNS();
 }
 
 void loop() {
     MDNS.update();
+    if(readSignalBuffer() != 0){
+        sendSignal();
+    }
 }

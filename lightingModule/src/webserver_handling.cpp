@@ -7,18 +7,18 @@
 AsyncWebServer server(80);
 
 bool buildRouterConnection(){
-    Serial.println("Connecting to WiFi");
+    //Serial.println("Connecting to WiFi");
 
     WiFi.begin(SSID, PASS);
     if(WiFi.waitForConnectResult() == WL_CONNECTED){
-        Serial.println("Connected to local network");
-        Serial.println(WiFi.localIP());
+        //Serial.println("Connected to local network");
+        //Serial.println(WiFi.localIP());
         return true;
     }
     WiFi.begin(APSSID, APPASS);
     if(WiFi.waitForConnectResult() == WL_CONNECTED){
-        Serial.println("Connected to ap network");
-        Serial.println(WiFi.localIP());
+        //Serial.println("Connected to ap network");
+        //Serial.println(WiFi.localIP());
         return true;
     }
     return false;
@@ -26,7 +26,7 @@ bool buildRouterConnection(){
 
 void setupMDNS(){
     if(!MDNS.begin("lightingModule")){
-        Serial.println("Error setting up mDNS responder!");
+        //Serial.println("Error setting up mDNS responder!");
         while(1){ delay(1000); }
     }
     Serial.println("mDNS responder started");
@@ -36,7 +36,7 @@ void setupMDNS(){
 }
 
 void lightingOn(AsyncWebServerRequest* request){
-    Serial.println("lighting on");
+    //Serial.println("lighting on");
 
     sendOnSignal();
 
@@ -44,7 +44,7 @@ void lightingOn(AsyncWebServerRequest* request){
 }
 
 void lightingOff(AsyncWebServerRequest* request){
-    Serial.println("lighting off");
+    //Serial.println("lighting off");
 
     sendOffSignal();
 
@@ -52,16 +52,17 @@ void lightingOff(AsyncWebServerRequest* request){
 }
 
 void raiseBrightness(AsyncWebServerRequest* request){
-    Serial.println("lighting raise");
-    sendHigherSignal();
+    //Serial.println("lighting raise");
+
+    sendBrighterSignal();
 
     request->send(200);
 }
 
 void lowerBrightness(AsyncWebServerRequest* request){
-    Serial.println("lighting lower");
+    //Serial.println("lighting lower");
 
-    sendLowerSignal();
+    sendDarkerSignal();
 
     request->send(200);
 }
@@ -71,7 +72,7 @@ void handleUnkownRequest(AsyncWebServerRequest* request){
 }
 
 void baseResponse(AsyncWebServerRequest* request){
-    Serial.println("got request");
+    //Serial.println("got request");
     request->send(200);
 }
 
