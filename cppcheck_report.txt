@@ -166,7 +166,7 @@ baseModule/src/webserver_handling.cpp:64:0: style: The function 'getSimpleTime' 
 baseModule/src/webserver_handling.cpp:74:0: style: The function 'handleJSONRequest' is never used. [unusedFunction]
 
 ^
-lightingModule/src/webserver_handling.cpp:69:0: style: The function 'handleUnkownRequest' is never used. [unusedFunction]
+lightingModule/src/webserver_handling.cpp:70:0: style: The function 'handleUnkownRequest' is never used. [unusedFunction]
 
 ^
 lightingModule/src/sd_handling.cpp:5:0: style: The function 'initSDCard' is never used. [unusedFunction]
