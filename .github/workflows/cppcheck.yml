@@ -1,6 +1,5 @@
 name: cppcheck-action-test
 on: [push]
-runs-on: self-hosted
 
 jobs:
   build:
