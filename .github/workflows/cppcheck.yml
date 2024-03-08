@@ -1,5 +1,6 @@
 name: cppcheck-action-test
 on: [push]
+runs-on: self-hosted
 
 jobs:
   build:
@@ -12,6 +13,10 @@ jobs:
         uses: deep5050/cppcheck-action@main
         with:
           github_token: ${{ secrets.GITHUB_TOKEN}}
+          exclude_check:
+            testMod
+            **/VoiceRecognitionV3
+
 
 
       - name: publish report
