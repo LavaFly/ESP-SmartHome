@@ -13,6 +13,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN}}
           exclude_check: ./baseModule/lib/VoiceRecognitionV3/*
+          max_ctu_depth: 8
 
       - name: publish report
         uses: mikeal/publish-to-github-action@master
