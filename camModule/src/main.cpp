@@ -1,6 +1,8 @@
 #include "esp_camera.h"
 #include <WiFi.h>
+#include <ESPmDNS.h>
 #include "internet_settings.h"
+
 
 //
 // WARNING!!! PSRAM IC required for UXGA resolution and high JPEG quality
@@ -142,6 +144,11 @@ void setup() {
   Serial.print("Camera Ready! Use 'http://");
   Serial.print(WiFi.localIP());
   Serial.println("' to connect");
+
+  if(!MDNS.begin("camModule")){
+      Serial.println("mDNS setup failed!");
+  }
+  Serial.println("setup done");
 }
 
 void loop() {
