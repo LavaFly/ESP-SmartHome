@@ -37,6 +37,7 @@
 
 void startCameraServer();
 void setupLedFlash(int pin);
+void start_mdns_service();
 
 void setup() {
   Serial.begin(9600);
@@ -150,6 +151,16 @@ void setup() {
   }
   Serial.println("setup done");
 }
+
+void start_mdns_service(){
+    esp_err_t err = mdns_init();
+    if(err){
+      Serial.println("mDNS setup failed!");
+      return;
+    }
+    ESP_ERROR_CHECK(mdns_hostname_set("camModule"));
+}
+
 
 void loop() {
   // Do nothing. Everything is done in another task by the web server
