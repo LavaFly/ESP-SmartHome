@@ -41,7 +41,7 @@ fun main(args: Array<String>){
 
     y /= 2
     print("x = $x = 2, y = $y = 6, z = $z = 5")
-    val header = "const uint_8 ${filename}[$x][$y][$z] = {"
+    val header = "const uint8_t ${filename}[$x][$y][$z] = {"
 
     val comlpeteFile = header + formatedContent + "\n};"
     val outputFile = File(filename.plus(".h"))
