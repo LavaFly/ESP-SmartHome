@@ -2,6 +2,8 @@
 #include "characters.h"
 #include "alphabet.h"
 #include "alphabet_lower.h"
+#include <cstdint>
+#include <sys/types.h>
 
 // dimension of the led-wall
 const uint8_t wallHeight = 7;
@@ -175,17 +177,25 @@ void projectCharacter(uint8_t asciiCode, uint8_t xOffset, uint8_t yOffset){
     FastLED.show();
 }
 
-void projectExampleString(){
+void projectExampleString(int slideOffset){
+    // this is a temporary workaround to check
+    // the general functionality of printing
+    // strings and letting them slide across the ledWall
+    clearActiveLeds();
     uint8_t yPosition, xPosition, ledIndex;
-    uint8_t xOffsetFirstWord[5] = {3, 8, 13, 15, 17};
-    uint8_t firstWord[5] = {0, 1, 2, 2, 3};
+    uint8_t xOffsetFirstWord[5] = {0, 5, 10, 12, 14};
+    uint8_t firstWord[5] = {7, 0, 11, 11, 14};
     for(uint8_t z = 0; z < 5; z++){
         for(uint8_t y = 0; y < 6; y++){
             for(uint8_t x = 0; x < 5; x++){
-                if(exampleChars[firstWord[z]][y][x]){
+                uint8_t removeLater = alphabet_lower[firstWord[z]][y][x];
+                if(z == 0){
+                    removeLater = alphabet[firstWord[z]][y][x];
+                }
+                if(removeLater){
                     yPosition = y + 1;
-                    xPosition = x + xOffsetFirstWord[z] - ((yPosition > wallHeight / 2) ? (yPosition - wallHeight / 2) : 0);
-                    if(yPosition < wallHeight || xPosition < wallWidth - abs(-(wallHeight / 2) + yPosition)){
+                    xPosition = slideOffset + x + xOffsetFirstWord[z] - ((yPosition > wallHeight / 2) ? (yPosition - wallHeight / 2) : 0);
+                    if((yPosition < wallHeight && xPosition < wallWidth - abs(-(wallHeight / 2) + yPosition) ) && (xPosition * yPosition != 0)){
                         ledIndex = ledMap[yPosition][xPosition];
                         leds[ledIndex] = CRGB::White;
                     }
@@ -194,21 +204,20 @@ void projectExampleString(){
         }
     }
 
-    FastLED.show();
-
-    delay(3000);
-    clearActiveLeds();
-
-    uint8_t xOffsetSecondWord[5] = {3, 8, 13, 17, 21};
-    //uint8_t secondWord[5] = {5, 1, 6, 7, 2};
+    uint8_t wordOffset = 17 + 4;
+    uint8_t xOffsetSecondWord[5] = {0, 6, 10, 14, 20};
     uint8_t secondWord[5] = {13, 14, 4, 12, 8};
     for(uint8_t z = 0; z < 5; z++){
         for(uint8_t y = 0; y < 6; y++){
             for(uint8_t x = 0; x < 5; x++){
-                if(exampleChars[secondWord[z]][y][x]){
+                uint8_t removeLater = alphabet_lower[secondWord[z]][y][x];
+                if(z == 0){
+                    removeLater = alphabet[secondWord[z]][y][x];
+                }
+                if(removeLater){
                     yPosition = y + 1;
-                    xPosition = x + xOffsetSecondWord[z] - ((yPosition > wallHeight / 2) ? (yPosition - wallHeight / 2) : 0);
-                    if(yPosition < wallHeight || xPosition < wallWidth - abs(-(wallHeight / 2) + yPosition)){
+                    xPosition = wordOffset + slideOffset + x + xOffsetSecondWord[z] - ((yPosition > wallHeight / 2) ? (yPosition - wallHeight / 2) : 0);
+                    if((yPosition < wallHeight && xPosition < wallWidth - abs(-(wallHeight / 2) + yPosition) ) && (xPosition * yPosition != 0)){
                         ledIndex = ledMap[yPosition][xPosition];
                         leds[ledIndex] = CRGB::White;
                     }
@@ -216,11 +225,7 @@ void projectExampleString(){
             }
         }
     }
-
     FastLED.show();
-
-    delay(3000);
-    clearActiveLeds();
 }
 
 void projectPattern(uint8_t *pattern, uint8_t xOffset, uint8_t yOffset){

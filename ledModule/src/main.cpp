@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <cstdint>
 #include "led_handling.h"
 #include "webserver_handling.h"
 #include "ir_handling.h"
@@ -6,11 +7,15 @@
 String serialInput;
 
 void setup() {
+    //Serial.begin(9600,SERIAL_8N1,SERIAL_TX_ONLY); // to limit inbound serial comminucation from interefering
+                                                  // with the ir_handling
     Serial.begin(9600);
     Serial.println("Starting...");
     //buildIrConnection();
     //buildRouterConnection();
     //buildTimeConnection();
+
+    // setup for the ledWall
     buildLedConnection();
     initialiseLedMap();
     clearActiveLeds();
@@ -27,15 +32,61 @@ void loop() {
         } else if (serialInput.equals("ex")) {
             // print example string message
             Serial.println("Example String");
-            projectExampleString();
+
+            for(int i = 20; i > -50; i--){
+                projectExampleString(i);
+                delay(200);
+                Serial.println(i);
+            }
+            Serial.println("done");
         } else {
+            /**
             Serial.println("got number");
             uint16_t serialNumber = serialInput.toInt() % 65535;
             if(serialNumber) {
                 Serial.printf("got number %d", serialNumber);
-                projectNumber(serialNumber);
+                //projectNumber(serialNumber);
+                projectExampleString((uint8_t)serialNumber);
 
             }
+            **/
         }
+    }
+
+    uint8_t irInput = decodeIR();
+    // will later be replaced by some proper mapping of each button to a
+    // function, but havent decided most of them yet so this will suffice
+    switch (irInput) {
+        case 0x12:
+            Serial.println("lighting on");
+            httpGetRequestIgnoreResponse("http://lightingModule.local/lightingOn");
+            break;
+        case 0x1e:
+            Serial.println("lighting off");
+            httpGetRequestIgnoreResponse("http://lightingModule.local/lightingOff");
+            break;
+        case 0x01:
+            Serial.println("background");
+            break;
+        case 0x03:
+            Serial.println("projecting time");
+            /*
+            struct simpleTime * currentTime = (struct simpleTime*)malloc(sizeof(struct simpleTime));
+            getSimpleTime(currentTime);
+            projectTime(currentTime->hour, currentTime->minute);
+            free(currentTime);
+            */
+            break;
+        case 0x0e:
+            Serial.println("raising brightness");
+            httpGetRequestIgnoreResponse("http://lightingModule.local/raiseBrightness");
+            break;
+        case 0x0c:
+            Serial.println("lowering brightness");
+            httpGetRequestIgnoreResponse("http://lightingModule.local/lowerBrightness");
+            break;
+        case 0x1a:
+            httpGetRequestIgnoreResponse("http://pcModule.local/pcPowerOn");
+            break;
     }
 }
