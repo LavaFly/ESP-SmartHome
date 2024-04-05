@@ -76,6 +76,33 @@ baseModule/src/led_handling.cpp:24:26: style: Variable 'segmentWidth' is assigne
 baseModule/src/led_handling.cpp:39:30: style: Variable 'ledLeftNeighbour' is assigned a value that is never used. [unreadVariable]
     uint8_t ledLeftNeighbour = 0;
                              ^
+camModule/src/app_httpd.cpp:571:8: warning: %u in format string (no. 1) requires 'unsigned int' but the argument type is 'signed char'. [invalidPrintfArgType_uint]
+    p+=sprintf(p, "\"face_detect\":%u,", detection_enabled);
+       ^
+camModule/src/app_httpd.cpp:572:8: warning: %u in format string (no. 1) requires 'unsigned int' but the argument type is 'signed char'. [invalidPrintfArgType_uint]
+    p+=sprintf(p, "\"face_enroll\":%u,", is_enrolling);
+       ^
+camModule/src/app_httpd.cpp:573:8: warning: %u in format string (no. 1) requires 'unsigned int' but the argument type is 'signed char'. [invalidPrintfArgType_uint]
+    p+=sprintf(p, "\"face_recognize\":%u", recognition_enabled);
+       ^
+camModule/src/app_httpd.cpp:312:10: style: The scope of the variable 'detected' can be reduced. [variableScope]
+    bool detected = false;
+         ^
+camModule/src/app_httpd.cpp:313:9: style: The scope of the variable 'face_id' can be reduced. [variableScope]
+    int face_id = 0;
+        ^
+camModule/src/app_httpd.cpp:453:12: style: The scope of the variable 'buf' can be reduced. [variableScope]
+    char*  buf;
+           ^
+camModule/src/app_httpd.cpp:312:19: style: Variable 'detected' is assigned a value that is never used. [unreadVariable]
+    bool detected = false;
+                  ^
+camModule/src/app_httpd.cpp:313:17: style: Variable 'face_id' is assigned a value that is never used. [unreadVariable]
+    int face_id = 0;
+                ^
+camModule/src/app_httpd.cpp:116:21: error: va_list 'arg' was opened but not closed by va_end(). [va_end_missing]
+            return 0;
+                    ^
 testMod/lib/VoiceRecognitionV3/VoiceRecognitionV3.cpp:318:10: warning: Opposite inner 'if' condition leads to a dead code block. [oppositeInnerCondition]
   if(buf == 0){
          ^
