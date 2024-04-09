@@ -5,6 +5,7 @@
 #include <ESP8266WiFi.h>
 #include <ESPAsyncTCP.h>
 #include <ESPAsyncWebServer.h>
+#include <AsyncElegantOTA.h>
 #include <time.h>
 #include <NTPClient.h>
 #include <WiFiUdp.h>

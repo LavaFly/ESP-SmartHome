@@ -81,6 +81,7 @@ void initWebserver(){
         return;
     }
 
+    AsyncElegantOTA.begin(&server);
     server.on("/", baseResponse);
     server.on("/lightingOn", lightingOn);
     server.on("/lightingOff", lightingOff);
@@ -95,3 +96,4 @@ void initWebserver(){
     */
     server.begin();
 }
+

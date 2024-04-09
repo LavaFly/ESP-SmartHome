@@ -36,6 +36,7 @@ void initWebserver(){
     if(WiFi.status() != WL_CONNECTED){
         return;
     }
+    AsyncElegantOTA.begin(&server);
     server.on("/", handleHTMLRequest);
     server.on("/pcStatus", handleStatusRequest);
     server.on("/pcPowerOn", handlePowerOn);
