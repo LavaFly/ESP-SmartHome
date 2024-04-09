@@ -2,18 +2,27 @@
 #include <cstdint>
 #include "led_handling.h"
 #include "webserver_handling.h"
+#include "time_handling.h"
 #include "ir_handling.h"
 
 String serialInput;
+uint8_t irInput;
+
+// remove this later with proper implementation in time_handling
+
+unsigned long currentTime = 0;
+unsigned long lastTime = 0;
+uint8_t currentSeconds = 0;
+
 
 void setup() {
     //Serial.begin(9600,SERIAL_8N1,SERIAL_TX_ONLY); // to limit inbound serial comminucation from interefering
                                                   // with the ir_handling
     Serial.begin(9600);
     Serial.println("Starting...");
-    //buildIrConnection();
-    //buildRouterConnection();
-    //buildTimeConnection();
+    buildIrConnection();
+    buildRouterConnection();
+    buildTimeConnection();
 
     // setup for the ledWall
     buildLedConnection();
@@ -33,10 +42,10 @@ void loop() {
             // print example string message
             Serial.println("Example String");
 
-            for(int i = 20; i > -50; i--){
+            for(int i = 25; i > -46; i--){
                 projectExampleString(i);
-                delay(200);
-                Serial.println(i);
+                delay(180);
+                //Serial.println(i);
             }
             Serial.println("done");
         } else {
@@ -53,9 +62,12 @@ void loop() {
         }
     }
 
-    uint8_t irInput = decodeIR();
+
+    irInput = decodeIR();
     // will later be replaced by some proper mapping of each button to a
     // function, but havent decided most of them yet so this will suffice
+
+    struct simpleTime * currentTime;
     switch (irInput) {
         case 0x12:
             Serial.println("lighting on");
@@ -66,16 +78,20 @@ void loop() {
             httpGetRequestIgnoreResponse("http://lightingModule.local/lightingOff");
             break;
         case 0x01:
-            Serial.println("background");
+            Serial.println("Example String");
+
+            for(int i = 25; i > -46; i--){
+                projectExampleString(i);
+                delay(200);
+                //Serial.println(i);
+            }
             break;
         case 0x03:
+            currentTime = (struct simpleTime*)malloc(sizeof(struct simpleTime));
             Serial.println("projecting time");
-            /*
-            struct simpleTime * currentTime = (struct simpleTime*)malloc(sizeof(struct simpleTime));
             getSimpleTime(currentTime);
             projectTime(currentTime->hour, currentTime->minute);
             free(currentTime);
-            */
             break;
         case 0x0e:
             Serial.println("raising brightness");

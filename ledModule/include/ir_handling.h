@@ -3,10 +3,10 @@
 
 #include <stdint.h>
 
-#define IR_RECEIVE_PIN  14
+#define IR_RECEIVE_PIN  5
 #define DECODE_NEC
 
 void buildIrConnection();
-uint16_t decodeIR();
+uint8_t decodeIR();
 
 #endif
