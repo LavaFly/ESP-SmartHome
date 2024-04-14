@@ -20,17 +20,31 @@ void setup() {
                                                   // with the ir_handling
     Serial.begin(9600);
     Serial.println("Starting...");
+    /**
     buildIrConnection();
     buildRouterConnection();
     buildTimeConnection();
+    initWebserver();
+    setupMDNS();
+    **/
 
     // setup for the ledWall
     buildLedConnection();
     initialiseLedMap();
     clearActiveLeds();
+
+
+    delay(1000);
+
+    const char* exampleString = "Halloo";
+
+    uint8_t num = 6;
+    slideStringAcross(exampleString, num);
+    Serial.println("Done");
 }
 
 void loop() {
+    MDNS.update();
     if(Serial.available() > 0){
         clearActiveLeds();
         serialInput = Serial.readStringUntil('\n');
@@ -41,12 +55,19 @@ void loop() {
         } else if (serialInput.equals("ex")) {
             // print example string message
             Serial.println("Example String");
+            /**
 
             for(int i = 25; i > -46; i--){
                 projectExampleString(i);
                 delay(180);
                 //Serial.println(i);
             }
+            **/
+            const char* exampleString = "AEio";
+
+            uint8_t num = 4;
+            slideStringAcross(exampleString, num);
+
             Serial.println("done");
         } else {
             /**

@@ -3,6 +3,7 @@
 #define LED_HANDLING
 
 #include <FastLED.h>
+#include <cstdint>
 
 #define LEDPIN 12
 #define PHOTO_PIN 0
@@ -28,6 +29,24 @@ void projectWord(uint16_t numberOfCharacters, char* string);
 void projectTime(uint8_t hour, uint8_t minute);
 
 void projectExampleString(int slideOffset);
+
+// function takes in string, iterates over the complete length of the string
+// and converts each char to the corresponding index in the characters-array
+// or to empty space if unable to do so
+void generateCharList(const char* initialString, uint8_t numberOfCharacters, uint8_t* charList);
+
+// function takes in list of characters as indexes of array and calculates
+// the proper offset between the letters
+void generateOffsetList(char* charList, uint8_t numberOfCharacters, int8_t initialOffset, int8_t* offsetList);
+
+void projectString(uint8_t* charList, uint8_t numberOfCharacters, int8_t* offsetList);
+
+void slideStringAcross(const char* inputString, uint8_t numberOfCharacters);
+
+int8_t getLengthOfString(uint8_t* charList, int8_t* offsetList, uint8_t numberOfCharacters);
+
+void shiftOffsetToLeft(int8_t* offsetList, uint8_t numberOfElements);
+void shiftOffsetToRight(int8_t* offsetList, uint8_t numberOfElements);
 
 void projectTest();
 void buildLedConnection();
