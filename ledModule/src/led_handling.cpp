@@ -14,6 +14,11 @@ uint8_t activeLeds[numberOfLeds];
 
 uint8_t* ledMap[7];
 
+uint8_t *charList = 0;
+int8_t *offsetList = 0;
+int8_t widthOfProjectedString = 0;
+uint8_t lengthOfProjectedString = 0;
+uint8_t animationDuration = 0;
 //extern uint8_t numbers[10][5][3];
 
 // width = ((num - (height + 1)/2)^2) / height + (height + 1/2)
@@ -229,7 +234,6 @@ void projectExampleString(int slideOffset){
 // function takes in string, iterates over the complete length of the string
 // and converts each char to the corresponding index in the characters-array
 // or to empty space if unable to do so
-// memory for charList if allocated by the function and should be freed after use
 void generateCharList(const char* initialString, uint8_t numberOfCharacters, uint8_t* charList){
     char currentChar = ' ';
     uint8_t lowercaseOffset = 10;
@@ -257,7 +261,6 @@ void generateCharList(const char* initialString, uint8_t numberOfCharacters, uin
 
 // function takes in list of characters as indexes of array and calculates
 // the proper offset between the letters
-// memory for offsetList if allocated by the function and should be freed after use
 void generateOffsetList(uint8_t* charList, uint8_t numberOfCharacters, int8_t initialOffset, int8_t* offsetList){
 
     // first offset is initialOffset
@@ -282,8 +285,6 @@ void generateOffsetList(uint8_t* charList, uint8_t numberOfCharacters, int8_t in
         if(charList[i] == 62){
             offsetList[i] += 1;
         }
-        Serial.print("i: ");
-        Serial.println(offsetList[i]);
     }
 }
 
@@ -298,49 +299,55 @@ int8_t getLengthOfString(uint8_t* charList, int8_t* offsetList, uint8_t numberOf
             }
         }
     }
+    Serial.print(maxPositionOfOne);
+    Serial.print(" : ");
+    Serial.println(offsetList[numberOfCharacters - 1]);
     return maxPositionOfOne + offsetList[numberOfCharacters - 1];
 }
 
-void slideStringAcross(const char* inputString, uint8_t numberOfCharacters){
-    uint8_t *charList = 0;
-    int8_t *offsetList = 0;
+void startSlideAnimation(const char* inputString, uint8_t numberOfCharacters){
+    lengthOfProjectedString = numberOfCharacters;
+    charList = (uint8_t*)malloc(sizeof(uint8_t) * lengthOfProjectedString);
+    offsetList = (int8_t*)malloc(sizeof(uint8_t) * lengthOfProjectedString);
 
-    charList = (uint8_t*)malloc(sizeof(uint8_t) * numberOfCharacters);
-    offsetList = (int8_t*)malloc(sizeof(uint8_t) * numberOfCharacters);
+    generateCharList(inputString, lengthOfProjectedString, charList);
+    generateOffsetList(charList, lengthOfProjectedString, 25, offsetList);
+    widthOfProjectedString = getLengthOfString(charList, offsetList, lengthOfProjectedString);
+    animationDuration = widthOfProjectedString + offsetList[0];
+    Serial.print(widthOfProjectedString);
+    Serial.print(" + ");
+    Serial.println(offsetList[0]);
 
-    // generateCharList
-    delay(3000);
-    generateCharList(inputString, numberOfCharacters, charList);
-    // generateOffsetList
-    generateOffsetList(charList, numberOfCharacters, 25, offsetList);
-    //generateOffsetList(charList, numberOfCharacters, 25, offsetList);
+    // project once, afterwards use advanceSlideAnimation()
+    projectString(charList, lengthOfProjectedString, offsetList);
+}
 
-    // projectString
-    projectString(charList, numberOfCharacters, offsetList);
+bool advanceSlideAnimation(){
+    if(animationDuration > 0){
+        shiftOffsetToLeft(offsetList, lengthOfProjectedString);
+        projectString(charList, lengthOfProjectedString, offsetList);
 
-    // for initialOffset >= i >= len?
-    int8_t lengthOfProjectedString = getLengthOfString(charList, offsetList, numberOfCharacters);
-    for(int8_t i = 0; i < lengthOfProjectedString + 25; i++){
-        // offsetList. -= 1
-        shiftOffsetToLeft(offsetList, numberOfCharacters);
-
-        // projectString
-        projectString(charList, numberOfCharacters, offsetList);
-
-        // wait
-        // find better / non-blocking solution
-        delay(150);
+        animationDuration--;
+        //Serial.print("dur: ");
+        //Serial.println(animationDuration);
+        return true;
     }
 
-    Serial.println("Done once");
-    delay(20000);
-    clearActiveLeds();
-    FastLED.show();
+    animationDuration = 0;
 
-    // free char and offsetList
-    free(charList);
-    free(offsetList);
+    if(charList || offsetList){
+        Serial.println("Cleanup");
+        free(charList);
+        free(offsetList);
+        charList = 0;
+        offsetList = 0;
+        clearActiveLeds();
+        FastLED.show();
+    }
+
+    return false;
 }
+
 
 
 void shiftOffsetToLeft(int8_t* offsetList, uint8_t numberOfElements){
@@ -355,11 +362,10 @@ void shiftOffsetToRight(int8_t* offsetList, uint8_t numberOfElements){
     }
 }
 
-
 void projectString(uint8_t* charList, uint8_t numberOfCharacters, int8_t* offsetList){
     clearActiveLeds();
     uint8_t yPosition, xPosition, ledIndex;
-    for(uint8_t z = 0; z < 5; z++){
+    for(uint8_t z = 0; z < numberOfCharacters; z++){
         for(uint8_t y = 0; y < 6; y++){
             for(uint8_t x = 0; x < 5; x++){
                 uint8_t currentPosition = characters[charList[z]][y][x];

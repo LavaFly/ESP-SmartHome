@@ -41,12 +41,13 @@ void generateOffsetList(char* charList, uint8_t numberOfCharacters, int8_t initi
 
 void projectString(uint8_t* charList, uint8_t numberOfCharacters, int8_t* offsetList);
 
-void slideStringAcross(const char* inputString, uint8_t numberOfCharacters);
-
 int8_t getLengthOfString(uint8_t* charList, int8_t* offsetList, uint8_t numberOfCharacters);
 
 void shiftOffsetToLeft(int8_t* offsetList, uint8_t numberOfElements);
 void shiftOffsetToRight(int8_t* offsetList, uint8_t numberOfElements);
+
+void startSlideAnimation(const char* inputString, uint8_t numberOfCharacters);
+bool advanceSlideAnimation();
 
 void projectTest();
 void buildLedConnection();

@@ -12,14 +12,18 @@ uint8_t irInput;
 
 unsigned long currentTime = 0;
 unsigned long lastTime = 0;
-uint8_t currentSeconds = 0;
+
+
+bool loopActive = false;
+bool animationActive = false;
 
 
 void setup() {
     //Serial.begin(9600,SERIAL_8N1,SERIAL_TX_ONLY); // to limit inbound serial comminucation from interefering
                                                   // with the ir_handling
     Serial.begin(9600);
-    Serial.println("Starting...");
+    Serial.println("starting the setup");
+
     /**
     buildIrConnection();
     buildRouterConnection();
@@ -34,17 +38,24 @@ void setup() {
     clearActiveLeds();
 
 
-    delay(1000);
-
-    const char* exampleString = "Halloo";
-
-    uint8_t num = 6;
-    slideStringAcross(exampleString, num);
-    Serial.println("Done");
+    currentTime = millis();
+    Serial.println("finishing the setup");
 }
 
 void loop() {
-    MDNS.update();
+    //MDNS.update();
+    if(animationActive && millis() > currentTime + 150){
+        if(!advanceSlideAnimation()){
+            animationActive = false;
+            if(loopActive){
+                Serial.println("restarting");
+                uint8_t num = serialInput.length();
+                startSlideAnimation(serialInput.c_str(), num);
+                animationActive = true;
+            }
+        }
+        currentTime = millis();
+    }
     if(Serial.available() > 0){
         clearActiveLeds();
         serialInput = Serial.readStringUntil('\n');
@@ -55,34 +66,35 @@ void loop() {
         } else if (serialInput.equals("ex")) {
             // print example string message
             Serial.println("Example String");
-            /**
+            const char* exampleString = "AEio123 o o";
 
-            for(int i = 25; i > -46; i--){
-                projectExampleString(i);
-                delay(180);
-                //Serial.println(i);
-            }
-            **/
-            const char* exampleString = "AEio";
+            uint8_t num = 12;
+            startSlideAnimation(exampleString, num);
 
-            uint8_t num = 4;
-            slideStringAcross(exampleString, num);
+            Serial.println("done");
+        } else if (serialInput.equals("loop")) {
+            Serial.println("loop on");
+
+            serialInput = "Hallo";
+
+            uint8_t num = 5;
+            startSlideAnimation(serialInput.c_str(), num);
+            loopActive = !loopActive;
+            animationActive = true;
 
             Serial.println("done");
         } else {
-            /**
-            Serial.println("got number");
-            uint16_t serialNumber = serialInput.toInt() % 65535;
-            if(serialNumber) {
-                Serial.printf("got number %d", serialNumber);
-                //projectNumber(serialNumber);
-                projectExampleString((uint8_t)serialNumber);
+            Serial.print("Printing: ");
+            Serial.println(serialInput);
 
-            }
-            **/
+            uint8_t num = serialInput.length();
+            startSlideAnimation(serialInput.c_str(), num);
+            animationActive = true;
+
         }
     }
 
+    /**
 
     irInput = decodeIR();
     // will later be replaced by some proper mapping of each button to a
@@ -126,4 +138,5 @@ void loop() {
             httpGetRequestIgnoreResponse("http://pcModule.local/pcPowerOn");
             break;
     }
+    **/
 }
