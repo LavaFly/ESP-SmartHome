@@ -10,13 +10,12 @@
 
 
 // Maximum Number of concurrent Sensor Readings that will be stored at any time
-#define NUM_READINGS 128
+// the handleJson function fails after 79 elements(will send 79 elements without
+// the closing ]
+// will investigate why at some point
+#define NUM_READINGS 60
 
-/**
- * @brief This Structure holds all information that is stored from a sensor reading
- *  ( the BME680 is capable of reading airpressure, though this is practically unchanging in my application and thus will not be stored )
- *
- */
+
 
 
 /*
@@ -26,13 +25,6 @@
 void initSensor();
 void getSensorReading(char* formattedResponse, size_t maxResponseLen);
 void getSensorReadingFromList(char* formattedResponse, size_t maxResponseLen, uint8_t listIndex);
-
-
-
-
-// add new reading to list
-// add new reading at index
-void updateSensorValues();
 
 
 /**
@@ -45,7 +37,7 @@ void buildSensorConnection();
  * @brief
  *
  */
-void updateReadingList();
+bool updateSensorValues();
 
 /**
  * @brief

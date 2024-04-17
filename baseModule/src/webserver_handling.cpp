@@ -5,12 +5,8 @@
 #include "webpage.h"
 #include "internet_settings.h"
 #include <ESP8266WiFi.h>
-#include <WiFiUdp.h>
 #include <WiFiClient.h>
-#include <NTPClient.h>
 
-WiFiUDP ntpUDP;
-NTPClient timeClient(ntpUDP, "europe.pool.ntp.org", 3600, 120000);
 AsyncWebServer server(80);
 WiFiClient client;
 HTTPClient http;
@@ -50,11 +46,6 @@ void initWebserver(){
     server.begin();
 }
 
-void buildTimeConnection(){
-    timeClient.begin();
-    timeClient.setTimeOffset(3600);
-    timeClient.update();
-}
 
 void setupMDNS(){
     if(!MDNS.begin("baseModule")){
@@ -67,10 +58,6 @@ void setupMDNS(){
     MDNS.addService("http", "tcp", 80);
 }
 
-void getSimpleTime(struct simpleTime *currentTime){
-    currentTime->hour = timeClient.getHours();
-    currentTime->minute = timeClient.getMinutes();
-}
 
 void handleHTMLRequest(AsyncWebServerRequest *request){
     Serial.printf("got request");

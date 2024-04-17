@@ -1,4 +1,5 @@
 #include "sensor_handling.h"
+#include "time_handling.h"
 
 JsonDocument jsonResponse;
 Adafruit_BME680 bme;
@@ -12,7 +13,12 @@ float pulsepercent=0;
 
 uint8_t readingsListIndex = 0;
 
-struct sensor_reading{
+/**
+ * @brief This Structure holds all information that is stored from a sensor reading
+ *  ( the BME680 is capable of reading airpressure, though this is practically unchanging in my application and thus will not be stored )
+ *
+ */
+typedef struct {
     uint32_t time;
     // bme680
     float temperature;
@@ -22,12 +28,12 @@ struct sensor_reading{
     float co2;
     // photo
     uint16_t brightness;
-} sensor_readings[NUM_READINGS];
+} sensor_reading;
+sensor_reading sensor_readings[NUM_READINGS];
 
 void initSensor(){
-
     Serial.println("start init");
-    // init bme
+
     while(!bme.begin(119)){
         Serial.print(".");
         delay(50);
@@ -38,6 +44,7 @@ void initSensor(){
     bme.setIIRFilterSize(BME680_FILTER_SIZE_3);
     bme.setGasHeater(320, 150);
 
+    // is left out for now
     // init co2
     /**
     pinMode(pwmPin, INPUT);
@@ -71,6 +78,7 @@ void readCo2(){
 void getSensorReading(char* formattedResponse, size_t maxResponseLen){
     if(bme.performReading()){
         jsonResponse["sensor"] = "base";
+        jsonResponse["time"] = getEpochTime();
         jsonResponse["temperature"] = bme.temperature;
         jsonResponse["humidity"] = bme.humidity;
         jsonResponse["quality"] = bme.gas_resistance;
@@ -79,6 +87,7 @@ void getSensorReading(char* formattedResponse, size_t maxResponseLen){
 
     } else {
         jsonResponse["sensor"] = "invalid";
+        jsonResponse["time"] = getEpochTime();
         jsonResponse["temperature"] = 0;
         jsonResponse["humidity"] = 0;
         jsonResponse["quality"] = 0;
@@ -96,6 +105,7 @@ void getSensorReadingFromList(char* formattedResponse, size_t maxResponseLen, ui
     uint8_t temp = (listIndex + readingsListIndex) % numberOfReadings;
 
     jsonResponse["sensor"] = "base";
+    jsonResponse["time"] = getEpochTime();
     jsonResponse["temperature"] = sensor_readings[temp].temperature;
     jsonResponse["humidity"] = sensor_readings[temp].humidity;
     jsonResponse["quality"] = sensor_readings[temp].quality;
@@ -113,24 +123,19 @@ int getNumOfReadingsInList(){
     return NUM_READINGS;
 }
 
-void updateSensorValues(){
+bool updateSensorValues(){
     if(bme.performReading()){
-        sensor_readings[readingsListIndex].time = readingsListIndex + 1;
+        sensor_readings[readingsListIndex].time = getEpochTime();
         sensor_readings[readingsListIndex].temperature = bme.temperature;
         sensor_readings[readingsListIndex].humidity = bme.humidity;
         sensor_readings[readingsListIndex].quality = bme.gas_resistance;
-        sensor_readings[readingsListIndex].co2 = 0;
+        sensor_readings[readingsListIndex].co2 = readingsListIndex;
         sensor_readings[readingsListIndex].brightness = analogRead(A0);
-    } else {
-        sensor_readings[readingsListIndex].time = readingsListIndex;
-        sensor_readings[readingsListIndex].temperature = 0;
-        sensor_readings[readingsListIndex].humidity = 0;
-        sensor_readings[readingsListIndex].quality = 0;
-        sensor_readings[readingsListIndex].co2 = 0;
-        sensor_readings[readingsListIndex].brightness = 0;
-   }
 
-    readingsListIndex = (readingsListIndex + 1) % NUM_READINGS;
+        readingsListIndex = (readingsListIndex + 1) % NUM_READINGS;
+        return true;
+    }
+    return false;
 }
 
 void printCurrentReading(){

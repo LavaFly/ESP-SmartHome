@@ -1,13 +1,11 @@
 #include <Arduino.h>
 #include "sensor_handling.h"
 #include "webserver_handling.h"
+#include "time_handling.h"
 
 String serialInput;
 
-unsigned long timeNow = 0;
-unsigned long timeLast = 0;
-uint8_t seconds = 0;
-uint8_t minutes = 0;
+void sensorCallback();
 
 void setup() {
     Serial.begin(9600);
@@ -21,20 +19,17 @@ void setup() {
     Serial.println("setup done");
 }
 
-// return sensorReadings as json
 // ota (https://docs.platformio.org/en/latest/platforms/espressif8266.html#over-the-air-ota-update)
 
 void loop() {
     MDNS.update();
-    timeNow = millis()/1000;
-    seconds = timeNow - timeLast;
-    if(seconds >= 60){
-        timeLast = timeNow;
-        minutes++;
+
+    setTimerSecondsCallback(10, &sensorCallback);
+}
+
+void sensorCallback(){
+    if(!updateSensorValues()){
+        Serial.println("failed to read out sensors");
     }
-    if(minutes >= 10){
-        //updateTimeClient();
-        updateSensorValues();
-        minutes = 0;
-    }
+
 }

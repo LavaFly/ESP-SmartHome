@@ -6,17 +6,10 @@
 #include <ESPAsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 #include <AsyncElegantOTA.h>
-#include <time.h>
-#include <NTPClient.h>
-#include <WiFiUdp.h>
 #include <ESP8266mDNS.h>
 #include <ESP8266HTTPClient.h>
 #include <WiFiClient.h>
 
-struct simpleTime {
-    uint8_t hour;
-    uint8_t minute;
-};
 
 /**
  * @brief
@@ -24,18 +17,9 @@ struct simpleTime {
  */
 bool buildRouterConnection();
 
-/**
- * @brief
- *
- */
-void buildTimeConnection(); // find fitting location for this method
-
-
 void initWebserver();
 
 void setupMDNS();
-
-void getSimpleTime(struct simpleTime *currentTime);
 
 
 /**
