@@ -1,4 +1,7 @@
 #include "webserver_handling.h"
+#include "ESPAsyncWebServer.h"
+#include "WebResponseImpl.h"
+#include "sensor_handling.h"
 #include "webpage.h"
 #include "internet_settings.h"
 #include <ESP8266WiFi.h>
@@ -42,6 +45,8 @@ void initWebserver(){
     }
     AsyncElegantOTA.begin(&server);
     server.on("/", handleHTMLRequest);
+    server.on("/sensorReading", handleSensorReading);
+    server.on("/allData", handleJSONRequest);
     server.begin();
 }
 
@@ -69,17 +74,45 @@ void getSimpleTime(struct simpleTime *currentTime){
 
 void handleHTMLRequest(AsyncWebServerRequest *request){
     Serial.printf("got request");
+    printCurrentReading();
     request->send(200);
 }
 
 void handleJSONRequest(AsyncWebServerRequest *request){
+    int numberOfCurrentReadings = getNumOfReadingsInList();
+    char* sensorData = (char*)malloc(sizeof(char) * 180); // rougly 124 will be used
+                                                          // check if null
 
+    AsyncResponseStream *response = request->beginResponseStream("application/json");
+
+    response->print("[");
+    for(uint8_t i = 0; i < numberOfCurrentReadings; i++){
+        getSensorReadingFromList(sensorData, 180, i);
+        response->print(sensorData);
+        if(i != numberOfCurrentReadings - 1){
+            response->print(",");
+        }
+    }
+    response->print("]");
+    request->send(response);
+
+}
+void handleSensorReading(AsyncWebServerRequest *request){
+    char* sensorData = (char*)malloc(sizeof(char) * 180); // rougly 124 will be used
+
+    getSensorReading(sensorData, 180);
+
+    AsyncWebServerResponse *response = request->beginResponse(200, "application/json", sensorData);
+
+    request->send(response);
+
+    free(sensorData);
 }
 
 int httpGetRequestIgnoreResponse(const char* path){
     if(http.begin(client, path)){
         int httpCode = http.GET();
-        if( httpCode == HTTP_CODE_OK){
+        if(httpCode == HTTP_CODE_OK){
             return 1;
         }
         http.end();

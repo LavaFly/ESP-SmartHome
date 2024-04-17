@@ -45,6 +45,9 @@ void getSimpleTime(struct simpleTime *currentTime);
  */
 void handleHTMLRequest(AsyncWebServerRequest*);
 
+
+void handleSensorReading(AsyncWebServerRequest *request);
+
 /**
  * @brief Serves the Sensor Readings Array as an JSON structure
  * JSON structure is manually constructed without the use of the ArduinoJSON Library
