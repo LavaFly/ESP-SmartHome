@@ -105,7 +105,7 @@ void getSensorReadingFromList(char* formattedResponse, size_t maxResponseLen, ui
     uint8_t temp = (listIndex + readingsListIndex) % numberOfReadings;
 
     jsonResponse["sensor"] = "base";
-    jsonResponse["time"] = getEpochTime();
+    jsonResponse["time"] = sensor_readings[temp].time;
     jsonResponse["temperature"] = sensor_readings[temp].temperature;
     jsonResponse["humidity"] = sensor_readings[temp].humidity;
     jsonResponse["quality"] = sensor_readings[temp].quality;
@@ -126,6 +126,8 @@ int getNumOfReadingsInList(){
 bool updateSensorValues(){
     if(bme.performReading()){
         sensor_readings[readingsListIndex].time = getEpochTime();
+        Serial.println(sensor_readings[readingsListIndex].time);
+        Serial.println("");
         sensor_readings[readingsListIndex].temperature = bme.temperature;
         sensor_readings[readingsListIndex].humidity = bme.humidity;
         sensor_readings[readingsListIndex].quality = bme.gas_resistance;

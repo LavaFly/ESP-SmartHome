@@ -28,6 +28,7 @@ void loop() {
 }
 
 void sensorCallback(){
+    Serial.println(getEpochTime());
     if(!updateTimeClient()){
         Serial.println("failed to update timeClient");
     }

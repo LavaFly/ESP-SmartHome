@@ -60,9 +60,11 @@ void setupMDNS(){
 
 
 void handleHTMLRequest(AsyncWebServerRequest *request){
-    Serial.printf("got request");
-    printCurrentReading();
-    request->send(200);
+    const char* dataType = "text/html";
+    //Serial.println("Streaming Page!");
+    AsyncWebServerResponse *response = request->beginResponse_P(200, dataType, webpage_html_gz, webpage_gz_len);
+    response->addHeader("Content-Encoding", "gzip");
+    request->send(response);
 }
 
 void handleJSONRequest(AsyncWebServerRequest *request){

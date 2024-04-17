@@ -5,19 +5,19 @@
     <title>ESP8266 Webserver</title>
     <script type="text/javascript">
       window.onload = function() {
-        
+
         alert(location.host);
         var temperature_data = [];
         var humidity_data = [];
         var quality_data = [];
         var brightness_data = [];
-        var pathToServer = "http://192.168.178.54/data";
+        var pathToServer = "http://baseModule.local/allData";
         var chart = new CanvasJS.Chart("measurementChart", {
             exportEnabled: true,
             animationEnabled: true,
             title: {
                 text: "BME680 Measurements"
-            },  
+            },
             axisX: {
                 lableAngle: -50,
                 valueFormatString: "DD HH:mm"
@@ -115,6 +115,7 @@
                 brightness_data.pop();
             }
             for (var i = 0; i < data.length; i++) {
+                data[i].time = data[i].time * 1000;
                 temperature_data.push({
                     x: new Date(data[i].time),
                     y: data[i].temperature
