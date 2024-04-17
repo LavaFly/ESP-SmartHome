@@ -28,6 +28,9 @@ void loop() {
 }
 
 void sensorCallback(){
+    if(!updateTimeClient()){
+        Serial.println("failed to update timeClient");
+    }
     if(!updateSensorValues()){
         Serial.println("failed to read out sensors");
     }
