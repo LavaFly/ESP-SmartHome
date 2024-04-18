@@ -44,6 +44,7 @@ void setup() {
 
 void loop() {
     //MDNS.update();
+    //loopOTA();
     if(animationActive && millis() > currentTime + 150){
         if(!advanceSlideAnimation()){
             animationActive = false;

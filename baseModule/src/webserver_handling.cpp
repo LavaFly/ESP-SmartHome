@@ -6,6 +6,7 @@
 #include "internet_settings.h"
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
+#include <ElegantOTA.h>
 
 AsyncWebServer server(80);
 WiFiClient client;
@@ -39,11 +40,15 @@ void initWebserver(){
     if(WiFi.status() != WL_CONNECTED){
         return;
     }
-    AsyncElegantOTA.begin(&server);
+    ElegantOTA.begin(&server);
     server.on("/", handleHTMLRequest);
     server.on("/sensorReading", handleSensorReading);
     server.on("/allData", handleJSONRequest);
     server.begin();
+}
+
+void loopOTA(){
+    ElegantOTA.loop();
 }
 
 

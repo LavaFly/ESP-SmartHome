@@ -5,7 +5,6 @@
 #include <ESP8266WiFi.h>
 #include <ESPAsyncTCP.h>
 #include <ESPAsyncWebServer.h>
-#include <AsyncElegantOTA.h>
 #include <ESP8266mDNS.h>
 #include <ESP8266HTTPClient.h>
 #include <WiFiClient.h>
@@ -21,6 +20,7 @@ void initWebserver();
 
 void setupMDNS();
 
+void loopOTA();
 
 /**
  * @brief Serves the Client the gzipped webpage from the FLASH Memory

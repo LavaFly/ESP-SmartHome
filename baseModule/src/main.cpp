@@ -20,9 +20,11 @@ void setup() {
 }
 
 // ota (https://docs.platformio.org/en/latest/platforms/espressif8266.html#over-the-air-ota-update)
+// fancier website
 
 void loop() {
     MDNS.update();
+    loopOTA();
 
     setTimerSecondsCallback(10, &sensorCallback);
 }

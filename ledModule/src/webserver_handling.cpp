@@ -2,6 +2,7 @@
 #include "internet_settings.h"
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
+#include <ElegantOTA.h>
 
 AsyncWebServer server(80);
 WiFiClient client;
@@ -35,15 +36,19 @@ bool initWebserver(){
         return false;
     }
 
-    AsyncElegantOTA.begin(&server);
+    ElegantOTA.begin(&server);
     server.on("/", handleHTMLRequest);
     server.begin();
     return true;
 }
 
+void loopOTA(){
+    ElegantOTA.loop();
+}
+
 
 void setupMDNS(){
-    if(!MDNS.begin("baseModule")){
+    if(!MDNS.begin("ledModule")){
         Serial.println("Error setting up mDNS responder!");
         while(1){ delay(1000); }
     }

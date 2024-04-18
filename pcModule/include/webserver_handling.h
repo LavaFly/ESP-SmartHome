@@ -5,7 +5,6 @@
 #include <ESP8266WiFi.h>
 #include <ESPAsyncTCP.h>
 #include <ESPAsyncWebServer.h>
-#include <AsyncElegantOTA.h>
 #include <time.h>
 #include <NTPClient.h>
 #include <WiFiUdp.h>
@@ -32,6 +31,8 @@ void buildTimeConnection(); // find fitting location for this method
 void initWebserver();
 
 void setupMDNS();
+
+void loopOTA();
 
 void getSimpleTime(struct simpleTime *currentTime);
 

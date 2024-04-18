@@ -5,7 +5,6 @@
 #include <ESP8266WiFi.h>
 #include <ESPAsyncTCP.h>
 #include <ESPAsyncWebServer.h>
-#include <AsyncElegantOTA.h>
 #include <WiFiUdp.h>
 #include <ESP8266mDNS.h>
 #include <ESP8266HTTPClient.h>
@@ -26,6 +25,7 @@ bool initWebserver();
 
 void setupMDNS();
 
+void loopOTA();
 
 
 /**

@@ -4,6 +4,7 @@
 #include <WiFiUdp.h>
 #include <WiFiClient.h>
 #include <NTPClient.h>
+#include <ElegantOTA.h>
 
 #include <StackThunk.h>
 
@@ -36,12 +37,16 @@ void initWebserver(){
     if(WiFi.status() != WL_CONNECTED){
         return;
     }
-    AsyncElegantOTA.begin(&server);
+    ElegantOTA.begin(&server);
     server.on("/", handleHTMLRequest);
     server.on("/pcStatus", handleStatusRequest);
     server.on("/pcPowerOn", handlePowerOn);
     server.on("/sensorReading", handleSensorReading);
     server.begin();
+}
+
+void loopOTA(){
+    ElegantOTA.loop();
 }
 
 void buildTimeConnection(){

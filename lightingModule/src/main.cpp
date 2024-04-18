@@ -13,6 +13,7 @@ void setup() {
 
 void loop() {
     MDNS.update();
+    loopOTA();
     if(readSignalBuffer() != 0){
         sendSignal();
     }

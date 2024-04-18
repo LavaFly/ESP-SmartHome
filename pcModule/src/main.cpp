@@ -32,6 +32,8 @@ void loop() {
         updateTimeClient();
     }
     MDNS.update();
+    loopOTA();
+
     /*
     MDNS.update();
     if(Serial.available() > 0){
