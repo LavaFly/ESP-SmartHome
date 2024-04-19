@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>ESP8266 Webserver</title>
+    <script type="text/javascript">
+      window.onload = function() {
+
+        alert(location.host);
+        var temperature_data = [];
+        var humidity_data = [];
+        var quality_data = [];
+        var brightness_data = [];
+        var pathToServer = "http://baseModule.local/allData";
+        var chart = new CanvasJS.Chart("measurementChart", {
+            exportEnabled: true,
+            animationEnabled: true,
+            title: {
+                text: "BME680 Measurements"
+            },
+            axisX: {
+                lableAngle: -50,
+                valueFormatString: "DD HH:mm"
+            },
+            axisY: [{
+                title: "Temperature",
+                suffix: "°C",
+                lineColor: "#CD7045",
+                tickColor: "#CD7045",
+                labelFontColor: "#CD7045"
+            },
+            {
+                title: "Humidity",
+                suffix: "%",
+                lineColor: "#00BFFF",
+                tickColor: "#00BFFF",
+                labelFontColor: "#00BFFF"
+            }],
+            axisY2: [{
+                title: "Quality",
+                suffix: "%",
+                lineColor: "#A9A9A9",
+                tickColor: "#A9A9A9",
+                labelFontColor: "#A9A9A9"
+            },
+            {
+                title: "Brightness",
+                suffix: "%",
+                lineColor: "#FF8000",
+                tickColor: "#FF8000",
+                labelFontColor: "#FF8000"
+            }
+            ],
+            toolTip: {
+                shared: true
+            },
+            legend: {
+                cursor: "pointer",
+                itemclick: toggleDataSeries
+            },
+            data: [{
+                type: "spline",
+                name: "Temperature",
+                connectNullData: true,
+                //nullDataLineDashType: "solid",
+                xValueType: "dateTime",
+                xValueFormatString: "HH:mm DD/MMMM",
+                yValueFormatString: "#,###",
+                axisYIndex: 0,
+                showInLegend: true,
+                color: "#CD7045",
+                dataPoints: temperature_data
+            },
+            {
+                type: "spline",
+                name: "Humidity",
+                connectNullData: true,
+                axisYIndex: 1,
+                showInLegend: true,
+                color: "#00BFFF",
+                dataPoints: humidity_data
+            },
+            {
+                type: "spline",
+                name: "Quality",
+                connectNullData: true,
+                axisYType: "secondary",
+                showInLegend: true,
+                color: "#A9A9A9",
+                dataPoints: quality_data
+            },
+            {
+                type: "spline",
+                name: "Brightness",
+                connectNullData: true,
+                axisYType: "secondary",
+                showInLegend: true,
+                color: "#FF8000",
+                dataPoints: brightness_data
+            }]
+        });
+        function toggleDataSeries(e){
+            if(typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible){
+                e.dataSeries.visible = false;
+            } else {
+                e.dataSeries.visible = true;
+            }
+            chart.render();
+        }
+        function addData(data){
+            while(temperature_data.length > 0){
+                temperature_data.pop();
+                humidity_data.pop();
+                quality_data.pop();
+                brightness_data.pop();
+            }
+            for (var i = 0; i < data.length; i++) {
+                data[i].time = data[i].time * 1000;
+                temperature_data.push({
+                    x: new Date(data[i].time),
+                    y: data[i].temperature
+                });
+                humidity_data.push({
+                    x: new Date(data[i].time),
+                    y: data[i].humidity
+                });
+                quality_data.push({
+                    x: new Date(data[i].time),
+                    y: data[i].quality
+                });
+                brightness_data.push({
+                    x: new Date(data[i].time),
+                    y: data[i].brightness
+                });
+            }
+            chart.render();
+        }
+        function setup(){
+            $.getJSON(pathToServer, addData);
+            setInterval($.getJSON(pathToServer, addData), 60000);
+        }
+        setup();
+      }
+    </script>
+  </head>
+  <body>
+    <div id="measurementChart" style="height: 300px; width: 100%;"></div>
+    <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+  </body>
+</html>
