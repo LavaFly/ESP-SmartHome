@@ -113,3 +113,14 @@ int httpGetRequestIgnoreResponse(const char* path){
     }
     return 0;
 }
+
+const String* httpGetRequest(const char* path){
+    if(http.begin(client, path)){
+        int httpCode = http.GET();
+        if(httpCode == HTTP_CODE_OK){
+           return &http.getString();
+        }
+        http.end();
+    }
+    return 0;
+}

@@ -32,6 +32,8 @@ void handleHTMLRequest(AsyncWebServerRequest*);
 
 void handleSensorReading(AsyncWebServerRequest *request);
 
+
+
 /**
  * @brief Serves the Sensor Readings Array as an JSON structure
  * JSON structure is manually constructed without the use of the ArduinoJSON Library
@@ -40,5 +42,7 @@ void handleSensorReading(AsyncWebServerRequest *request);
 void handleJSONRequest(AsyncWebServerRequest*);
 
 int httpGetRequestIgnoreResponse(const char* path);
+
+const String* httpGetRequest(const char* path);
 
 #endif
