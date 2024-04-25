@@ -39,9 +39,11 @@ void initWebserver(){
     }
     ElegantOTA.begin(&server);
     server.on("/", handleHTMLRequest);
+    server.on("/isLive", handleLiveStatus);
     server.on("/pcStatus", handleStatusRequest);
     server.on("/pcPowerOn", handlePowerOn);
     server.on("/sensorReading", handleSensorReading);
+    DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
     server.begin();
 }
 
@@ -73,6 +75,11 @@ void getSimpleTime(struct simpleTime *currentTime){
 
 void handleHTMLRequest(AsyncWebServerRequest *request){
     Serial.printf("got request");
+    request->send(200);
+}
+
+void handleLiveStatus(AsyncWebServerRequest *request){
+    Serial.println("got liveStatus Request");
     request->send(200);
 }
 

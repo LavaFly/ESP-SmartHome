@@ -55,6 +55,8 @@ void handleStatusRequest(AsyncWebServerRequest*);
 
 void handlePowerOn(AsyncWebServerRequest*);
 
+void handleLiveStatus(AsyncWebServerRequest *request);
+
 void handleSensorReading(AsyncWebServerRequest *request);
 
 extern void getSensorReading(char* formattedResponse, size_t maxResponseLen);

@@ -35,6 +35,7 @@ void loopOTA();
  */
 void handleHTMLRequest(AsyncWebServerRequest*);
 
+void handleLiveStatus(AsyncWebServerRequest *request);
 /**
  * @brief Serves the Sensor Readings Array as an JSON structure
  * JSON structure is manually constructed without the use of the ArduinoJSON Library

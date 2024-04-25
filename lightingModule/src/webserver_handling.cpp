@@ -72,6 +72,12 @@ void handleUnkownRequest(AsyncWebServerRequest* request){
     request->send(404);
 }
 
+void handleLiveStatus(AsyncWebServerRequest *request){
+    Serial.println("got liveStatus Request");
+    request->send(200);
+}
+
+
 void baseResponse(AsyncWebServerRequest* request){
     //Serial.println("got request");
     request->send(200);
@@ -84,11 +90,12 @@ void initWebserver(){
 
     ElegantOTA.begin(&server);
     server.on("/", baseResponse);
+    server.on("/isLive", handleLiveStatus);
     server.on("/lightingOn", lightingOn);
     server.on("/lightingOff", lightingOff);
     server.on("/raiseBrightness", raiseBrightness);
     server.on("/lowerBrightness", lowerBrightness);
-
+    DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
     /*
     server.on("/", HTTP_GET, [](AsyncWebserverRequest *request){
               request->send(SD, "/index.html", "text/html");

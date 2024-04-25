@@ -38,6 +38,8 @@ bool initWebserver(){
 
     ElegantOTA.begin(&server);
     server.on("/", handleHTMLRequest);
+    server.on("/isLive", handleLiveStatus);
+    DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
     server.begin();
     return true;
 }
@@ -60,6 +62,11 @@ void setupMDNS(){
 
 void handleHTMLRequest(AsyncWebServerRequest *request){
     Serial.printf("got request");
+    request->send(200);
+}
+
+void handleLiveStatus(AsyncWebServerRequest *request){
+    Serial.println("got liveStatus Request");
     request->send(200);
 }
 

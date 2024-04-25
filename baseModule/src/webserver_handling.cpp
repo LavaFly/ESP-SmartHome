@@ -42,8 +42,10 @@ void initWebserver(){
     }
     ElegantOTA.begin(&server);
     server.on("/", handleHTMLRequest);
+    server.on("/isLive", handleLiveStatus);
     server.on("/sensorReading", handleSensorReading);
     server.on("/allData", handleJSONRequest);
+    DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
     server.begin();
 }
 
@@ -63,6 +65,10 @@ void setupMDNS(){
     MDNS.addService("http", "tcp", 80);
 }
 
+void handleLiveStatus(AsyncWebServerRequest *request){
+    Serial.println("got liveStatus Request");
+    request->send(200);
+}
 
 void handleHTMLRequest(AsyncWebServerRequest *request){
     const char* dataType = "text/html";

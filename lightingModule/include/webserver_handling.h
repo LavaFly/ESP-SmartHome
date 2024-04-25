@@ -28,6 +28,8 @@ void lowerBrightness(AsyncWebServerRequest* request);
 
 void handleUnkownRequest(AsyncWebServerRequest* request);
 
+void handleLiveStatus(AsyncWebServerRequest *request);
+
 void baseResponse(AsyncWebServerRequest* request);
 
 void initWebserver();

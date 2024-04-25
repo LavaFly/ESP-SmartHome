@@ -32,6 +32,7 @@ void handleHTMLRequest(AsyncWebServerRequest*);
 
 void handleSensorReading(AsyncWebServerRequest *request);
 
+void handleLiveStatus(AsyncWebServerRequest *request);
 
 
 /**
