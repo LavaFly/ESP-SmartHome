@@ -4,6 +4,7 @@
 #include "webserver_handling.h"
 #include "time_handling.h"
 #include "ir_handling.h"
+#include "weather_handling.h"
 
 String serialInput;
 uint8_t irInput;
@@ -26,11 +27,11 @@ void setup() {
 
     /**
     buildIrConnection();
+    setupMDNS();
+    **/
     buildRouterConnection();
     buildTimeConnection();
     initWebserver();
-    setupMDNS();
-    **/
 
     // setup for the ledWall
     buildLedConnection();
@@ -81,6 +82,18 @@ void loop() {
             uint8_t num = 5;
             startSlideAnimation(serialInput.c_str(), num);
             loopActive = !loopActive;
+            animationActive = true;
+
+            Serial.println("done");
+        } else if (serialInput.equals("we")){
+            Serial.println("WeatherData");
+            char* weatherDescription = (char*)malloc(20 * sizeof(char));
+            getWeatherDescription(weatherDescription);
+
+            uint8_t num = strlen(weatherDescription);
+            Serial.println(num);
+            Serial.println(weatherDescription);
+            startSlideAnimation(weatherDescription, num);
             animationActive = true;
 
             Serial.println("done");
