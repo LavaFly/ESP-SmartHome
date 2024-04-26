@@ -45,4 +45,10 @@ void handleJSONRequest(AsyncWebServerRequest*);
 
 int httpGetRequestIgnoreResponse(const char* path);
 
+const String* httpGetRequest(const char* path);
+
+WiFiClient& httpGetRequestStream(const char* path);
+
+void httpEndRequestStream();
+
 #endif
