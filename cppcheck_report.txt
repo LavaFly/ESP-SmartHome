@@ -172,6 +172,15 @@ ledModule/src/led_handling.cpp:28:26: style: Variable 'segmentWidth' is assigned
 ledModule/src/led_handling.cpp:43:30: style: Variable 'ledLeftNeighbour' is assigned a value that is never used. [unreadVariable]
     uint8_t ledLeftNeighbour = 0;
                              ^
+ledModule/src/main.cpp:70:25: style: Local variable 'currentTime' shadows outer variable [shadowVariable]
+    struct simpleTime * currentTime;
+                        ^
+ledModule/src/main.cpp:13:15: note: Shadowed declaration
+unsigned long currentTime = 0;
+              ^
+ledModule/src/main.cpp:70:25: note: Shadow variable
+    struct simpleTime * currentTime;
+                        ^
 testMod/lib/VoiceRecognitionV3/VoiceRecognitionV3.cpp:318:10: warning: Opposite inner 'if' condition leads to a dead code block. [oppositeInnerCondition]
   if(buf == 0){
          ^
@@ -253,10 +262,7 @@ baseModule/lib/VoiceRecognitionV3/VoiceRecognitionV3.cpp:347:0: style: The funct
 baseModule/lib/VoiceRecognitionV3/VoiceRecognitionV3.cpp:968:0: style: The function 'disableAutoLoad' is never used. [unusedFunction]
 
 ^
-baseModule/src/webserver_handling.cpp:64:0: style: The function 'getSimpleTime' is never used. [unusedFunction]
-
-^
-baseModule/src/webserver_handling.cpp:74:0: style: The function 'handleJSONRequest' is never used. [unusedFunction]
+baseModule/src/webserver_handling.cpp:75:0: style: The function 'handleJSONRequest' is never used. [unusedFunction]
 
 ^
 lightingModule/src/webserver_handling.cpp:70:0: style: The function 'handleUnkownRequest' is never used. [unusedFunction]
@@ -281,9 +287,6 @@ pcModule/src/sensor_handling.cpp:34:0: style: The function 'printReading' is nev
 
 ^
 ledModule/src/led_handling.cpp:231:0: style: The function 'projectPattern' is never used. [unusedFunction]
-
-^
-ledModule/src/led_handling.cpp:156:0: style: The function 'projectTime' is never used. [unusedFunction]
 
 ^
 ledModule/src/led_handling.cpp:152:0: style: The function 'projectWord' is never used. [unusedFunction]
