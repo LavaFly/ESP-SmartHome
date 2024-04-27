@@ -2,6 +2,7 @@
 #include "sensor_handling.h"
 #include "webserver_handling.h"
 #include "time_handling.h"
+#include "sd_handling.h"
 
 String serialInput;
 
@@ -17,9 +18,14 @@ void setup() {
     initWebserver();
     setupMDNS();
     Serial.println("setup done");
+    delay(5000);
+    //printWeatherData();
+    //printForecastData();
+
+    initSDCard();
+    createDir();
 }
 
-// ota (https://docs.platformio.org/en/latest/platforms/espressif8266.html#over-the-air-ota-update)
 // fancier website
 
 void loop() {
@@ -38,4 +44,16 @@ void sensorCallback(){
         Serial.println("failed to read out sensors");
     }
 
+    // write own values to sd card
+    char* sensorData = (char*)malloc(sizeof(char) * 180); // rougly 124 will be used
+
+    getSensorReading(sensorData, 180);
+
+    writeJsonToFile(sensorData);
+
+    free(sensorData);
+
+    // write pcModule values to sdcard
+    const char* responseData = httpGetRequest("http://pcModule.local/sensorReading")->c_str();
+    writeJsonToFile(responseData);
 }

@@ -95,7 +95,7 @@ void handleJSONRequest(AsyncWebServerRequest *request){
     }
     response->print("]");
     request->send(response);
-
+    free(sensorData);
 }
 void handleSensorReading(AsyncWebServerRequest *request){
     char* sensorData = (char*)malloc(sizeof(char) * 180); // rougly 124 will be used
@@ -129,4 +129,15 @@ const String* httpGetRequest(const char* path){
         http.end();
     }
     return 0;
+}
+
+WiFiClient& httpGetRequestStream(const char* path){
+    http.useHTTP10(true);
+    http.begin(client, path);
+    http.GET();
+    return http.getStream();
+}
+
+void httpEndRequestStream(){
+    http.end();
 }
