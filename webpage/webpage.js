@@ -1,3 +1,31 @@
+function checkWebsiteStatus(url, statusElement) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', url, true);
+    xhr.timeout = 3000;
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                statusElement.classList.add('online');
+            } else {
+                statusElement.classList.add('offline');
+            }
+        }
+    };
+    xhr.onerror = function () {
+        statusElement.classList.add('offline');
+    };
+    xhr.send();
+}
+function sendGetRequest(module, endpoint) {
+    var baseUrl = 'http://' + module + '.local/';
+    var url = baseUrl + endpoint;
+
+    console.log(url);
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', url, true);
+    xhr.send();
+}
 window.onload = function () {
     var temperatureBase_data = [];
     var temperaturePC_data = [];
@@ -384,34 +412,6 @@ window.onload = function () {
         baseChart.render();
         temperatureChart.render();
         airqualityChart.render();
-    }
-    function checkWebsiteStatus(url, statusElement) {
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', url, true);
-        xhr.timeout = 3000;
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4) {
-                if (xhr.status >= 200 && xhr.status < 300) {
-                    statusElement.classList.add('online');
-                } else {
-                    statusElement.classList.add('offline');
-                }
-            }
-        };
-        xhr.onerror = function () {
-            statusElement.classList.add('offline');
-        };
-        xhr.send();
-    }
-    function sendGetRequest(module, endpoint) {
-        var baseUrl = 'http://' + module + '.local/';
-        var url = baseUrl + endpoint;
-
-        console.log(url);
-
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', url, true);
-        xhr.send();
     }
     checkWebsiteStatus('http://baseModule.local/isLive', document.getElementById('baseStatus'));
     checkWebsiteStatus('http://ledModule.local/isLive', document.getElementById('ledStatus'));
