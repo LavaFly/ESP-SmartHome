@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="studi2.css">
+    <title>ESP-SmartHome</title>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
+    <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    <script src="studiScript.js"></script>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <!-- change to icons -->
+                <li><a href="#review-part">Livestream</a></li>
+                <li><a href="https://github.com/LavaFly/ESP-SmartHome">Github</a></li>
+                <li><a href="https://drive.google.com/drive/u/0/folders/1Gz-19JYiT35g1RaYUDQdHrA9fhqYQTKf">Drive</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section class="overview">
+            <h2> ESP-SmartHome Overview </h2>
+        </section>
+        <section class="bigPlot">
+            <div id="bigChart" style="height: 300px; width: 100%;"></div>
+        </section>
+        <section class="mainContent">
+            <div class="cardGrid">
+                <div class="card">
+                    <!-- Base-Module plots -->
+                    <div id="baseChart" style="height: 400px; width: 100%;"></div>
+                </div>
+                <div class="card">
+                    <!-- Online-Status -->
+                    <div class="statusGrid">
+                        <div class="statusGridElement">
+                            <span class="statusCircle" id="baseStatus"></span>
+                            <p> BaseModule Status</p>
+                        </div>
+                        <div class="statusGridElement">
+                            <span class="statusCircle" id="ledStatus"></span>
+                            <p> LedModule </p>
+                        </div>
+                        <div class="statusGridElement">
+                            <span class="statusCircle" id="lightingStatus"></span>
+                            <p> LightingModule </p>
+                        </div>
+                        <div class="statusGridElement">
+                            <span class="statusCircle" id="pcStatus"></span>
+                            <p> PcModule </p>
+                        </div>
+                        <div class="statusGridElement">
+                            <span class="statusCircle" id="displayStatus"></span>
+                            <p> DisplayModule </p>
+                        </div>
+                        <div class="statusGridElement">
+                            <span class="statusCircle" id="camStatus"></span>
+                            <p> CamModule </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <!-- LightingCtrl -->
+                    <div class="ctrlGrid">
+                        <p class="fatText gridHeader"> Lighting Control </p>
+                        <button class="fancyButton" role="button"
+                            onclick="sendGetRequest('lightingModule','lightingOn')">On</button>
+                        <button class="fancyButton" role="button"
+                            onclick="sendGetRequest('lightingModule','lightingOff')">Off</button>
+                        <button class="fancyButton" role="button"
+                            onclick="sendGetRequest('lightingModule','raiseBrightness')">Brighter</button>
+                        <button class="fancyButton" role="button"
+                            onclick="sendGetRequest('lightingModule','lowerBrightness')">Darker</button>
+
+                        <!-- PcCtlr -->
+                        <p class="fatText gridHeader"> PC Control </p>
+                        <button class="fancyButton" role="button"
+                            onclick="sendGetRequest('pcModule','lowerBrightness')">On</button>
+                        <button class="fancyButton" role="button"
+                            onclick="sendGetRequest('pcModule','lowerBrightness')">Off</button>
+
+
+                    </div>
+                </div>
+                <div class="card">
+                    <!-- Textfield -->
+                    <p class="fatText">Led Wall Input</p>
+                    <div class="submitInput">
+                        <span class="ledInput">
+                            <input type="text" placeholder="display this message">
+                            <span></span>
+                        </span>
+                        <button class="fancySubmitButton" role="button" onclick="">send</button>
+                    </div>
+                    <div class="ctrlGrid" style="padding-top: 4.5em;">
+                        <!-- LedCtrl  -->
+                        <p class="fatText gridHeader"> Led Control </p>
+                        <button class="fancyButton" role="button"
+                            onclick="sendGetRequest('pcModule','lowerBrightness')">Time</button>
+                        <button class="fancyButton" role="button"
+                            onclick="sendGetRequest('pcModule','lowerBrightness')">Rain</button>
+                    </div>
+                </div>
+                <div class="card">
+                    <!-- Temperature -->
+                    <div id="temperatureChart" style="height: 400px; width: 100%;"></div>
+                </div>
+                <div class="card">
+                    <!-- Airquality -->
+                    <div id="airqualityChart" style="height: 400px; width: 100%;"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <ul class="footer-ul">
+            <li class="footer-li">
+                <a href="#">Home</a>
+            </li>
+            <li class="footer-li">
+                <a href="#">Services</a>
+            </li>
+            <li class="footer-li">
+                <a href="#">About</a>
+            </li>
+            <li class="footer-li">
+                <a href="#">Terms</a>
+            </li>
+            <li class="footer-li">
+                <a href="#">Privacy Policy</a>
+            </li>
+        </ul>
+        <p id="copyright">
+            Luca Kannenberg @ 2024
+        </p>
+    </footer>
+</body>
+
+</html>
