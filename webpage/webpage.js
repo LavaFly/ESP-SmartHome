@@ -437,7 +437,7 @@ var wsHost = 'ws://ledModule.local/ws';
 var websocket;
 function initWebSocket() {
     console.log('Trying to open a WebSocket connection...');
-    websocket = new WebSocket(gateway);
+    websocket = new WebSocket(wsHost);
     websocket.onopen    = onOpen;
     websocket.onclose   = onClose;
     websocket.onmessage = onMessage;
@@ -456,10 +456,11 @@ function onMessage(event) {
     console.log('some message');
 }
 function initButton(){
-    document.getElementById('fancySubmitButton').addEventListener('click', onSubmit);
+    document.getElementById('submitButton').addEventListener('click', onSubmit);
 }
 function onSubmit(){
     var textFieldContent = document.getElementById('fancyInput').value;
     console.log('sending message ' + textFieldContent);
+    document.getElementById('fancyInput').value = '';
     websocket.send(textFieldContent);
 }
