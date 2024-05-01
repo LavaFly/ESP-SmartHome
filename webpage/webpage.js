@@ -420,6 +420,8 @@ window.onload = function () {
     checkWebsiteStatus('http://displayModule.local/isLive', document.getElementById('displayStatus'));
     checkWebsiteStatus('http://camModule.local/isLive', document.getElementById('camStatus'));
     setupCharts();
+    initWebSocket();
+    initButton();
     /**
     document.addEventListener('DOMContentLoaded', function () {
         var boxes = document.querySelectorAll('.gradientColor');
@@ -430,4 +432,34 @@ window.onload = function () {
             box.style.setProperty('background-position', offset + '%'); // Set gradient start
         });
     });**/
+}
+var wsHost = 'ws://ledModule.local/ws';
+var websocket;
+function initWebSocket() {
+    console.log('Trying to open a WebSocket connection...');
+    websocket = new WebSocket(gateway);
+    websocket.onopen    = onOpen;
+    websocket.onclose   = onClose;
+    websocket.onmessage = onMessage;
+}
+
+function onOpen(event) {
+    console.log('Connection opened');
+}
+
+function onClose(event) {
+    console.log('Connection closed');
+    setTimeout(initWebSocket, 2000);
+}
+
+function onMessage(event) {
+    console.log('some message');
+}
+function initButton(){
+    document.getElementById('fancySubmitButton').addEventListener('click', onSubmit);
+}
+function onSubmit(){
+    var textFieldContent = document.getElementById('fancyInput').value;
+    console.log('sending message ' + textFieldContent);
+    websocket.send(textFieldContent);
 }
