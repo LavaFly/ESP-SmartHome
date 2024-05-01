@@ -14,6 +14,8 @@ IPAddress local_IP(192,168,4,22);
 IPAddress gateway(192,168,4,9);
 IPAddress subnet(255,255,255,0);
 
+extern void setupTextAnimation(String message);
+
 bool buildRouterConnection(){
     Serial.println("Connecting to WiFi");
 
@@ -117,6 +119,7 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
         data[len] = 0;
         Serial.print("got message:  ");
         Serial.println((char*)data);
+        setupTextAnimation((char*)data);
     }
 }
 void onEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventType type, void * arg, uint8_t *data, size_t len){

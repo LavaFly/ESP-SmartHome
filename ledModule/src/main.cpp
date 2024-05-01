@@ -27,9 +27,9 @@ void setup() {
 
     /**
     buildIrConnection();
-    setupMDNS();
     **/
     buildRouterConnection();
+    setupMDNS();
     buildTimeConnection();
     initWebserver();
 
@@ -37,6 +37,8 @@ void setup() {
     buildLedConnection();
     initialiseLedMap();
     clearActiveLeds();
+    /**
+    **/
 
 
     currentTime = millis();
@@ -44,8 +46,10 @@ void setup() {
 }
 
 void loop() {
-    //MDNS.update();
+    MDNS.update();
     //loopOTA();
+
+    cleanUpSockets();
     if(animationActive && millis() > currentTime + 150){
         if(!advanceSlideAnimation()){
             animationActive = false;
@@ -153,4 +157,14 @@ void loop() {
             break;
     }
     **/
+}
+
+void setupTextAnimation(String message){
+    Serial.println("starting animation");
+    Serial.print("message: ");
+    Serial.println(message);
+    serialInput = message;
+    uint8_t num = serialInput.length();
+    startSlideAnimation(serialInput.c_str(), num);
+    animationActive = true;
 }
