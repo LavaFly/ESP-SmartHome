@@ -5,6 +5,7 @@
 #include <ElegantOTA.h>
 
 AsyncWebServer server(80);
+AsyncWebSocket ws("/ws");
 WiFiClient client;
 HTTPClient http;
 
@@ -37,6 +38,8 @@ bool initWebserver(){
     }
 
     ElegantOTA.begin(&server);
+    ws.onEvent(onEvent);
+    server.addHandler(&ws);
     server.on("/", handleHTMLRequest);
     server.on("/isLive", handleLiveStatus);
     DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
@@ -105,4 +108,34 @@ WiFiClient& httpGetRequestStream(const char* path){
 
 void httpEndRequestStream(){
     http.end();
+}
+
+
+void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
+    AwsFrameInfo *info = (AwsFrameInfo*)arg;
+    if (info->final && info->index == 0 && info->len == len && info->opcode == WS_TEXT) {
+        data[len] = 0;
+        Serial.print("got message:  ");
+        Serial.println((char*)data);
+    }
+}
+void onEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventType type, void * arg, uint8_t *data, size_t len){
+    switch (type) {
+        case WS_EVT_CONNECT:
+            Serial.printf("WebSocket client #%u connected from %s\n", client->id(), client->remoteIP().toString().c_str());
+            break;
+        case WS_EVT_DISCONNECT:
+            Serial.printf("WebSocket client #%u disconnected\n", client->id());
+            break;
+        case WS_EVT_DATA:
+            handleWebSocketMessage(arg, data, len);
+            break;
+        case WS_EVT_PONG:
+        case WS_EVT_ERROR:
+            break;
+    }
+}
+
+void cleanUpSockets(){
+    ws.cleanupClients();
 }
