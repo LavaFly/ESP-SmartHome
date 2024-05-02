@@ -415,8 +415,8 @@ window.onload = function () {
     }
     checkWebsiteStatus('http://baseModule.local/isLive', document.getElementById('baseStatus'));
     checkWebsiteStatus('http://ledModule.local/isLive', document.getElementById('ledStatus'));
-    checkWebsiteStatus('http://lighingModule.local/isLive', document.getElementById('lightingStatus'));
-    //checkWebsiteStatus('http://pcModule.local/isLive', document.getElementById('pcStatus'));
+    checkWebsiteStatus('http://lightingModule.local/isLive', document.getElementById('lightingStatus'));
+    checkWebsiteStatus('http://pcModule.local/isLive', document.getElementById('pcStatus'));
     checkWebsiteStatus('http://displayModule.local/isLive', document.getElementById('displayStatus'));
     checkWebsiteStatus('http://camModule.local/isLive', document.getElementById('camStatus'));
     setupCharts();

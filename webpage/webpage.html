@@ -42,7 +42,7 @@
                     <div class="statusGrid">
                         <div class="statusGridElement">
                             <span class="statusCircle" id="baseStatus"></span>
-                            <p> BaseModule Status</p>
+                            <p> BaseModule </p>
                         </div>
                         <div class="statusGridElement">
                             <span class="statusCircle" id="ledStatus"></span>
@@ -82,9 +82,9 @@
                         <!-- PcCtlr -->
                         <p class="fatText gridHeader"> PC Control </p>
                         <button class="fancyButton" role="button"
-                            onclick="sendGetRequest('pcModule','lowerBrightness')">On</button>
+                            onclick="sendGetRequest('pcModule','pcPowerOn')">On</button>
                         <button class="fancyButton" role="button"
-                            onclick="sendGetRequest('pcModule','lowerBrightness')">Off</button>
+                            onclick="sendGetRequest('pcModule','pcPowerOn')">Off</button>
 
 
                     </div>
@@ -103,9 +103,9 @@
                         <!-- LedCtrl  -->
                         <p class="fatText gridHeader"> Led Control </p>
                         <button class="fancyButton" role="button"
-                            onclick="sendGetRequest('pcModule','lowerBrightness')">Time</button>
+                            onclick="sendGetRequest('ledModule','showTime')">Time</button>
                         <button class="fancyButton" role="button"
-                            onclick="sendGetRequest('pcModule','lowerBrightness')">Rain</button>
+                            onclick="sendGetRequest('ledModule','makeItRain')">Rain</button>
                     </div>
                 </div>
                 <div class="card">
