@@ -43,6 +43,9 @@ baseModule/lib/VoiceRecognitionV3/VoiceRecognitionV3.cpp:363:12: style: Checking
 baseModule/lib/VoiceRecognitionV3/VoiceRecognitionV3.cpp:1205:6: style: Variable 'ret' is assigned a value that is never used. [unreadVariable]
  ret = receive(buf+2, buf[1], timeout);
      ^
+baseModule/src/sd_handling.cpp:121:7: style: Variable 't' is assigned a value that is never used. [unreadVariable]
+    t = millis() - t;
+      ^
 baseModule/src/sensor_handling.cpp:65:11: style: Local variable 'pulsepercent' shadows outer variable [shadowVariable]
     float pulsepercent = pwmtime / 1004.0;
           ^
@@ -253,9 +256,6 @@ baseModule/lib/VoiceRecognitionV3/VoiceRecognitionV3.cpp:780:0: style: The funct
 baseModule/lib/VoiceRecognitionV3/VoiceRecognitionV3.cpp:608:0: style: The function 'checkUserGroup' is never used. [unusedFunction]
 
 ^
-baseModule/lib/VoiceRecognitionV3/VoiceRecognitionV3.cpp:389:0: style: The function 'clear' is never used. [unusedFunction]
-
-^
 baseModule/lib/VoiceRecognitionV3/VoiceRecognitionV3.cpp:1044:0: style: The function 'cmp' is never used. [unusedFunction]
 
 ^
@@ -271,6 +271,9 @@ baseModule/lib/VoiceRecognitionV3/VoiceRecognitionV3.cpp:347:0: style: The funct
 baseModule/lib/VoiceRecognitionV3/VoiceRecognitionV3.cpp:968:0: style: The function 'disableAutoLoad' is never used. [unusedFunction]
 
 ^
+baseModule/src/sd_handling.cpp:131:0: style: The function 'dumpSDInfo' is never used. [unusedFunction]
+
+^
 baseModule/src/time_handling.cpp:25:0: style: The function 'getSimpleTime' is never used. [unusedFunction]
 
 ^
@@ -278,9 +281,6 @@ lightingModule/src/webserver_handling.cpp:71:0: style: The function 'handleUnkow
 
 ^
 baseModule/src/webserver_handling.cpp:112:0: style: The function 'httpGetRequestIgnoreResponse' is never used. [unusedFunction]
-
-^
-lightingModule/src/sd_handling.cpp:5:0: style: The function 'initSDCard' is never used. [unusedFunction]
 
 ^
 baseModule/lib/VoiceRecognitionV3/VoiceRecognitionV3.cpp:250:0: style: The function 'load' is never used. [unusedFunction]
@@ -293,6 +293,9 @@ baseModule/lib/VoiceRecognitionV3/VoiceRecognitionV3.cpp:717:0: style: The funct
 
 ^
 baseModule/src/sensor_handling.cpp:143:0: style: The function 'printCurrentReading' is never used. [unusedFunction]
+
+^
+ledModule/src/weather_handling.cpp:37:0: style: The function 'printForecastData' is never used. [unusedFunction]
 
 ^
 pcModule/src/sensor_handling.cpp:34:0: style: The function 'printReading' is never used. [unusedFunction]
@@ -314,6 +317,18 @@ ledModule/src/led_handling.cpp:155:0: style: The function 'projectWord' is never
 
 ^
 baseModule/src/sensor_handling.cpp:63:0: style: The function 'readCo2' is never used. [unusedFunction]
+
+^
+baseModule/src/sd_handling.cpp:11:0: style: The function 'readDir' is never used. [unusedFunction]
+
+^
+baseModule/src/sd_handling.cpp:82:0: style: The function 'readFromFile' is never used. [unusedFunction]
+
+^
+baseModule/src/sd_handling.cpp:97:0: style: The function 'readJsonFile' is never used. [unusedFunction]
+
+^
+baseModule/src/sd_handling.cpp:30:0: style: The function 'removeDir' is never used. [unusedFunction]
 
 ^
 baseModule/lib/VoiceRecognitionV3/VoiceRecognitionV3.cpp:880:0: style: The function 'resetIO' is never used. [unusedFunction]
@@ -343,7 +358,7 @@ baseModule/src/time_handling.cpp:54:0: style: The function 'setTimerSeconds' is 
 baseModule/lib/VoiceRecognitionV3/VoiceRecognitionV3.cpp:572:0: style: The function 'setUserGroup' is never used. [unusedFunction]
 
 ^
-baseModule/src/main.cpp:10:0: style: The function 'setup' is never used. [unusedFunction]
+baseModule/src/main.cpp:11:0: style: The function 'setup' is never used. [unusedFunction]
 
 ^
 camModule/src/app_httpd.cpp:1386:0: style: The function 'setupLedFlash' is never used. [unusedFunction]
@@ -362,6 +377,9 @@ baseModule/lib/VoiceRecognitionV3/VoiceRecognitionV3.cpp:973:0: style: The funct
 
 ^
 baseModule/lib/VoiceRecognitionV3/VoiceRecognitionV3.cpp:180:0: style: The function 'trainWithSignature' is never used. [unusedFunction]
+
+^
+baseModule/src/sd_handling.cpp:54:0: style: The function 'writeToFile' is never used. [unusedFunction]
 
 ^
 nofile:0:0: information: Cppcheck cannot find all the include files (use --check-config for details) [missingInclude]
