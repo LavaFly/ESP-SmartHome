@@ -3,7 +3,7 @@
 //#include "sd_handling.h"
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
-#include <ElegantOTA.h>
+#include <ArduinoOTA.h>
 
 AsyncWebServer server(80);
 
@@ -88,7 +88,6 @@ void initWebserver(){
         return;
     }
 
-    ElegantOTA.begin(&server);
     server.on("/", baseResponse);
     server.on("/isLive", handleLiveStatus);
     server.on("/lightingOn", lightingOn);
@@ -103,9 +102,10 @@ void initWebserver(){
     server.serveStatic("/", SD, "/");
     */
     server.begin();
+    ArduinoOTA.begin();
 }
 
 void loopOTA(){
-    ElegantOTA.loop();
+    ArduinoOTA.handle();
 }
 

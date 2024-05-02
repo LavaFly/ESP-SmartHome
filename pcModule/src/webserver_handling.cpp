@@ -4,9 +4,7 @@
 #include <WiFiUdp.h>
 #include <WiFiClient.h>
 #include <NTPClient.h>
-#include <ElegantOTA.h>
-
-#include <StackThunk.h>
+#include <ArduinoOTA.h>
 
 
 #define POWERPIN 5
@@ -37,7 +35,6 @@ void initWebserver(){
     if(WiFi.status() != WL_CONNECTED){
         return;
     }
-    ElegantOTA.begin(&server);
     server.on("/", handleHTMLRequest);
     server.on("/isLive", handleLiveStatus);
     server.on("/pcStatus", handleStatusRequest);
@@ -45,10 +42,11 @@ void initWebserver(){
     server.on("/sensorReading", handleSensorReading);
     DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
     server.begin();
+    ArduinoOTA.begin();
 }
 
 void loopOTA(){
-    ElegantOTA.loop();
+    ArduinoOTA.handle();
 }
 
 void buildTimeConnection(){

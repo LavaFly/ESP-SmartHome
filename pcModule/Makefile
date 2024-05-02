@@ -14,6 +14,12 @@ compile:
 upload:
 	pio run -e d1_mini -t upload
 
+bta:
+	pio run -e d1_mini_ota
+
+ota:
+	pio run -e d1_mini_ota -t upload
+
 clean:
 	rm -f toByteArray.jar
 	rm -f include/webpage.h

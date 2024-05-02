@@ -2,7 +2,7 @@
 #include "internet_settings.h"
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
-#include <ElegantOTA.h>
+#include <ArduinoOTA.h>
 
 AsyncWebServer server(80);
 AsyncWebSocket ws("/ws");
@@ -39,18 +39,18 @@ bool initWebserver(){
         return false;
     }
 
-    ElegantOTA.begin(&server);
     ws.onEvent(onEvent);
     server.addHandler(&ws);
     server.on("/", handleHTMLRequest);
     server.on("/isLive", handleLiveStatus);
     DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
     server.begin();
+    ArduinoOTA.begin();
     return true;
 }
 
 void loopOTA(){
-    ElegantOTA.loop();
+    ArduinoOTA.handle();
 }
 
 
