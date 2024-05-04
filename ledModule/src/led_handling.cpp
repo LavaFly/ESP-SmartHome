@@ -12,6 +12,7 @@ CRGB leds[numberOfLeds];
 
 uint8_t activeLeds[numberOfLeds];
 
+// iliffe vector
 uint8_t* ledMap[7];
 
 uint8_t *charList = 0;
@@ -180,56 +181,6 @@ void projectCharacter(uint8_t asciiCode, uint8_t xOffset, uint8_t yOffset){
     FastLED.show();
 }
 
-void projectExampleString(int slideOffset){
-    // this is a temporary workaround to check
-    // the general functionality of printing
-    // strings and letting them slide across the ledWall
-    clearActiveLeds();
-    uint8_t yPosition, xPosition, ledIndex;
-    uint8_t xOffsetFirstWord[5] = {0, 5, 10, 12, 14};
-    uint8_t firstWord[5] = {7, 0, 11, 11, 14};
-    for(uint8_t z = 0; z < 5; z++){
-        for(uint8_t y = 0; y < 6; y++){
-            for(uint8_t x = 0; x < 5; x++){
-                uint8_t removeLater = alphabet_lower[firstWord[z]][y][x];
-                if(z == 0){
-                    removeLater = alphabet[firstWord[z]][y][x];
-                }
-                if(removeLater){
-                    yPosition = y + 1;
-                    xPosition = slideOffset + x + xOffsetFirstWord[z] - ((yPosition > wallHeight / 2) ? (yPosition - wallHeight / 2) : 0);
-                    if((yPosition < wallHeight && xPosition < wallWidth - abs(-(wallHeight / 2) + yPosition) ) && (xPosition * yPosition >= 0)){
-                        ledIndex = ledMap[yPosition][xPosition];
-                        leds[ledIndex] = CRGB::White;
-                    }
-                }
-            }
-        }
-    }
-
-    uint8_t wordOffset = 17 + 4;
-    uint8_t xOffsetSecondWord[5] = {0, 6, 10, 14, 20};
-    uint8_t secondWord[5] = {13, 14, 4, 12, 8};
-    for(uint8_t z = 0; z < 5; z++){
-        for(uint8_t y = 0; y < 6; y++){
-            for(uint8_t x = 0; x < 5; x++){
-                uint8_t removeLater = alphabet_lower[secondWord[z]][y][x];
-                if(z == 0){
-                    removeLater = alphabet[secondWord[z]][y][x];
-                }
-                if(removeLater){
-                    yPosition = y + 1;
-                    xPosition = wordOffset + slideOffset + x + xOffsetSecondWord[z] - ((yPosition > wallHeight / 2) ? (yPosition - wallHeight / 2) : 0);
-                    if((yPosition < wallHeight && xPosition < wallWidth - abs(-(wallHeight / 2) + yPosition) ) && (xPosition * yPosition >= 0)){
-                        ledIndex = ledMap[yPosition][xPosition];
-                        leds[ledIndex] = CRGB::White;
-                    }
-                }
-            }
-        }
-    }
-    FastLED.show();
-}
 
 // function takes in string, iterates over the complete length of the string
 // and converts each char to the corresponding index in the characters-array
@@ -272,7 +223,7 @@ void generateOffsetList(uint8_t* charList, uint8_t numberOfCharacters, int8_t in
         // loop through each row
         for(uint8_t y = 0; y < 6; y++){
             //  store max index of 1 in all rows
-            for(uint8_t x = 0; x < 5; x++){
+            for(uint8_t x = 0; x < 9; x++){
                 if(characters[charList[i - 1]][y][x] && maxPositionOfOne < x){
                     maxPositionOfOne = x;
                 }
@@ -293,15 +244,12 @@ int8_t getLengthOfString(uint8_t* charList, int8_t* offsetList, uint8_t numberOf
     // loop through each row
     for(uint8_t y = 0; y < 6; y++){
         //  store max index of 1 in all rows
-        for(uint8_t x = 0; x < 5; x++){
+        for(uint8_t x = 0; x < 9; x++){
             if(characters[charList[numberOfCharacters - 1]][y][x] && maxPositionOfOne < x){
                 maxPositionOfOne = x;
             }
         }
     }
-    Serial.print(maxPositionOfOne);
-    Serial.print(" : ");
-    Serial.println(offsetList[numberOfCharacters - 1]);
     return maxPositionOfOne + offsetList[numberOfCharacters - 1];
 }
 
@@ -314,9 +262,6 @@ void startSlideAnimation(const char* inputString, uint8_t numberOfCharacters){
     generateOffsetList(charList, lengthOfProjectedString, 25, offsetList);
     widthOfProjectedString = getLengthOfString(charList, offsetList, lengthOfProjectedString);
     animationDuration = widthOfProjectedString + offsetList[0];
-    Serial.print(widthOfProjectedString);
-    Serial.print(" + ");
-    Serial.println(offsetList[0]);
 
     // project once, afterwards use advanceSlideAnimation()
     projectString(charList, lengthOfProjectedString, offsetList);
@@ -367,7 +312,7 @@ void projectString(uint8_t* charList, uint8_t numberOfCharacters, int8_t* offset
     uint8_t yPosition, xPosition, ledIndex;
     for(uint8_t z = 0; z < numberOfCharacters; z++){
         for(uint8_t y = 0; y < 6; y++){
-            for(uint8_t x = 0; x < 5; x++){
+            for(uint8_t x = 0; x < 9; x++){
                 uint8_t currentPosition = characters[charList[z]][y][x];
                 if(currentPosition){
                     yPosition = y + 1;
