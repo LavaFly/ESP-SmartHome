@@ -1,8 +1,8 @@
-#include "webserver_handling.h"
-#include "internet_settings.h"
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 #include <ArduinoOTA.h>
+#include "webserver_handling.h"
+#include "internet_settings.h"
 
 AsyncWebServer server(80);
 AsyncWebSocket ws("/ws");
@@ -15,6 +15,7 @@ IPAddress gateway(192,168,4,9);
 IPAddress subnet(255,255,255,0);
 
 extern void setupTextAnimation(String message);
+extern void showTime();
 
 bool buildRouterConnection(){
     Serial.println("Connecting to WiFi");
@@ -43,6 +44,7 @@ bool initWebserver(){
     server.addHandler(&ws);
     server.on("/", handleHTMLRequest);
     server.on("/isLive", handleLiveStatus);
+    server.on("/showTime", handleTimeRequest);
     DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
     server.begin();
     ArduinoOTA.begin();
@@ -75,6 +77,10 @@ void handleLiveStatus(AsyncWebServerRequest *request){
     request->send(200);
 }
 
+void handleTimeRequest(AsyncWebServerRequest *request){
+    showTime();
+    request->send(200);
+}
 void handleJSONRequest(AsyncWebServerRequest *request){
 
 }

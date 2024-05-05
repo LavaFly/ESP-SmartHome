@@ -12,11 +12,12 @@ uint8_t irInput;
 // remove this later with proper implementation in time_handling
 
 unsigned long currentTime = 0;
-unsigned long lastTime = 0;
+unsigned long clearTimer = 0;
 
 
 bool loopActive = false;
 bool animationActive = false;
+bool toBeCleared = false;
 
 
 void setup() {
@@ -59,6 +60,13 @@ void loop() {
         }
         currentTime = millis();
     }
+    if(toBeCleared && millis() > clearTimer + 5000){
+        clearActiveLeds();
+        clearActiveLeds();
+        toBeCleared = false;
+        Serial.println("clearing Screen");
+    }
+
     if(Serial.available() > 0){
         clearActiveLeds();
         serialInput = Serial.readStringUntil('\n');
@@ -154,6 +162,24 @@ void loop() {
             break;
     }
     **/
+}
+
+void showTime(){
+    struct simpleTime * currentTime;
+    currentTime = (struct simpleTime*)malloc(sizeof(struct simpleTime));
+    Serial.println("projecting time");
+
+    getSimpleTime(currentTime);
+    Serial.print(currentTime->hour);
+    Serial.print(":");
+    Serial.println(currentTime->minute);
+
+    projectTime(currentTime->hour, currentTime->minute);
+
+    clearTimer = millis();
+    toBeCleared = true;
+
+    free(currentTime);
 }
 
 void setupTextAnimation(String message){

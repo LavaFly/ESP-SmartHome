@@ -93,12 +93,12 @@ void buildLedConnection(){
 
 void projectDigit(uint8_t digit, uint8_t xOffset, uint8_t yOffset){
     uint8_t yPosition, xPosition, ledIndex;
-    for(uint8_t y = 0; y < 5; y++){
+    for(uint8_t y = 1; y < 6; y++){
         for(uint8_t x = 0; x < 3; x++){
             if(characters[digit][y][x]){
                 yPosition = y + yOffset;
                 xPosition = x + xOffset - ((yPosition > wallHeight / 2) ? (yPosition - wallHeight / 2) : 0);
-                if(yPosition < wallHeight || xPosition < wallWidth - abs(-(wallHeight / 2) + yPosition)){
+                if((yPosition < wallHeight && xPosition < wallWidth - abs(-(wallHeight / 2) + yPosition) ) && (xPosition * yPosition >= 0)){
                     ledIndex = ledMap[yPosition][xPosition];
                     leds[ledIndex] = CRGB::White;
                 }
@@ -159,15 +159,15 @@ void projectWord(uint8_t numberOfCharacters, char* string){
 
 void projectTime(uint8_t hour, uint8_t minute){
     // This is ugly, but i just want something working
-    projectNumber(hour, 1, 1, 2);
-    projectNumber(minute, 11, 1, 2);
-    projectCharacter(0, 10, 1);
+    projectNumber(hour, 1, 0, 2);
+    projectNumber(minute, 11, 0, 2);
+    projectCharacter(63, 10, 0);
 }
 
 void projectCharacter(uint8_t asciiCode, uint8_t xOffset, uint8_t yOffset){
     uint8_t yPosition, xPosition, ledIndex;
     for(uint8_t y = 0; y < 5; y++){
-        for(uint8_t x = 0; x < 3; x++){
+        for(uint8_t x = 0; x < 9; x++){
             if(characters[asciiCode][y][x]){
                 yPosition = y + yOffset;
                 xPosition = x + xOffset - ((yPosition > wallHeight / 2) ? (yPosition - wallHeight / 2) : 0);

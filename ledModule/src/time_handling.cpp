@@ -26,8 +26,12 @@ void getSimpleTime(struct simpleTime *currentTime){
     currentTime->minute = timeClient.getMinutes();
 }
 
-void updateTimeClient(){
+bool updateTimeClient(){
     timeClient.update();
+    if(timeClient.isTimeSet()){
+        return true;
+    }
+    return false;
 }
 
 bool setTimerMilliseconds(uint8_t milliseconds){
