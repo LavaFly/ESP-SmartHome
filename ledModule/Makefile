@@ -14,7 +14,7 @@ ota:
 
 characters:
 	kotlinc toNumArray.kt -include-runtime -d toNumArray.jar
-	java -jar toNumArray.jar alphabet_lower
+	java -jar toNumArray.jar alphabet
 
 clean:
 	rm -f toNumArray.jar

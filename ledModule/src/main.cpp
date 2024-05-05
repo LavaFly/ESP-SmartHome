@@ -29,17 +29,14 @@ void setup() {
     buildIrConnection();
     **/
     buildRouterConnection();
-    setupMDNS();
     buildTimeConnection();
     initWebserver();
+    setupMDNS();
 
     // setup for the ledWall
     buildLedConnection();
     initialiseLedMap();
     clearActiveLeds();
-    /**
-    **/
-
 
     currentTime = millis();
     Serial.println("finishing the setup");
@@ -47,7 +44,7 @@ void setup() {
 
 void loop() {
     MDNS.update();
-    //loopOTA();
+    loopOTA();
 
     cleanUpSockets();
     if(animationActive && millis() > currentTime + 150){
