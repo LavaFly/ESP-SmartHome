@@ -51,6 +51,6 @@ void projectTest();
 void buildLedConnection();
 void clearActiveLeds();
 void backgroundEvent();
-void adjustBrightness(uint16_t brighness);
+void adjustBrightness();
 
 #endif

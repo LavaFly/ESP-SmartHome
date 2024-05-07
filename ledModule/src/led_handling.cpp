@@ -3,6 +3,13 @@
 #include "alphabet.h"
 #include "alphabet_lower.h"
 
+
+#define MAX_BRIGHTNESS 240
+#define MIN_BRIGHTNESS 1
+
+
+const int brightnessInPin = A0;
+
 // dimension of the led-wall
 const uint8_t wallHeight = 7;
 const uint8_t wallWidth = 23;
@@ -89,6 +96,7 @@ void initialiseLedMapBorders(){
 void buildLedConnection(){
     pinMode(LEDPIN, OUTPUT);
     FastLED.addLeds<WS2812, LEDPIN, GRB>(leds, numberOfLeds);
+    FastLED.setBrightness(MAX_BRIGHTNESS);
 }
 
 void projectDigit(uint8_t digit, uint8_t xOffset, uint8_t yOffset){
@@ -158,6 +166,7 @@ void projectWord(uint8_t numberOfCharacters, char* string){
 }
 
 void projectTime(uint8_t hour, uint8_t minute){
+    adjustBrightness();
     // This is ugly, but i just want something working
     projectNumber(hour, 1, 0, 2);
     projectNumber(minute, 11, 0, 2);
@@ -165,6 +174,7 @@ void projectTime(uint8_t hour, uint8_t minute){
 }
 
 void projectCharacter(uint8_t asciiCode, uint8_t xOffset, uint8_t yOffset){
+    adjustBrightness();
     uint8_t yPosition, xPosition, ledIndex;
     for(uint8_t y = 0; y < 5; y++){
         for(uint8_t x = 0; x < 9; x++){
@@ -309,6 +319,7 @@ void shiftOffsetToRight(int8_t* offsetList, uint8_t numberOfElements){
 
 void projectString(uint8_t* charList, uint8_t numberOfCharacters, int8_t* offsetList){
     clearActiveLeds();
+    adjustBrightness();
     uint8_t yPosition, xPosition, ledIndex;
     for(uint8_t z = 0; z < numberOfCharacters; z++){
         for(uint8_t y = 0; y < 6; y++){
@@ -379,6 +390,9 @@ void backgroundEvent(){
     Serial.println("background done");
 }
 
-void adjustBrightness(uint16_t brightness){
-
+void adjustBrightness(){
+    int mappedValue = map(analogRead(brightnessInPin), 0, 1023, 0, 255);
+    FastLED.setBrightness(constrain(mappedValue, MIN_BRIGHTNESS, MAX_BRIGHTNESS));
+    Serial.print("measured: ");
+    Serial.println(mappedValue);
 }
