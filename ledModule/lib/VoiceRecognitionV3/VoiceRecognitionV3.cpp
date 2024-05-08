@@ -10,7 +10,7 @@
          This driver is for elechouse Voice Recognition V2 Module(LINKS here)
   ******************************************************************************
   * @section  HISTORY
-  
+
     V1.0    Initial version.
 
   ******************************************************************************
@@ -50,7 +50,7 @@ VR::VR(uint8_t receivePin, uint8_t transmitPin) : SoftwareSerial(receivePin, tra
 	@brief VR class constructor.
 	@param buf --> return data .
 			 buf[0]  -->  Group mode(FF: None Group, 0x8n: User, 0x0n:System
-             buf[1]  -->  number of record which is recognized. 
+             buf[1]  -->  number of record which is recognized.
              buf[2]  -->  Recognizer index(position) value of the recognized record.
              buf[3]  -->  Signature length
              buf[4]~buf[n] --> Signature
@@ -67,10 +67,10 @@ int VR :: recognize(uint8_t *buf, int timeout)
 	if(ret > 0){
 		for(i = 0; i < (vr_buf[1] - 3); i++){
 			buf[i] = vr_buf[4+i];
-		} 
+		}
 		return i;
 	}
-	
+
 	return 0;
 }
 
@@ -82,11 +82,11 @@ int VR :: recognize(uint8_t *buf, int timeout)
 		   buf[0]  -->  number of records which are trained successfully.
              buf[2i+1]  -->  record number
              buf[2i+2]  -->  record train status.
-                00 --> Trained 
+                00 --> Trained
                 FE --> Train Time Out
                 FF --> Value out of range"
              (i = 0 ~ len-1 )
-	@retval '>0' --> length of valid data in buf. 
+	@retval '>0' --> length of valid data in buf.
             0 --> success, and no data received.
             '<0' --> failed.
                 -1 --> data format error.
@@ -99,10 +99,11 @@ int VR :: train(uint8_t *records, uint8_t len, uint8_t *buf)
 	if(len == 0){
 		return -1;
 	}
-	
+
 	send_pkt(FRAME_CMD_TRAIN, records, len);
 	start_millis = millis();
 	while(1){
+        yield();
 		ret = receive_pkt(vr_buf);
 		if(ret>0){
 			switch(vr_buf[2]){
@@ -142,11 +143,11 @@ int VR :: train(uint8_t *records, uint8_t len, uint8_t *buf)
 		   buf[0]  -->  number of records which are trained successfully.
              buf[2i+1]  -->  record number
              buf[2i+2]  -->  record train status.
-                00 --> Trained 
+                00 --> Trained
                 FE --> Train Time Out
                 FF --> Value out of range"
              (i = 0 ~ len-1 )
-	@retval '>0' --> length of valid data in buf. 
+	@retval '>0' --> length of valid data in buf.
             0 --> success, and no data received.
             '<0' --> failed.
                 -1 --> data format error.
@@ -166,12 +167,12 @@ int VR :: train(uint8_t record, uint8_t *buf)
 			 retbuf[0]  -->  number of records which are trained successfully.
              retbuf[1]  -->  record number.
              retbuf[2]  -->  record train status.
-                00 --> Trained 
+                00 --> Trained
                 F0 --> Trained, signature truncate
                 FE --> Train Time Out
                 FF --> Value out of range"
              retbuf[3] ~ retbuf[retval-1] --> Signature.(retval means return value)
-	@retval '>0' --> length of valid data in buf. 
+	@retval '>0' --> length of valid data in buf.
             0 --> success, and no data received.
             '<0' --> failed.
                 -1 --> data format error.
@@ -193,9 +194,10 @@ int VR :: trainWithSignature(uint8_t record, const void *buf, uint8_t len, uint8
 		}
 		send_pkt(FRAME_CMD_SIG_TRAIN, record, (uint8_t *)buf, len);
 	}
-	
+
 	start_millis = millis();
 	while(1){
+        yield();
 		ret = receive_pkt(vr_buf);
 		if(ret>0){
 			switch(vr_buf[2]){
@@ -210,7 +212,7 @@ int VR :: trainWithSignature(uint8_t record, const void *buf, uint8_t len, uint8
 						memcpy(retbuf, vr_buf+3, vr_buf[1]-2);
 						return vr_buf[1]-2;
 					}
-				
+
 					DBGSTR("Train finish.\r\nSuccess: \t");
 					DBGFMT(vr_buf[3], DEC);
 					DBGSTR(" \r\n");
@@ -237,13 +239,13 @@ int VR :: trainWithSignature(uint8_t record, const void *buf, uint8_t len, uint8
              buf[0]    -->  number of records which are load successfully.
              buf[2i+1]  -->  record number
              buf[2i+2]  -->  record load status.
-                00 --> Loaded 
+                00 --> Loaded
                 FC --> Record already in recognizer
                 FD --> Recognizer full
                 FE --> Record untrained
                 FF --> Value out of range"
              (i = 0 ~ '(retval-1)/2' )
-	@retval '>0' --> length of valid data in buf. 
+	@retval '>0' --> length of valid data in buf.
             0 --> success, buf=0, and no data returned.
             '<0' --> failed.
 */
@@ -272,13 +274,13 @@ int VR :: load(uint8_t *records, uint8_t len, uint8_t *buf)
              buf[0]    -->  number of records which are load successfully.
              buf[2i+1]  -->  record number
              buf[2i+2]  -->  record load status.
-                00 --> Loaded 
+                00 --> Loaded
                 FC --> Record already in recognizer
                 FD --> Recognizer full
                 FE --> Record untrained
                 FF --> Value out of range"
              (i = 0 ~ '(retval-1)/2' )
-	@retval '>0' --> length of valid data in buf. 
+	@retval '>0' --> length of valid data in buf.
             0 --> success, buf=0, and no data returned.
             '<0' --> failed.
 */
@@ -311,7 +313,7 @@ int VR :: load(uint8_t record, uint8_t *buf)
 int VR :: setSignature(uint8_t record, const void *buf, uint8_t len)
 {
 	int ret;
-	
+
 	if(len == 0 && buf == 0){
 		/** delete signature */
 	}else if(len == 0 && buf != 0){
@@ -323,7 +325,7 @@ int VR :: setSignature(uint8_t record, const void *buf, uint8_t len)
 			return -1;
 		}
 	}else if(len != 0 && buf != 0){
-		
+
 	}else{
 		return -1;
 	}
@@ -353,7 +355,7 @@ int VR :: deleteSignature(uint8_t record)
     @brief check the signature(alias) of a record.
     @param record --> record value.
            buf --> signature, return value buffer.
-    @retval '>0' --> length of valid data in buf. 
+    @retval '>0' --> length of valid data in buf.
             0 --> success, buf=0, and no data returned.
             '<0' --> failed.
 */
@@ -365,7 +367,7 @@ int VR :: checkSignature(uint8_t record, uint8_t *buf)
 	}
 	send_pkt(FRAME_CMD_CHECK_SIG, record, 0, 0);
 	ret = receive_pkt(vr_buf);
-	
+
 	if(ret<=0){
 		return -1;
 	}
@@ -387,7 +389,7 @@ int VR :: checkSignature(uint8_t record, uint8_t *buf)
             -1 --> failed
 */
 int VR :: clear()
-{	
+{
 	int len;
 	send_pkt(FRAME_CMD_CLEAR, 0, 0);
 	len = receive_pkt(vr_buf);
@@ -406,12 +408,12 @@ int VR :: clear()
     @brief clear recognizer.
     @param buf --> return value buffer.
              buf[0]     -->  Number of valid voice records in recognizer
-             buf[i+1]   -->  Record number.(0xFF: Not loaded(Nongroup mode), or not set (Group mode)) 
+             buf[i+1]   -->  Record number.(0xFF: Not loaded(Nongroup mode), or not set (Group mode))
                 (i= 0, 1, ... 6)
              buf[8]     -->  Number of all voice records in recognizer
              buf[9]     -->  Valid records position indicate.
              buf[10]    -->  Group mode indicate(FF: None Group, 0x8n: User, 0x0n:System
-    @retval '>0' --> success, length of data in buf 
+    @retval '>0' --> success, length of data in buf
             -1 --> failed
 */
 int VR :: checkRecognizer(uint8_t *buf)
@@ -426,13 +428,13 @@ int VR :: checkRecognizer(uint8_t *buf)
 	if(vr_buf[2] != FRAME_CMD_CHECK_BSR){
 		return -1;
 	}
-	
+
 	if(vr_buf[1] != 0x0D){
 		return -1;
 	}
-	
+
 	memcpy(buf, vr_buf+3, vr_buf[1]-2);
-	
+
 	return vr_buf[1]-2;
 }
 
@@ -470,7 +472,7 @@ int VR :: checkRecord(uint8_t *buf, uint8_t *records, uint8_t len)
 				}
 				start_millis = millis();
 			}
-			
+
 			if(millis()-start_millis > 500){
 				if(cnt>0){
 					buf[0] = cnt*5;
@@ -478,9 +480,9 @@ int VR :: checkRecord(uint8_t *buf, uint8_t *records, uint8_t len)
 				}
 				return -2;
 			}
-			
+
 		}
-		
+
 	}else if(len>0){
 		ret = cleanDup(vr_buf, records, len);
 		send_pkt(FRAME_CMD_CHECK_TRAIN, vr_buf, ret);
@@ -499,7 +501,7 @@ int VR :: checkRecord(uint8_t *buf, uint8_t *records, uint8_t len)
 	}else{
 		return -1;
 	}
-	
+
 }
 
 /****************************************************************************/
@@ -519,7 +521,7 @@ int VR :: setGroupControl(uint8_t ctrl)
 	if(ctrl>2){
 		return -1;
 	}
-	
+
 	send_pkt(FRAME_CMD_GROUP, FRAME_CMD_GROUP_SET, &ctrl, 1);
 	ret = receive_pkt(vr_buf);
 	if(ret<=0){
@@ -610,7 +612,7 @@ int VR :: checkUserGroup(uint8_t grp, uint8_t *buf)
 	int ret;
 	int cnt = 0;
 	unsigned long start_millis;
-	
+
 	if(grp == GROUP_ALL){
 		send_pkt(FRAME_CMD_GROUP, FRAME_CMD_GROUP_CUGRP, 0, 0);
 		start_millis = millis();
@@ -628,14 +630,14 @@ int VR :: checkUserGroup(uint8_t grp, uint8_t *buf)
 				}
 				start_millis = millis();
 			}
-			
+
 			if(millis()-start_millis > 500){
 				if(cnt>0){
 					return cnt;
 				}
 				return -2;
 			}
-			
+
 		}
 	}else if(grp <= GROUP7){
 		send_pkt(FRAME_CMD_GROUP, FRAME_CMD_GROUP_CUGRP, &grp, 1);
@@ -660,7 +662,7 @@ int VR :: checkUserGroup(uint8_t grp, uint8_t *buf)
     @param grp --> syestem group number.
            buf  -->  return value.
              buf[0]     -->  Number of valid voice records in recognizer.
-             buf[i+1]   -->  Record number.(0xFF: Not loaded(Nongroup mode), or not set (Group mode)) 
+             buf[i+1]   -->  Record number.(0xFF: Not loaded(Nongroup mode), or not set (Group mode))
                 (i= 0, 1, ... 6)
              buf[8]     -->  Number of all voice records in recognizer
              buf[9]     -->  Valid records position indicate.
@@ -677,15 +679,15 @@ int VR :: loadSystemGroup(uint8_t grp, uint8_t *buf)
 	}
 	send_pkt(FRAME_CMD_GROUP, FRAME_CMD_GROUP_LSGRP, &grp, 1);
 	ret = receive_pkt(vr_buf);
-	
+
 	if(ret <= 0){
 		return -1;
 	}
-	
+
 	if(vr_buf[2] != FRAME_CMD_GROUP){
 		return -1;
 	}
-	
+
 	if(buf != 0){
 		vr_buf[3] = 0;
 		for(int i=0; i<8; i++){
@@ -696,7 +698,7 @@ int VR :: loadSystemGroup(uint8_t grp, uint8_t *buf)
 		memcpy(buf, vr_buf+3, vr_buf[1]-2);
 		return vr_buf[1]-2;
 	}
-	
+
 	return 0;
 }
 
@@ -705,7 +707,7 @@ int VR :: loadSystemGroup(uint8_t grp, uint8_t *buf)
     @param grp --> user group number.
            buf  -->  return value.
              buf[0]     -->  Number of valid voice records in recognizer.
-             buf[i+1]   -->  Record number.(0xFF: Not loaded(Nongroup mode), or not set (Group mode)) 
+             buf[i+1]   -->  Record number.(0xFF: Not loaded(Nongroup mode), or not set (Group mode))
                 (i= 0, 1, ... 6)
              buf[8]     -->  Number of all voice records in recognizer
              buf[9]     -->  Valid records position indicate.
@@ -722,15 +724,15 @@ int VR :: loadUserGroup(uint8_t grp, uint8_t *buf)
 	}
 	send_pkt(FRAME_CMD_GROUP, FRAME_CMD_GROUP_LUGRP, &grp, 1);
 	ret = receive_pkt(vr_buf);
-	
+
 	if(ret <= 0){
 		return -1;
 	}
-	
+
 	if(vr_buf[2] != FRAME_CMD_GROUP){
 		return -1;
 	}
-	
+
 	if(buf != 0){
 		vr_buf[3] = 0;
 		for(int i=0; i<8; i++){
@@ -741,7 +743,7 @@ int VR :: loadUserGroup(uint8_t grp, uint8_t *buf)
 		memcpy(buf, vr_buf+3, 11);
 		return 1;
 	}
-	
+
 	return 0;
 }
 
@@ -788,7 +790,7 @@ int VR :: checkSystemSettings(uint8_t* buf)
 	if(len<=0){
 		return -1;
 	}
-	
+
 	if(vr_buf[2] != FRAME_CMD_CHECK_SYSTEM){
 		return -1;
 	}
@@ -830,7 +832,7 @@ int VR :: setBaudRate(unsigned long br)
 			return -1;
 			break;
 	}
-	
+
 	send_pkt(FRAME_CMD_SET_BR, baud_rate, 0, 0);
 	ret = receive_pkt(vr_buf);
 	if(ret<=0){
@@ -842,7 +844,7 @@ int VR :: setBaudRate(unsigned long br)
 	}
 	//DBGLN("VR Module Cleared");
 	return 0;
-	
+
 }
 
 /**
@@ -857,7 +859,7 @@ int VR :: setIOMode(io_mode_t mode)
 		return -1;
 	}
 	int ret;
-	
+
 	send_pkt(FRAME_CMD_SET_IOM, mode, 0, 0);
 	ret = receive_pkt(vr_buf);
 	if(ret<=0){
@@ -908,11 +910,11 @@ int VR :: resetIO(uint8_t *ios, uint8_t len)
 int VR :: setPulseWidth(uint8_t level)
 {
 	int ret;
-	
+
 	if(level > VR::LEVEL15){
 		return -1;
 	}
-	
+
 	send_pkt(FRAME_CMD_SET_PW, level, 0, 0);
 	ret = receive_pkt(vr_buf);
 	if(ret<=0){
@@ -946,7 +948,7 @@ int VR :: setAutoLoad(uint8_t *records, uint8_t len)
 	}else{
 		return -1;
 	}
-	
+
 	send_pkt(FRAME_CMD_SET_AL, map, records, len);
 	ret = receive_pkt(vr_buf);
 	if(ret<=0){
@@ -1071,7 +1073,7 @@ void VR :: sort(uint8_t *buf, int len)
 		for(j=i+1; j<len; j++){
 			if(buf[j] < buf[i]){
 				tmp = buf[i];
-				buf[i] = buf[j]; 
+				buf[i] = buf[j];
 				buf[j] = tmp;
 			}
 		}
@@ -1080,11 +1082,11 @@ void VR :: sort(uint8_t *buf, int len)
 
 /** remove duplicates */
 int VR :: cleanDup(uint8_t *des, uint8_t *buf, int len)
-{	
+{
 	if(len<1){
 		return -1;
 	}
-	
+
 	int i, j, k=0;
 	for(i=0; i<len; i++){
 		for(j=0; j<k; j++){
@@ -1130,7 +1132,7 @@ int VR :: writehex(uint8_t *buf, uint8_t len)
 
 /**
     @brief send data packet in Voice Recognition module protocol format.
-    @param cmd --> command 
+    @param cmd --> command
            subcmd --> subcommand
            buf --> data area
            len --> length of buf
@@ -1150,7 +1152,7 @@ void VR :: send_pkt(uint8_t cmd, uint8_t subcmd, uint8_t *buf, uint8_t len)
 
 /**
     @brief send data packet in Voice Recognition module protocol format.
-    @param cmd --> command 
+    @param cmd --> command
            buf --> data area
            len --> length of buf
 */
@@ -1206,9 +1208,9 @@ int VR :: receive_pkt(uint8_t *buf, uint16_t timeout)
 	if(buf[buf[1]+1] != FRAME_END){
 		return -4;
 	}
-	
+
 //	DBGBUF(buf, buf[1]+2);
-	
+
 	return buf[1]+2;
 }
 
@@ -1224,7 +1226,7 @@ int VR::receive(uint8_t *buf, int len, uint16_t timeout)
   int read_bytes = 0;
   int ret;
   unsigned long start_millis;
-  
+
   while (read_bytes < len) {
     start_millis = millis();
     do {
@@ -1233,13 +1235,13 @@ int VR::receive(uint8_t *buf, int len, uint16_t timeout)
         break;
      }
     } while( (millis()- start_millis ) < timeout);
-    
+
     if (ret < 0) {
       return read_bytes;
     }
     buf[read_bytes] = (char)ret;
     read_bytes++;
   }
-  
+
   return read_bytes;
 }
