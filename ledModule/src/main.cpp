@@ -106,7 +106,11 @@ void loop() {
             animationActive = true;
 
             Serial.println("done");
+        } else if(serialInput.equals("m")){
+            mothersDayMessage();
+            animationActive = true;
         } else {
+
             Serial.print("Printing: ");
             Serial.println(serialInput);
 

@@ -173,6 +173,28 @@ void projectTime(uint8_t hour, uint8_t minute){
     projectCharacter(63, 10, 0);
 }
 
+void mothersDayMessage(){
+    // print "*heart* Alles Gute zum Muttertag *heart*"
+    // 66 = heart symbol
+    const char* inputString = "* Alles Gute zum Muttertag *";
+    lengthOfProjectedString = strlen(inputString);
+    charList = (uint8_t*)malloc(sizeof(uint8_t) * lengthOfProjectedString);
+    offsetList = (int8_t*)malloc(sizeof(uint8_t) * lengthOfProjectedString);
+
+    generateCharList(inputString, lengthOfProjectedString, charList);
+    // modify charList to include heart symbol
+    charList[0] = 66;
+    charList[lengthOfProjectedString - 1] = 66;
+
+    //generateOffsetList((char*)charList, lengthOfProjectedString, 25, offsetList);
+    generateOffsetList(charList, lengthOfProjectedString, 25, offsetList);
+    widthOfProjectedString = getLengthOfString(charList, offsetList, lengthOfProjectedString);
+    animationDuration = widthOfProjectedString + offsetList[0];
+
+    // project once, afterwards use advanceSlideAnimation()
+    projectString(charList, lengthOfProjectedString, offsetList);
+}
+
 void projectCharacter(uint8_t asciiCode, uint8_t xOffset, uint8_t yOffset){
     adjustBrightness();
     uint8_t yPosition, xPosition, ledIndex;
@@ -330,7 +352,11 @@ void projectString(uint8_t* charList, uint8_t numberOfCharacters, int8_t* offset
                     xPosition = x + offsetList[z] - ((yPosition > wallHeight / 2) ? (yPosition - wallHeight / 2) : 0);
                     if((yPosition < wallHeight && xPosition < wallWidth - abs(-(wallHeight / 2) + yPosition) ) && (xPosition * yPosition >= 0)){
                         ledIndex = ledMap[yPosition][xPosition];
+                        // TODO check for color spec
                         leds[ledIndex] = CRGB::White;
+                        if(currentPosition == 2){
+                            leds[ledIndex] = CRGB::HotPink;
+                        }
                     }
                 }
             }
@@ -396,3 +422,4 @@ void adjustBrightness(){
     Serial.print("measured: ");
     Serial.println(mappedValue);
 }
+
