@@ -22,6 +22,7 @@ bool animationActive = false;
 bool toBeCleared = false;
 
 
+
 // 1 = PC, 2 = Light
 uint8_t vrTreeBranch = 0;
 void setupEventResponse();
@@ -87,6 +88,10 @@ void loop() {
         clearActiveLeds();
         toBeCleared = false;
         Serial.println("clearing Screen");
+    }
+    if(vrClearTimer != 0 && millis() > vrClearTimer + 3000){
+        loadDefaultVR();
+        vrClearTimer = 0;
     }
 
     if(Serial.available() > 0){
@@ -236,13 +241,14 @@ void setupEventResponse(){
 void vr_pc(){
     vrTreeBranch = 1;
     loadOnOff();
+    vrClearTimer = millis();
 }
 void vr_light(){
     vrTreeBranch = 2;
     loadOnOffBrighterDarker();
+    vrClearTimer = millis();
 }
 void vr_time(){
-    Serial.println("");
     showTime();
 }
 void vr_weather(){
