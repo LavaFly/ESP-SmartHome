@@ -29,6 +29,12 @@ uint8_t lengthOfProjectedString = 0;
 uint8_t animationDuration = 0;
 //extern uint8_t numbers[10][5][3];
 
+CHSV color(0, 255, 180);
+CHSV returnColor(0, 255, 180);
+uint8_t colorCounter = 0;
+CHSV getRainbowColor();
+void incColor();
+
 // width = ((num - (height + 1)/2)^2) / height + (height + 1/2)
 
 
@@ -343,6 +349,7 @@ void projectString(uint8_t* charList, uint8_t numberOfCharacters, int8_t* offset
     clearActiveLeds();
     adjustBrightness();
     uint8_t yPosition, xPosition, ledIndex;
+    backgroundEvent();
     for(uint8_t z = 0; z < numberOfCharacters; z++){
         for(uint8_t y = 0; y < 6; y++){
             for(uint8_t x = 0; x < 9; x++){
@@ -354,6 +361,8 @@ void projectString(uint8_t* charList, uint8_t numberOfCharacters, int8_t* offset
                         ledIndex = ledMap[yPosition][xPosition];
                         // TODO check for color spec
                         leds[ledIndex] = CRGB::White;
+                        //leds[ledIndex] = getRainbowColor();
+
                         if(currentPosition == 2){
                             leds[ledIndex] = CRGB::HotPink;
                         }
@@ -362,6 +371,7 @@ void projectString(uint8_t* charList, uint8_t numberOfCharacters, int8_t* offset
             }
         }
     }
+    incColor();
     FastLED.show();
 }
 
@@ -394,16 +404,24 @@ void clearActiveLeds(){
     FastLED.show();
 }
 
+CHSV getRainbowColor(){
+    returnColor.hue = ( color.hue + 3 * colorCounter ) % 256;
+    colorCounter++;
+    return returnColor;
+}
+
+void incColor(){
+    color.hue = ( color.hue + 10 ) % 256;
+    colorCounter = 0;
+}
+
 void backgroundEvent(){
     CHSV color(0, 255, 180);
-    uint8_t counter = 0;
-    uint8_t counter2 = 0;
-    while(counter < 200) {
-        if(counter2 < 10) {
-            counter2++;
+        if(colorCounter < 10) {
+            colorCounter++;
         } else {
             color.hue = (color.hue + 3) % 256;
-            counter2 = 0;
+            colorCounter = 0;
         }
         for(int i = 0; i < numberOfLeds; i++){
             color.hue = (color.hue + 1) % 256;
@@ -411,14 +429,11 @@ void backgroundEvent(){
         }
         color.hue = (color.hue + 128) % 256;
         FastLED.show();
-        delay(80);
-    }
-    Serial.println("background done");
 }
 
 void adjustBrightness(){
-    int mappedValue = map(analogRead(brightnessInPin), 0, 1023, 0, 255);
-    FastLED.setBrightness(constrain(mappedValue, MIN_BRIGHTNESS, MAX_BRIGHTNESS));
+    int mappedValue = map(analogRead(brightnessInPin), 0, 1023, 10, 255);
+    FastLED.setBrightness(constrain(mappedValue + 20, MIN_BRIGHTNESS, MAX_BRIGHTNESS));
     Serial.print("measured: ");
     Serial.println(mappedValue);
 }
