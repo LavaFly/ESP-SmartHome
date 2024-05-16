@@ -240,6 +240,8 @@ void generateCharList(const char* initialString, uint8_t numberOfCharacters, uin
         // if currentChar is a uppercase letter
         } else if(currentChar >= 'A' && currentChar <= 'Z'){
             charList[i] = currentChar - 'A' + uppercaseOffset;
+        } else if(currentChar == '*'){ // this is a workaround, because ° doesnt fit inside a char
+            charList[i] = 65;
 
         // space if other symbol
         } else {
@@ -349,7 +351,7 @@ void projectString(uint8_t* charList, uint8_t numberOfCharacters, int8_t* offset
     clearActiveLeds();
     adjustBrightness();
     uint8_t yPosition, xPosition, ledIndex;
-    backgroundEvent();
+    //backgroundEvent();
     for(uint8_t z = 0; z < numberOfCharacters; z++){
         for(uint8_t y = 0; y < 6; y++){
             for(uint8_t x = 0; x < 9; x++){
@@ -371,7 +373,7 @@ void projectString(uint8_t* charList, uint8_t numberOfCharacters, int8_t* offset
             }
         }
     }
-    incColor();
+    //incColor();
     FastLED.show();
 }
 

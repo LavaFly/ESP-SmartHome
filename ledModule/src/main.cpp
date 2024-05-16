@@ -45,32 +45,34 @@ void setup() {
     Serial.begin(9600);
     Serial.println("starting the setup");
 
-    /**
     buildIrConnection();
-    **/
-    initVR();
+    //initVR();
     buildRouterConnection();
     buildTimeConnection();
     initWebserver();
     setupMDNS();
+    /**
+    **/
 
     // setup for the ledWall
     buildLedConnection();
     initialiseLedMap();
     clearActiveLeds();
 
-    setupEventResponse();
+    //setupEventResponse();
 
     currentTime = millis();
     Serial.println("finishing the setup");
 }
 
 void loop() {
+    /**
     MDNS.update();
     loopOTA();
     handleVR();
-
     cleanUpSockets();
+    **/
+
     if(animationActive && millis() > currentTime + 150){
         if(!advanceSlideAnimation()){
             animationActive = false;
@@ -101,15 +103,14 @@ void loop() {
             // toggle background
             Serial.println("background");
             backgroundEvent();
-        } else if (serialInput.equals("ex")) {
+        } else if (serialInput.equals("e")) {
             // print example string message
-            Serial.println("Example String");
-            const char* exampleString = "AEio123 o o";
+            const char* exampleString = "Hello World";
 
-            uint8_t num = 12;
+            uint8_t num = strlen(exampleString);
             startSlideAnimation(exampleString, num);
+            animationActive = true;
 
-            Serial.println("done");
         } else if (serialInput.equals("loop")) {
             Serial.println("loop on");
 
@@ -123,14 +124,17 @@ void loop() {
             Serial.println("done");
         } else if (serialInput.equals("we")){
             Serial.println("WeatherData");
-            char* weatherDescription = (char*)malloc(20 * sizeof(char));
+            char* weatherDescription = (char*)malloc(25 * sizeof(char));
             getWeatherDescription(weatherDescription);
 
             uint8_t num = strlen(weatherDescription);
             Serial.println(num);
+            Serial.print("weather data = ");
             Serial.println(weatherDescription);
             startSlideAnimation(weatherDescription, num);
+
             animationActive = true;
+            free(weatherDescription);
 
             Serial.println("done");
         } else if(serialInput.equals("m")){
@@ -148,7 +152,6 @@ void loop() {
         }
     }
 
-    /**
 
     irInput = decodeIR();
     // will later be replaced by some proper mapping of each button to a
@@ -164,15 +167,31 @@ void loop() {
             Serial.println("lighting off");
             httpGetRequestIgnoreResponse("http://lightingModule.local/lightingOff");
             break;
+        case 0x0e:
+            httpGetRequestIgnoreResponse("http://lightingModule.local/raiseBrightness");
+            break;
+        case 0x0c:
+            httpGetRequestIgnoreResponse("http://lightingModule.local/lowerBrightness");
+            break;
         case 0x01:
             Serial.println("Example String");
 
-            for(int i = 25; i > -46; i--){
-                projectExampleString(i);
-                delay(200);
-                //Serial.println(i);
-            }
+            Serial.println("WeatherData");
+            char* weatherDescription = (char*)malloc(25 * sizeof(char));
+            getWeatherDescription(weatherDescription);
+
+            uint8_t num = strlen(weatherDescription);
+            Serial.println(num);
+            Serial.print("weather data = ");
+            Serial.println(weatherDescription);
+            startSlideAnimation(weatherDescription, num);
+
+            animationActive = true;
+            free(weatherDescription);
+
+            Serial.println("done");
             break;
+            /**
         case 0x03:
             currentTime = (struct simpleTime*)malloc(sizeof(struct simpleTime));
             Serial.println("projecting time");
@@ -191,8 +210,8 @@ void loop() {
         case 0x1a:
             httpGetRequestIgnoreResponse("http://pcModule.local/pcPowerOn");
             break;
+            **/
     }
-    **/
 }
 
 void showTime(){

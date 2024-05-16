@@ -1,6 +1,7 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
 #include <ArduinoJson.h>
+#include <cstring>
 #include "ArduinoJson/Json/JsonDeserializer.hpp"
 #include "webserver_handling.h"
 #include "weather_handling.h"
@@ -89,7 +90,19 @@ void getWeatherDescription(char* weatherDescription){
     **/
 
     const char* data = doc["list"][3]["weather"][0]["description"];
+    //data = "rain"; mock
+    float tempe = doc["list"][3]["main"]["temp"].as<int>();
+    // tempe = 23; mock
+    char tempeBuf[5]; // Buffer big enough for 7-character float
+    //dtostrf(tempe, 4, 2, tempeBuf);
+    itoa(tempe, tempeBuf, 10);
+    Serial.print("temp = ");
+    Serial.println(tempeBuf);
+    const char* postFix = "*C";
     strcpy(weatherDescription, data);
+    strcat(weatherDescription, " ");
+    strcat(weatherDescription, tempeBuf);
+    strcat(weatherDescription, postFix);
 
     doc.clear();
 }
