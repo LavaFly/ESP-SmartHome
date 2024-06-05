@@ -42,7 +42,8 @@ window.onload = function () {
         animationEnabled: true,
         backgroundColor: "",
         title: {
-            text: "Overview of the System"
+            text: "Overview of the System",
+            fontColor: "#999999"
         },
         axisX: {
             lableAngle: -50,
@@ -54,7 +55,8 @@ window.onload = function () {
             suffix: "°C",
             lineColor: "#CD7045",
             tickColor: "#CD7045",
-            labelFontColor: "#CD7045"
+            labelFontColor: "#CD7045",
+            titleFontColor: "#999999"
         }
         ,
         axisY2: {
@@ -62,7 +64,8 @@ window.onload = function () {
             suffix: "%",
             lineColor: "#00BFFF",
             tickColor: "#00BFFF",
-            labelFontColor: "#00BFFF"
+            labelFontColor: "#00BFFF",
+            titleFontColor: "#999999"
         }
         ,
         toolTip: {
@@ -110,14 +113,19 @@ window.onload = function () {
             showInLegend: true,
             color: "#FF8000",
             dataPoints: brightness_data
-        }]
+        }],
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
     });
     var baseChart = new CanvasJS.Chart("baseChart", {
         //exportEnabled: true,
         animationEnabled: true,
         backgroundColor: "",
         title: {
-            text: "Base Module"
+            text: "Base Module",
+            fontColor: "#999999"
         },
         axisX: {
             lableAngle: -50,
@@ -129,28 +137,30 @@ window.onload = function () {
             suffix: "°C",
             lineColor: "#CD7045",
             tickColor: "#CD7045",
-            labelFontColor: "#CD7045"
+            labelFontColor: "#CD7045",
+            titleFontColor: "#999999"
         },
         {
             title: "Humidity",
             suffix: "%",
             lineColor: "#00BFFF",
             tickColor: "#00BFFF",
-            labelFontColor: "#00BFFF"
+            labelFontColor: "#00BFFF",
+            titleFontColor: "#999999"
         }],
         axisY2: [{
             title: "Quality",
-            suffix: "%",
             lineColor: "#A9A9A9",
             tickColor: "#A9A9A9",
-            labelFontColor: "#A9A9A9"
+            labelFontColor: "#A9A9A9",
+            titleFontColor: "#999999"
         },
         {
             title: "Brightness",
-            suffix: "%",
             lineColor: "#FF8000",
             tickColor: "#FF8000",
-            labelFontColor: "#FF8000"
+            labelFontColor: "#FF8000",
+            titleFontColor: "#999999"
         }
         ],
         toolTip: {
@@ -199,14 +209,19 @@ window.onload = function () {
             showInLegend: true,
             color: "#FF8000",
             dataPoints: brightness_data
-        }]
+        }],
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
     });
     var pcChart = new CanvasJS.Chart("pcChart", {
         //exportEnabled: true,
         animationEnabled: true,
         backgroundColor: "",
         title: {
-            text: "PC Module"
+            text: "PC Module",
+            fontColor: "#999999"
         },
         axisX: {
             lableAngle: -50,
@@ -218,7 +233,8 @@ window.onload = function () {
             suffix: "°C",
             lineColor: "#CD7045",
             tickColor: "#CD7045",
-            labelFontColor: "#CD7045"
+            labelFontColor: "#CD7045",
+            titleFontColor: "#999999"
         }
         ],
         axisY2: [{
@@ -226,7 +242,8 @@ window.onload = function () {
             suffix: "°C",
             lineColor: "#00BFFF",
             tickColor: "#00BFFF",
-            labelFontColor: "#00BFFF"
+            labelFontColor: "#00BFFF",
+            titleFontColor: "#999999"
         }],
         toolTip: {
             shared: true
@@ -257,7 +274,11 @@ window.onload = function () {
             showInLegend: true,
             color: "#00BFFF",
             dataPoints: humidityPC_data
-        }]
+        }],
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
     });
 
     var sensorChart = new CanvasJS.Chart("sensorChart", {
@@ -265,7 +286,8 @@ window.onload = function () {
         animationEnabled: true,
         backgroundColor: "",
         title: {
-            text: "Temperature"
+            text: "Temperature",
+            fontColor: "#999999"
         },
         axisX: {
             lableAngle: -50,
@@ -277,7 +299,8 @@ window.onload = function () {
             suffix: "°C",
             lineColor: "#CD7045",
             tickColor: "#CD7045",
-            labelFontColor: "#CD7045"
+            labelFontColor: "#CD7045",
+            titleFontColor: "#999999"
         }
         ],
         axisY2: [{
@@ -285,7 +308,8 @@ window.onload = function () {
             suffix: "°C",
             lineColor: "#00BFFF",
             tickColor: "#00BFFF",
-            labelFontColor: "#00BFFF"
+            labelFontColor: "#00BFFF",
+            titleFontColor: "#999999"
         }],
         toolTip: {
             shared: true
@@ -316,14 +340,19 @@ window.onload = function () {
             showInLegend: true,
             color: "#00BFFF",
             dataPoints: temperaturePC_data
-        }]
+        }],
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
     });
     var airqualityChart = new CanvasJS.Chart("airqualityChart", {
         //exportEnabled: true,
         animationEnabled: true,
         backgroundColor: "",
         title: {
-            text: "Air Quality"
+            text: "Air Quality",
+            fontColor: "#999999"
         },
         axisX: {
             lableAngle: -50,
@@ -335,7 +364,8 @@ window.onload = function () {
             suffix: "ppm",
             lineColor: "#CD7045",
             tickColor: "#CD7045",
-            labelFontColor: "#CD7045"
+            labelFontColor: "#CD7045",
+            titleFontColor: "#999999"
         }
         ],
         axisY2: [{
@@ -343,7 +373,8 @@ window.onload = function () {
             suffix: "",
             lineColor: "#00BFFF",
             tickColor: "#00BFFF",
-            labelFontColor: "#00BFFF"
+            labelFontColor: "#00BFFF",
+            titleFontColor: "#999999"
         }],
         toolTip: {
             shared: true
@@ -373,7 +404,11 @@ window.onload = function () {
             showInLegend: true,
             color: "#00BFFF",
             dataPoints: resistance_data
-        }]
+        }],
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
     });
     function toggleDataSeries(e) {
         if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
