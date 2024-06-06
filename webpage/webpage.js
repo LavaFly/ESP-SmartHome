@@ -73,7 +73,8 @@ window.onload = function () {
         },
         legend: {
             cursor: "pointer",
-            itemclick: toggleDataSeries
+            itemclick: toggleDataSeries,
+            fontColor: "#999999"
         },
         data: [{
             type: "spline",
@@ -111,7 +112,7 @@ window.onload = function () {
             connectNullData: true,
             axisYType: "secondary",
             showInLegend: true,
-            color: "#FF8000",
+            color: "yellow",
             dataPoints: brightness_data
         }],
         options: {
@@ -151,16 +152,22 @@ window.onload = function () {
         axisY2: [{
             title: "Quality",
             lineColor: "#A9A9A9",
-            tickColor: "#A9A9A9",
+            //tickColor: "#A9A9A9",
+            labelFormatter: function(e){
+				return  "";
+			},
             labelFontColor: "#A9A9A9",
             titleFontColor: "#999999"
         },
         {
             title: "Brightness",
-            lineColor: "#FF8000",
-            tickColor: "#FF8000",
+            lineColor: "yellow",
+            //tickColor: "#FF8000",
+            labelFormatter: function(e){
+				return  "";
+			},
             labelFontColor: "#FF8000",
-            titleFontColor: "#999999"
+            titleFontColor: "#999999",
         }
         ],
         toolTip: {
@@ -168,7 +175,8 @@ window.onload = function () {
         },
         legend: {
             cursor: "pointer",
-            itemclick: toggleDataSeries
+            itemclick: toggleDataSeries,
+            fontColor: "#999999"
         },
         data: [{
             type: "spline",
@@ -207,7 +215,7 @@ window.onload = function () {
             connectNullData: true,
             axisYType: "secondary",
             showInLegend: true,
-            color: "#FF8000",
+            color: "yellow",
             dataPoints: brightness_data
         }],
         options: {
@@ -231,9 +239,9 @@ window.onload = function () {
         axisY: [{
             title: "Temperature",
             suffix: "°C",
-            lineColor: "#CD7045",
-            tickColor: "#CD7045",
-            labelFontColor: "#CD7045",
+            lineColor: "#993300",
+            tickColor: "#993300",
+            labelFontColor: "#993300",
             titleFontColor: "#999999"
         }
         ],
@@ -250,7 +258,8 @@ window.onload = function () {
         },
         legend: {
             cursor: "pointer",
-            itemclick: toggleDataSeries
+            itemclick: toggleDataSeries,
+            fontColor: "#999999"
         },
         data: [{
             type: "spline",
@@ -262,7 +271,7 @@ window.onload = function () {
             yValueFormatString: "#,###",
             axisYIndex: 0,
             showInLegend: true,
-            color: "#CD7045",
+            color: "#993300",
             dataPoints: temperaturePC_data
         },
         {
@@ -306,9 +315,9 @@ window.onload = function () {
         axisY2: [{
             title: "PC Temperature",
             suffix: "°C",
-            lineColor: "#00BFFF",
-            tickColor: "#00BFFF",
-            labelFontColor: "#00BFFF",
+            lineColor: "#993300",
+            tickColor: "#993300",
+            labelFontColor: "#993300",
             titleFontColor: "#999999"
         }],
         toolTip: {
@@ -316,7 +325,8 @@ window.onload = function () {
         },
         legend: {
             cursor: "pointer",
-            itemclick: toggleDataSeries
+            itemclick: toggleDataSeries,
+            fontColor: "#999999"
         },
         data: [{
             type: "spline",
@@ -338,7 +348,7 @@ window.onload = function () {
             axisYIndex: 1,
             axisYType: "secondary",
             showInLegend: true,
-            color: "#00BFFF",
+            color: "#993300",
             dataPoints: temperaturePC_data
         }],
         options: {
@@ -362,18 +372,18 @@ window.onload = function () {
         axisY: [{
             title: "CO2 Concentration",
             suffix: "ppm",
-            lineColor: "#CD7045",
-            tickColor: "#CD7045",
-            labelFontColor: "#CD7045",
+            lineColor: "#595959",
+            tickColor: "#595959",
+            labelFontColor: "#595959",
             titleFontColor: "#999999"
         }
         ],
         axisY2: [{
             title: "Air Resistance",
             suffix: "",
-            lineColor: "#00BFFF",
-            tickColor: "#00BFFF",
-            labelFontColor: "#00BFFF",
+            lineColor: "#737373",
+            tickColor: "#737373",
+            labelFontColor: "#737373",
             titleFontColor: "#999999"
         }],
         toolTip: {
@@ -381,7 +391,8 @@ window.onload = function () {
         },
         legend: {
             cursor: "pointer",
-            itemclick: toggleDataSeries
+            itemclick: toggleDataSeries,
+            fontColor: "#999999"
         },
         data: [{
             type: "spline",
@@ -392,7 +403,7 @@ window.onload = function () {
             yValueFormatString: "#,###",
             axisYIndex: 0,
             showInLegend: true,
-            color: "#CD7045",
+            color: "#595959",
             dataPoints: co2_data
         },
         {
@@ -402,7 +413,7 @@ window.onload = function () {
             axisYType: "secondary",
             axisYIndex: 1,
             showInLegend: true,
-            color: "#00BFFF",
+            color: "#737373",
             dataPoints: resistance_data
         }],
         options: {
@@ -451,7 +462,8 @@ window.onload = function () {
             });
             brightness_data.push({
                 x: new Date(data[i].time),
-                y: data[i].brightness
+                //y: data[i].brightness
+                y: (Math.random() * (30 - 10) + 10)
             });
 
             // temp solution
