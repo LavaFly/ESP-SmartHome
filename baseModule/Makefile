@@ -1,14 +1,22 @@
-webpage := include/webpage.html
+html := website/webpage.html
+js := website/webpage.js
+css := website/webpage.css
 
-all: webpage upload
+all: html js css upload
 
-webpage: toByteArray.jar $(webpage)
-	java -jar toByteArray.jar $(webpage)
+html: toByteArray.jar $(html)
+	java -jar toByteArray.jar $(html)
+
+js: toByteArray.jar $(js)
+	java -jar toByteArray.jar $(js)
+
+css: toByteArray.jar $(css)
+	java -jar toByteArray.jar $(css)
 
 toByteArray.jar: toByteArray.kt
 	kotlinc toByteArray.kt -include-runtime -d toByteArray.jar
 
-compile: webpage
+compile: html js css
 	pio run -e d1_mini
 
 upload:
