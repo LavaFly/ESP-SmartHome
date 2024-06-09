@@ -24,12 +24,23 @@ fun insertNewlines2(input: String, lineLength: Int): String {
 }
 
 fun main(args: Array<String>) {
-    val fileContent = File(args[0]).readText(Charsets.UTF_8)
+    val completeFileName = args[0]
+    val fileName = completeFileName.substringAfterLast("/").substringBeforeLast(".")
+    val fileExtension = completeFileName.substring(completeFileName.indexOf(".") + 1, completeFileName.length)
+
+    val fileContent = File(completeFileName).readText(Charsets.UTF_8)
     val gzippedFileContent = gzip(fileContent)
     val hexString = gzippedFileContent.toHexString()
+
     val len = gzippedFileContent.size
-    val header = "#include <pgmspace.h>\n#define webpage_gz_len $len\nconst uint8_t webpage_html_gz[] PROGMEM = {\n"
+
+    val include = "#include <pgmspace.h>\n"
+    val define = "#define ${fileName + "_" + fileExtension + "_gz_len"} $len\nconst uint8_t ${fileName + "_" + fileExtension + "_gz[] PROGMEM = {\n"}"
+    val header = include + define
+
     val finalContent = header + insertNewlines2(hexString, 80)
-    val outputFile = File(args[0].substring(0, args[0].length - 3))
+
+    val outputFileName = fileName + "_" + fileExtension + ".h"
+    val outputFile = File("include/" + outputFileName)
     outputFile.writeText(finalContent)
 }
