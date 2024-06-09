@@ -42,6 +42,9 @@ void handleLiveStatus(AsyncWebServerRequest *request);
  */
 void handleJSONRequest(AsyncWebServerRequest*);
 
+void handleJSRequest(AsyncWebServerRequest*);
+void handleCSSRequest(AsyncWebServerRequest*);
+
 int httpGetRequestIgnoreResponse(const char* path);
 
 const String* httpGetRequest(const char* path);

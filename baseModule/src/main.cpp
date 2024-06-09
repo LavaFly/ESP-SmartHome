@@ -18,15 +18,12 @@ void setup() {
     initWebserver();
     setupMDNS();
     Serial.println("setup done");
-    delay(5000);
     //printWeatherData();
     //printForecastData();
 
-    initSDCard();
-    createDir();
+    //initSDCard();
+    //createDir();
 }
-
-// fancier website
 
 void loop() {
     MDNS.update();
@@ -44,6 +41,7 @@ void sensorCallback(){
         Serial.println("failed to read out sensors");
     }
 
+    /**
     // write own values to sd card
     char* sensorData = (char*)malloc(sizeof(char) * 180); // rougly 124 will be used
 
@@ -56,4 +54,5 @@ void sensorCallback(){
     // write pcModule values to sdcard
     const char* responseData = httpGetRequest("http://pcModule.local/sensorReading")->c_str();
     writeJsonToFile(responseData);
+    **/
 }

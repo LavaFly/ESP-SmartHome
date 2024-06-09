@@ -1,13 +1,14 @@
-#include "webserver_handling.h"
-#include "ESPAsyncWebServer.h"
-#include "WebResponseImpl.h"
-#include "sensor_handling.h"
-#include "webpage.h"
-#include "internet_settings.h"
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
-//#include <ElegantOTA.h>
+#include "ESPAsyncWebServer.h"
+#include "WebResponseImpl.h"
 #include <ArduinoOTA.h>
+#include "webserver_handling.h"
+#include "sensor_handling.h"
+#include "internet_settings.h"
+#include "webpage_html.h"
+#include "webpage_js.h"
+#include "webpage_css.h"
 
 AsyncWebServer server(80);
 WiFiClient client;
@@ -43,9 +44,11 @@ void initWebserver(){
     }
     //ElegantOTA.begin(&server);
     server.on("/", handleHTMLRequest);
+    server.on("/js", handleJSRequest);
+    server.on("/css", handleCSSRequest);
     server.on("/isLive", handleLiveStatus);
-    server.on("/sensorReading", handleSensorReading);
-    server.on("/allData", handleJSONRequest);
+    server.on("/json", handleJSONRequest);
+    server.on("/currentReading", handleSensorReading);
     DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
     server.begin();
     ArduinoOTA.begin();
@@ -75,12 +78,33 @@ void handleLiveStatus(AsyncWebServerRequest *request){
 void handleHTMLRequest(AsyncWebServerRequest *request){
     const char* dataType = "text/html";
     //Serial.println("Streaming Page!");
-    AsyncWebServerResponse *response = request->beginResponse_P(200, dataType, webpage_html_gz, webpage_gz_len);
+    AsyncWebServerResponse *response = request->beginResponse_P(200, dataType, webpage_html_gz, webpage_html_gz_len);
     response->addHeader("Content-Encoding", "gzip");
     request->send(response);
 }
 
+void handleJSRequest(AsyncWebServerRequest *request){
+    const char* dataType = "text/javascript";
+    //Serial.println("Streaming Page!");
+    AsyncWebServerResponse *response = request->beginResponse_P(200, dataType, webpage_js_gz, webpage_js_gz_len);
+    response->addHeader("Content-Encoding", "gzip");
+    request->send(response);
+
+}
+
+
+void handleCSSRequest(AsyncWebServerRequest *request){
+    const char* dataType = "text/css";
+    //Serial.println("Streaming Page!");
+    AsyncWebServerResponse *response = request->beginResponse_P(200, dataType, webpage_css_gz, webpage_css_gz_len);
+    response->addHeader("Content-Encoding", "gzip");
+    request->send(response);
+
+}
+
+
 void handleJSONRequest(AsyncWebServerRequest *request){
+    Serial.println("got json request");
     int numberOfCurrentReadings = getNumOfReadingsInList();
     char* sensorData = (char*)malloc(sizeof(char) * 180); // rougly 124 will be used
                                                           // check if null
