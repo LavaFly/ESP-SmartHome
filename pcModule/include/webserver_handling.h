@@ -5,27 +5,13 @@
 #include <ESP8266WiFi.h>
 #include <ESPAsyncTCP.h>
 #include <ESPAsyncWebServer.h>
-#include <time.h>
-#include <NTPClient.h>
-#include <WiFiUdp.h>
 #include <ESP8266mDNS.h>
-
-struct simpleTime {
-    uint8_t hour;
-    uint8_t minute;
-};
 
 /**
  * @brief
  *
  */
 bool buildRouterConnection();
-
-/**
- * @brief
- *
- */
-void buildTimeConnection(); // find fitting location for this method
 
 
 void initWebserver();
@@ -34,7 +20,6 @@ void setupMDNS();
 
 void loopOTA();
 
-void getSimpleTime(struct simpleTime *currentTime);
 
 
 /**
@@ -60,7 +45,5 @@ void handleLiveStatus(AsyncWebServerRequest *request);
 void handleSensorReading(AsyncWebServerRequest *request);
 
 extern void getSensorReading(char* formattedResponse, size_t maxResponseLen);
-
-void updateTimeClient();
 
 #endif

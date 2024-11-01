@@ -1,16 +1,13 @@
-#include "webserver_handling.h"
-#include "internet_settings.h"
 #include <ESP8266WiFi.h>
-#include <WiFiUdp.h>
 #include <WiFiClient.h>
-#include <NTPClient.h>
 #include <ArduinoOTA.h>
 
+#include "webserver_handling.h"
+#include "sensor_handling.h"
+#include "internet_settings.h"
 
 #define POWERPIN 5
 
-WiFiUDP ntpUDP;
-NTPClient timeClient(ntpUDP, "europe.pool.ntp.org", 3600, 120000);
 AsyncWebServer server(80);
 
 bool buildRouterConnection(){
@@ -39,7 +36,8 @@ void initWebserver(){
     server.on("/isLive", handleLiveStatus);
     server.on("/pcStatus", handleStatusRequest);
     server.on("/pcPowerOn", handlePowerOn);
-    server.on("/sensorReading", handleSensorReading);
+    server.on("/currentReading", handleSensorReading);
+    server.on("/json", handleJSONRequest);
     DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
     server.begin();
     ArduinoOTA.begin();
@@ -47,12 +45,6 @@ void initWebserver(){
 
 void loopOTA(){
     ArduinoOTA.handle();
-}
-
-void buildTimeConnection(){
-    timeClient.begin();
-    timeClient.setTimeOffset(3600);
-    timeClient.update();
 }
 
 void setupMDNS(){
@@ -66,11 +58,6 @@ void setupMDNS(){
     MDNS.addService("http", "tcp", 80);
 }
 
-void getSimpleTime(struct simpleTime *currentTime){
-    currentTime->hour = timeClient.getHours();
-    currentTime->minute = timeClient.getMinutes();
-}
-
 void handleHTMLRequest(AsyncWebServerRequest *request){
     Serial.printf("got request");
     request->send(200);
@@ -82,7 +69,25 @@ void handleLiveStatus(AsyncWebServerRequest *request){
 }
 
 void handleJSONRequest(AsyncWebServerRequest *request){
+    Serial.println("got json request");
+    int numberOfCurrentReadings = getNumOfReadingsInList();
 
+    char* sensorData = (char*)malloc(sizeof(char) * 180); // rougly 124 will be used
+                                                          // check if null
+
+    AsyncResponseStream *response = request->beginResponseStream("application/json");
+
+    response->print("[");
+    for(uint8_t i = 0; i < numberOfCurrentReadings; i++){
+        getSensorReadingFromList(sensorData, 180, i);
+        response->print(sensorData);
+        if(i != numberOfCurrentReadings - 1){
+            response->print(",");
+        }
+    }
+    response->print("]");
+    request->send(response);
+    free(sensorData);
 }
 
 void handlePowerOn(AsyncWebServerRequest *request){
@@ -106,8 +111,4 @@ void handleSensorReading(AsyncWebServerRequest *request){
 }
 void handleStatusRequest(AsyncWebServerRequest *request){
 
-}
-
-void updateTimeClient(){
-    timeClient.update();
 }
