@@ -34,8 +34,8 @@ window.onload = function () {
     var co2_data = []
     var resistance_data = [];
     var brightness_data = [];
-    var pathToServer = "http://localhost:8080/mock_sensor.json";
-    var pathToBase = "http://baseModule.local/allData"
+    //var pathToServer = "http://localhost:8080/mock_sensor.json";
+    var pathToBase = "http://baseModule.local/json"
     var pathToPc = "http://pcModule.local/allData"
     var bigChart = new CanvasJS.Chart("bigChart", {
         //exportEnabled: true,
@@ -462,18 +462,7 @@ window.onload = function () {
             });
             brightness_data.push({
                 x: new Date(data[i].time),
-                //y: data[i].brightness
-                y: (Math.random() * (30 - 10) + 10)
-            });
-
-            // temp solution
-            temperaturePC_data.push({
-                x: new Date(data[i].time),
-                y: (Math.random() * (30 - 10) + 10)
-            });
-            humidityPC_data.push({
-                x: new Date(data[i].time),
-                y: (Math.random() * (100 - 40) + 40)
+                y: data[i].brightness
             });
         }
         renderCharts();
@@ -498,10 +487,10 @@ window.onload = function () {
         renderCharts();
     }
     function setupCharts() {
-        $.getJSON(pathToServer, addBaseData);
-        //$.getJSON(pathToBase, addBaseData);
-        //$.getJSON(pathToPc, addPcData);
-        //setInterval($.getJSON(pathToServer, addData), 60000);
+        //$.getJSON(pathToServer, addBaseData);
+        $.getJSON(pathToBase, addBaseData);
+        $.getJSON(pathToPc, addPcData);
+        setInterval($.getJSON(pathToServer, addBaseData), 60000);
     }
     function renderCharts() {
         bigChart.render();

@@ -51,8 +51,7 @@ void setup() {
     buildTimeConnection();
     initWebserver();
     setupMDNS();
-    /**
-    **/
+
 
     // setup for the ledWall
     buildLedConnection();
@@ -66,12 +65,10 @@ void setup() {
 }
 
 void loop() {
-    /**
     MDNS.update();
     loopOTA();
-    handleVR();
+    //handleVR();
     cleanUpSockets();
-    **/
 
     if(animationActive && millis() > currentTime + 150){
         if(!advanceSlideAnimation()){
@@ -210,7 +207,7 @@ void loop() {
         case 0x1a:
             httpGetRequestIgnoreResponse("http://pcModule.local/pcPowerOn");
             break;
-            **/
+        **/
     }
 }
 

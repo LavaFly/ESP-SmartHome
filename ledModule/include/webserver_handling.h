@@ -38,6 +38,9 @@ void handleHTMLRequest(AsyncWebServerRequest*);
 void handleLiveStatus(AsyncWebServerRequest *request);
 
 void handleTimeRequest(AsyncWebServerRequest *request);
+void handleTemperatureRequest(AsyncWebServerRequest *request);
+void handleQualityRequest(AsyncWebServerRequest *request);
+void handleCO2Request(AsyncWebServerRequest *request);
 /**
  * @brief Serves the Sensor Readings Array as an JSON structure
  * JSON structure is manually constructed without the use of the ArduinoJSON Library

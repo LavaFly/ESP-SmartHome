@@ -14,7 +14,7 @@ NTPClient timeClient(ntpUDP, "europe.pool.ntp.org", 3600, 120000);
 bool buildTimeConnection(){
     if(WiFi.status() == WL_CONNECTED){
         timeClient.begin();
-        timeClient.setTimeOffset(7200);
+        timeClient.setTimeOffset(3600);//7200
         timeClient.update();
         return true;
     }

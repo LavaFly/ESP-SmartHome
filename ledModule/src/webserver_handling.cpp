@@ -32,6 +32,7 @@ bool buildRouterConnection(){
         Serial.println(WiFi.localIP());
         return true;
     }
+    Serial.println("No known AP nearby");
     return false;
 }
 
@@ -45,6 +46,9 @@ bool initWebserver(){
     server.on("/", handleHTMLRequest);
     server.on("/isLive", handleLiveStatus);
     server.on("/showTime", handleTimeRequest);
+    server.on("/showTemperature", handleTemperatureRequest);
+    server.on("/showQuality", handleQualityRequest);
+    server.on("/showCO2", handleCO2Request);
     DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
     server.begin();
     ArduinoOTA.begin();
@@ -81,6 +85,22 @@ void handleTimeRequest(AsyncWebServerRequest *request){
     showTime();
     request->send(200);
 }
+
+void handleTemperatureRequest(AsyncWebServerRequest *request){
+    // request temperature from baseModule
+    // show return + °C
+    // else show No Data Available
+
+}
+
+void handleQualityRequest(AsyncWebServerRequest *request){
+
+}
+
+void handleCO2Request(AsyncWebServerRequest *request){
+
+}
+
 void handleJSONRequest(AsyncWebServerRequest *request){
 
 }

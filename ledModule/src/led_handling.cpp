@@ -378,6 +378,22 @@ void projectString(uint8_t* charList, uint8_t numberOfCharacters, int8_t* offset
 }
 
 
+void projectStringCentric(uint8_t* charList, uint8_t numberOfCharacters, int8_t offsetList){
+    // same as projectString, but offsetList is interpreted differently
+
+    // calculate middle of display
+    // calculate length of string on display
+    // decrement offsetList by half of len(middle of display)
+    // project string
+}
+
+void middleOutEffect(){
+    // calculate len of string
+    // for loop ( 0 < i < lenOfString)
+    //  projectStringCentric(.., i, ..)
+}
+
+
 void projectPattern(uint8_t *pattern, uint8_t xOffset, uint8_t yOffset){
     // this is true for all digits
     //projectPattern(pattern, xOffset, yOffset, 3, 4);
