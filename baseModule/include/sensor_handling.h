@@ -11,7 +11,7 @@
 
 // Maximum Number of concurrent Sensor Readings that will be stored at any time
 // the handleJson function fails after 79 elements(will send 79 elements without
-// the closing ]
+// the closing ']')
 // will investigate why at some point
 #define NUM_READINGS 60
 

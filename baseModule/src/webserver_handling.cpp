@@ -3,9 +3,11 @@
 #include "ESPAsyncWebServer.h"
 #include "WebResponseImpl.h"
 #include <ArduinoOTA.h>
+
 #include "webserver_handling.h"
 #include "sensor_handling.h"
 #include "internet_settings.h"
+
 #include "webpage_html.h"
 #include "webpage_js.h"
 #include "webpage_css.h"
@@ -42,7 +44,6 @@ void initWebserver(){
     if(WiFi.status() != WL_CONNECTED){
         return;
     }
-    //ElegantOTA.begin(&server);
     server.on("/", handleHTMLRequest);
     server.on("/js", handleJSRequest);
     server.on("/css", handleCSSRequest);

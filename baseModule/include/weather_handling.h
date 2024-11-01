@@ -5,4 +5,5 @@ extern const char* API;
 
 void printWeatherData();
 
+void printForecastData();
 #endif
