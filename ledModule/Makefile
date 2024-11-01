@@ -16,6 +16,9 @@ characters:
 	kotlinc toNumArray.kt -include-runtime -d toNumArray.jar
 	java -jar toNumArray.jar alphabet
 
+websocket:
+	websocat ws://ledModule.local/ws
+
 clean:
 	rm -f toNumArray.jar
 	pio run -t clean
