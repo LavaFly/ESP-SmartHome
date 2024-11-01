@@ -86,6 +86,7 @@ void getSensorReading(char* formattedResponse, size_t maxResponseLen){
         jsonResponse["brightness"] = analogRead(A0);
 
     } else {
+        // i should probably print or log this
         jsonResponse["sensor"] = "invalid";
         jsonResponse["time"] = getEpochTime();
         jsonResponse["temperature"] = 0;
@@ -124,20 +125,22 @@ int getNumOfReadingsInList(){
 }
 
 bool updateSensorValues(){
-    if(bme.performReading()){
-        sensor_readings[readingsListIndex].time = getEpochTime();
-        Serial.println(sensor_readings[readingsListIndex].time);
-        Serial.println("");
-        sensor_readings[readingsListIndex].temperature = bme.temperature;
-        sensor_readings[readingsListIndex].humidity = bme.humidity;
-        sensor_readings[readingsListIndex].quality = bme.gas_resistance;
-        sensor_readings[readingsListIndex].co2 = readingsListIndex;
-        sensor_readings[readingsListIndex].brightness = analogRead(A0);
-
-        readingsListIndex = (readingsListIndex + 1) % NUM_READINGS;
-        return true;
+    // if reading values from the sensor fails, return false, else store values and return true
+    if(!bme.performReading()){
+        return false;
     }
-    return false;
+
+    sensor_readings[readingsListIndex].time = getEpochTime();
+    Serial.println(sensor_readings[readingsListIndex].time);
+    Serial.println("");
+    sensor_readings[readingsListIndex].temperature = bme.temperature;
+    sensor_readings[readingsListIndex].humidity = bme.humidity;
+    sensor_readings[readingsListIndex].quality = bme.gas_resistance;
+    sensor_readings[readingsListIndex].co2 = readingsListIndex;
+    sensor_readings[readingsListIndex].brightness = analogRead(A0);
+
+    readingsListIndex = (readingsListIndex + 1) % NUM_READINGS;
+    return true;
 }
 
 void printCurrentReading(){
