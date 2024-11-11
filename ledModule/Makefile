@@ -20,5 +20,4 @@ websocket:
 	websocat ws://ledModule.local/ws
 
 clean:
-	rm -f toNumArray.jar
 	pio run -t clean
