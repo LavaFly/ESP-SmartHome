@@ -172,13 +172,13 @@ ledModule/src/led_handling.cpp:161:13: style: The scope of the variable 'digit' 
 ledModule/src/led_handling.cpp:227:10: style: The scope of the variable 'currentChar' can be reduced. [variableScope]
     char currentChar = ' ';
          ^
-ledModule/src/led_handling.cpp:421:10: style: Local variable 'color' shadows outer variable [shadowVariable]
+ledModule/src/led_handling.cpp:437:10: style: Local variable 'color' shadows outer variable [shadowVariable]
     CHSV color(0, 255, 180);
          ^
 ledModule/src/led_handling.cpp:32:6: note: Shadowed declaration
 CHSV color(0, 255, 180);
      ^
-ledModule/src/led_handling.cpp:421:10: note: Shadow variable
+ledModule/src/led_handling.cpp:437:10: note: Shadow variable
     CHSV color(0, 255, 180);
          ^
 ledModule/src/led_handling.cpp:45:26: style: Variable 'segmentWidth' is assigned a value that is never used. [unreadVariable]
@@ -190,25 +190,25 @@ ledModule/src/led_handling.cpp:60:30: style: Variable 'ledLeftNeighbour' is assi
 ledModule/src/led_handling.cpp:227:22: style: Variable 'currentChar' is assigned a value that is never used. [unreadVariable]
     char currentChar = ' ';
                      ^
-ledModule/src/main.cpp:160:25: style: Local variable 'currentTime' shadows outer variable [shadowVariable]
+ledModule/src/main.cpp:157:25: style: Local variable 'currentTime' shadows outer variable [shadowVariable]
     struct simpleTime * currentTime;
                         ^
 ledModule/src/main.cpp:15:15: note: Shadowed declaration
 unsigned long currentTime = 0;
               ^
-ledModule/src/main.cpp:160:25: note: Shadow variable
+ledModule/src/main.cpp:157:25: note: Shadow variable
     struct simpleTime * currentTime;
                         ^
-ledModule/src/main.cpp:218:25: style: Local variable 'currentTime' shadows outer variable [shadowVariable]
+ledModule/src/main.cpp:215:25: style: Local variable 'currentTime' shadows outer variable [shadowVariable]
     struct simpleTime * currentTime;
                         ^
 ledModule/src/main.cpp:15:15: note: Shadowed declaration
 unsigned long currentTime = 0;
               ^
-ledModule/src/main.cpp:218:25: note: Shadow variable
+ledModule/src/main.cpp:215:25: note: Shadow variable
     struct simpleTime * currentTime;
                         ^
-ledModule/src/main.cpp:160:25: style: Unused variable: currentTime [unusedVariable]
+ledModule/src/main.cpp:157:25: style: Unused variable: currentTime [unusedVariable]
     struct simpleTime * currentTime;
                         ^
 baseModule/lib/VoiceRecognitionV3/VoiceRecognitionV3.h:106:1: error: The one definition rule is violated, different classes/structs have the same name 'VR' [ctuOneDefinitionRuleViolation]
@@ -220,6 +220,15 @@ class VR : public SoftwareSerial{
 baseModule/lib/VoiceRecognitionV3/VoiceRecognitionV3.h:106:1: note: The one definition rule is violated, different classes/structs have the same name 'VR'
 class VR : public SoftwareSerial{
 ^
+baseModule/src/sensor_handling.cpp:21:9: error: The one definition rule is violated, different classes/structs have the same name 'sensor_reading' [ctuOneDefinitionRuleViolation]
+typedef struct {
+        ^
+pcModule/src/sensor_handling.cpp:16:9: note: The one definition rule is violated, different classes/structs have the same name 'sensor_reading'
+typedef struct {
+        ^
+baseModule/src/sensor_handling.cpp:21:9: note: The one definition rule is violated, different classes/structs have the same name 'sensor_reading'
+typedef struct {
+        ^
 baseModule/lib/VoiceRecognitionV3/VoiceRecognitionV3.cpp:543:0: style: The function 'checkGroupControl' is never used. [unusedFunction]
 
 ^
@@ -236,9 +245,6 @@ baseModule/lib/VoiceRecognitionV3/VoiceRecognitionV3.cpp:780:0: style: The funct
 
 ^
 baseModule/lib/VoiceRecognitionV3/VoiceRecognitionV3.cpp:608:0: style: The function 'checkUserGroup' is never used. [unusedFunction]
-
-^
-ledModule/src/webserver_handling.cpp:148:0: style: The function 'cleanUpSockets' is never used. [unusedFunction]
 
 ^
 baseModule/lib/VoiceRecognitionV3/VoiceRecognitionV3.cpp:1044:0: style: The function 'cmp' is never used. [unusedFunction]
@@ -259,7 +265,7 @@ baseModule/lib/VoiceRecognitionV3/VoiceRecognitionV3.cpp:968:0: style: The funct
 baseModule/src/sd_handling.cpp:131:0: style: The function 'dumpSDInfo' is never used. [unusedFunction]
 
 ^
-ledModule/src/led_handling.cpp:409:0: style: The function 'getRainbowColor' is never used. [unusedFunction]
+ledModule/src/led_handling.cpp:425:0: style: The function 'getRainbowColor' is never used. [unusedFunction]
 
 ^
 lightingModule/src/webserver_handling.cpp:71:0: style: The function 'handleUnkownRequest' is never used. [unusedFunction]
@@ -268,7 +274,7 @@ lightingModule/src/webserver_handling.cpp:71:0: style: The function 'handleUnkow
 ledModule/src/voice_handling.cpp:75:0: style: The function 'handleVR' is never used. [unusedFunction]
 
 ^
-ledModule/src/led_handling.cpp:415:0: style: The function 'incColor' is never used. [unusedFunction]
+ledModule/src/led_handling.cpp:431:0: style: The function 'incColor' is never used. [unusedFunction]
 
 ^
 baseModule/src/sd_handling.cpp:113:0: style: The function 'initSDCard' is never used. [unusedFunction]
@@ -286,19 +292,22 @@ baseModule/lib/VoiceRecognitionV3/VoiceRecognitionV3.cpp:717:0: style: The funct
 baseModule/src/main.cpp:28:0: style: The function 'loop' is never used. [unusedFunction]
 
 ^
-baseModule/src/sensor_handling.cpp:143:0: style: The function 'printCurrentReading' is never used. [unusedFunction]
+ledModule/src/led_handling.cpp:390:0: style: The function 'middleOutEffect' is never used. [unusedFunction]
+
+^
+baseModule/src/sensor_handling.cpp:146:0: style: The function 'printCurrentReading' is never used. [unusedFunction]
 
 ^
 ledModule/src/weather_handling.cpp:38:0: style: The function 'printForecastData' is never used. [unusedFunction]
 
 ^
-pcModule/src/sensor_handling.cpp:34:0: style: The function 'printReading' is never used. [unusedFunction]
+ledModule/src/weather_handling.cpp:11:0: style: The function 'printWeatherData' is never used. [unusedFunction]
 
 ^
-baseModule/src/weather_handling.cpp:9:0: style: The function 'printWeatherData' is never used. [unusedFunction]
+ledModule/src/led_handling.cpp:397:0: style: The function 'projectPattern' is never used. [unusedFunction]
 
 ^
-ledModule/src/led_handling.cpp:381:0: style: The function 'projectPattern' is never used. [unusedFunction]
+ledModule/src/led_handling.cpp:381:0: style: The function 'projectStringCentric' is never used. [unusedFunction]
 
 ^
 ledModule/src/led_handling.cpp:170:0: style: The function 'projectWord' is never used. [unusedFunction]
@@ -349,7 +358,7 @@ baseModule/lib/VoiceRecognitionV3/VoiceRecognitionV3.cpp:572:0: style: The funct
 baseModule/src/main.cpp:11:0: style: The function 'setup' is never used. [unusedFunction]
 
 ^
-ledModule/src/main.cpp:245:0: style: The function 'setupEventResponse' is never used. [unusedFunction]
+ledModule/src/main.cpp:242:0: style: The function 'setupEventResponse' is never used. [unusedFunction]
 
 ^
 camModule/src/app_httpd.cpp:1386:0: style: The function 'setupLedFlash' is never used. [unusedFunction]
