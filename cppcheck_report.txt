@@ -211,6 +211,15 @@ ledModule/src/main.cpp:215:25: note: Shadow variable
 ledModule/src/main.cpp:157:25: style: Unused variable: currentTime [unusedVariable]
     struct simpleTime * currentTime;
                         ^
+baseModule/src/sensor_handling.cpp:21:9: error: The one definition rule is violated, different classes/structs have the same name 'sensor_reading' [ctuOneDefinitionRuleViolation]
+typedef struct {
+        ^
+growModule/src/sensor_handling.cpp:23:9: note: The one definition rule is violated, different classes/structs have the same name 'sensor_reading'
+typedef struct {
+        ^
+baseModule/src/sensor_handling.cpp:21:9: note: The one definition rule is violated, different classes/structs have the same name 'sensor_reading'
+typedef struct {
+        ^
 baseModule/lib/VoiceRecognitionV3/VoiceRecognitionV3.h:106:1: error: The one definition rule is violated, different classes/structs have the same name 'VR' [ctuOneDefinitionRuleViolation]
 class VR : public SoftwareSerial{
 ^
