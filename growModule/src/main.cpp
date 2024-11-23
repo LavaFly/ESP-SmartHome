@@ -10,6 +10,7 @@ void setup() {
     Serial.println("Starting...");
 
     initSensor();
+
     buildRouterConnection();
     buildTimeConnection();
     initWebserver();

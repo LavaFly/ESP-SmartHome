@@ -33,6 +33,7 @@ void initWebserver(){
         return;
     }
     server.on("/isLive", handleLiveStatus);
+    // calling this url will crash the mc, i will fix this someday
     server.on("/currentReading", handleSensorReading);
     server.on("/json", handleJSONRequest);
     DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
@@ -46,7 +47,7 @@ void loopOTA(){
 
 
 void setupMDNS(){
-    if(!MDNS.begin("baseModule")){
+    if(!MDNS.begin("growModule")){
         Serial.println("Error setting up mDNS responder!");
         while(1){ delay(1000); }
     }

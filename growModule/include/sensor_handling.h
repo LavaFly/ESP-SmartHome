@@ -6,7 +6,7 @@
 
 #include <inttypes.h>
 #include <ArduinoJson.h>
-#include "DHT.h"
+#include <DHT.h>
 
 
 // Maximum Number of concurrent Sensor Readings that will be stored at any time
@@ -15,12 +15,13 @@
 // will investigate why at some point
 #define NUM_READINGS 60
 
-#define DHTTYPE DHT22
+#define DHTTYPE DHT11
 
-#define STATUSPIN 0
+#define STATUS_PIN 13
 
-
-
+// half the speed of sound
+// for the distance calculation
+#define DISTANCE_CONVERSION 17
 
 /*
     Simple Implementation of a ring array by storing number of current Readings and start index of the list

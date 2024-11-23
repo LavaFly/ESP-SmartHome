@@ -2,7 +2,7 @@
 #include "time_handling.h"
 
 JsonDocument jsonResponse;
-DHT dht(STATUSPIN, DHTTYPE);
+DHT dht(STATUS_PIN, DHTTYPE);
 
 uint8_t readingsListIndex = 0;
 
@@ -27,7 +27,7 @@ typedef struct {
     float humidity;
     // photo
     uint16_t brightness;
-    uint16_t waterLevel;
+    float waterLevel;
 } sensor_reading;
 sensor_reading sensor_readings[NUM_READINGS];
 
@@ -41,15 +41,13 @@ void initSensor(){
     // init analog sensors
     // set brightness pin to high
     // read out photo
-    analogRead(A0);
+    //analogRead(A0);
     // set moisture pin to high
     // read out moisture
 
     // water level
     pinMode(TRIG_PIN, OUTPUT);
     pinMode(ECHO_PIN, INPUT);
-
-
 
     Serial.println("Sensor setup done");
 }
@@ -59,6 +57,26 @@ void getSensorReading(char* formattedResponse, size_t maxResponseLen){
     float temperature = dht.readTemperature();
     float humidity = dht.readHumidity();
 
+
+    float distance = 0;
+    long duration = 0;
+
+
+    // it is a bad idea to use delays like this in combination with some of the
+    // other libraries im using, but hoping this wont cause a mistake
+    yield();
+    digitalWrite(TRIG_PIN, LOW);
+    delayMicroseconds(2);
+    digitalWrite(TRIG_PIN, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(TRIG_PIN, LOW);
+
+    duration = pulseIn(ECHO_PIN, HIGH);
+    yield();
+
+    distance = duration * DISTANCE_CONVERSION;
+
+
     // do this prettier at some point
     if(!isnan(temperature) || !isnan(humidity)){
         jsonResponse["sensor"] = "base";
@@ -67,7 +85,7 @@ void getSensorReading(char* formattedResponse, size_t maxResponseLen){
         jsonResponse["humidity"] = humidity;
         jsonResponse["brightness"] = analogRead(A0);
         // switch with multiplexer
-        jsonResponse["waterLevel"] = analogRead(A0);
+        jsonResponse["waterLevel"] = distance;
 
     } else {
         // i should probably print or log this
@@ -111,9 +129,25 @@ bool updateSensorValues(){
     float humidity = dht.readHumidity();
 
     // do this prettier at some point
-    if(!isnan(temperature) || !isnan(humidity)){
+    if(isnan(temperature) || isnan(humidity)){
         return false;
     }
+    float distance;
+    long duration = 0;
+
+
+    // it is a bad idea to use delays like this in combination with some of the
+    // other libraries im using, but hoping this wont cause a mistake
+    digitalWrite(TRIG_PIN, LOW);
+    delayMicroseconds(2);
+    digitalWrite(TRIG_PIN, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(TRIG_PIN, LOW);
+
+    duration = pulseIn(ECHO_PIN, HIGH);
+
+    distance = duration * DISTANCE_CONVERSION;
+
 
     sensor_readings[readingsListIndex].time = getEpochTime();
     Serial.println(sensor_readings[readingsListIndex].time);
@@ -122,7 +156,7 @@ bool updateSensorValues(){
     sensor_readings[readingsListIndex].humidity = humidity;
     sensor_readings[readingsListIndex].brightness = analogRead(A0);
     // switch with multiplexer
-    sensor_readings[readingsListIndex].waterLevel = analogRead(A0);
+    sensor_readings[readingsListIndex].waterLevel = distance;
 
     readingsListIndex = (readingsListIndex + 1) % NUM_READINGS;
     return true;
