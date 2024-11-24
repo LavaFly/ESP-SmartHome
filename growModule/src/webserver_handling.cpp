@@ -4,6 +4,7 @@
 
 #include "webserver_handling.h"
 #include "sensor_handling.h"
+#include "actuator_handling.h"
 #include "internet_settings.h"
 
 
@@ -36,6 +37,17 @@ void initWebserver(){
     // calling this url will crash the mc, i will fix this someday
     server.on("/currentReading", handleSensorReading);
     server.on("/json", handleJSONRequest);
+
+    // this can be done better, i know, but will work for now
+    server.on("/pump/on", handlePumpOn);
+    server.on("/pump/off", handlePumpOff);
+    server.on("/pump/ml", handlePumpMilliLiter);
+
+    server.on("/takePicture", handlePictureRequest);
+    server.on("/light/on", handleLightOn);
+    server.on("/light/off", handleLightOff);
+    server.on("/light/seconds", handleLightSecondsTimer);
+
     DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
     server.begin();
     ArduinoOTA.begin();
@@ -92,5 +104,39 @@ void handleSensorReading(AsyncWebServerRequest *request){
     request->send(response);
 
     free(sensorData);
+}
+
+
+
+void handlePumpOn(AsyncWebServerRequest *request){
+    activateActuator();
+    request->send(200);
+}
+
+void handlePumpOff(AsyncWebServerRequest *request){
+    deactivateActuator();
+    request->send(200);
+}
+
+void handlePumpMilliLiter(AsyncWebServerRequest *request){
+
+}
+
+
+// these will be implemented soon, wanted to get the rough outline first
+void handlePictureRequest(AsyncWebServerRequest *request){
+
+}
+
+void handleLightOn(AsyncWebServerRequest *request){
+
+}
+
+void handleLightOff(AsyncWebServerRequest *request){
+
+}
+
+void handleLightSecondsTimer(AsyncWebServerRequest *request){
+
 }
 

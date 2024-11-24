@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include "sensor_handling.h"
+#include "actuator_handling.h"
 #include "webserver_handling.h"
 #include "time_handling.h"
 
@@ -9,7 +10,8 @@ void setup() {
     Serial.begin(9600);
     Serial.println("Starting...");
 
-    initSensor();
+    //initSensor(); now testing something else and disconnected the rest
+    initActuator();
 
     buildRouterConnection();
     buildTimeConnection();
