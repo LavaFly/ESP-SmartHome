@@ -34,5 +34,17 @@ void handleSensorReading(AsyncWebServerRequest *request);
 void handleLiveStatus(AsyncWebServerRequest *request);
 
 extern void getSensorReading(char *formattedResponse, size_t maxResponseLen);
+extern void activateActuator();
+extern void deactivateActuator();
+
+void handlePumpOn(AsyncWebServerRequest *request);
+void handlePumpOff(AsyncWebServerRequest *request);
+void handlePumpMilliLiter(AsyncWebServerRequest *request);
+
+
+void handlePictureRequest(AsyncWebServerRequest *request);
+void handleLightOn(AsyncWebServerRequest *request);
+void handleLightOff(AsyncWebServerRequest *request);
+void handleLightSecondsTimer(AsyncWebServerRequest *request);
 
 #endif
