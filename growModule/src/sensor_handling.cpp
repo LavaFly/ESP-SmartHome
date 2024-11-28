@@ -6,9 +6,6 @@ DHT dht(STATUS_PIN, DHTTYPE);
 
 uint8_t readingsListIndex = 0;
 
-// Photoresistor-Pin D8
-#define BRIGHTNESS_PIN 15
-
 // Soil Moisture-Pin D7
 #define MOISTURE_PIN 13
 
@@ -26,27 +23,16 @@ typedef struct {
     float temperature;
     float humidity;
     // photo
-    uint16_t brightness;
     float waterLevel;
 } sensor_reading;
 sensor_reading sensor_readings[NUM_READINGS];
 
 void initSensor(){
     Serial.println("start init");
-    pinMode(BRIGHTNESS_PIN, INPUT);
     pinMode(MOISTURE_PIN, INPUT);
 
     dht.begin();
 
-    // init analog sensors
-    // set brightness pin to high
-    // read out photo
-    setAnalogToBrightness();
-    analogRead(A0);
-
-    // set moisture pin to high
-    // read out moisture
-    setAnalogToMoisture();
     analogRead(A0);
 
     // water level
@@ -87,10 +73,6 @@ void getSensorReading(char* formattedResponse, size_t maxResponseLen){
         jsonResponse["time"] = getEpochTime();
         jsonResponse["temperature"] = temperature;
         jsonResponse["humidity"] = humidity;
-        setAnalogToBrightness();
-        jsonResponse["brightness"] = analogRead(A0);
-        // switch with multiplexer
-        setAnalogToMoisture();
         jsonResponse["waterLevel"] = distance;
 
     } else {
@@ -99,7 +81,6 @@ void getSensorReading(char* formattedResponse, size_t maxResponseLen){
         jsonResponse["time"] = getEpochTime();
         jsonResponse["temperature"] = 0;
         jsonResponse["humidity"] = 0;
-        jsonResponse["brightness"] = 0;
         jsonResponse["waterLevel"] = 0;
     }
 
@@ -116,7 +97,6 @@ void getSensorReadingFromList(char* formattedResponse, size_t maxResponseLen, ui
     jsonResponse["time"] = sensor_readings[temp].time;
     jsonResponse["temperature"] = sensor_readings[temp].temperature;
     jsonResponse["humidity"] = sensor_readings[temp].humidity;
-    jsonResponse["brightness"] = sensor_readings[temp].brightness;
     jsonResponse["waterLevel"] = sensor_readings[temp].waterLevel;
 
     jsonResponse.shrinkToFit();
@@ -160,10 +140,6 @@ bool updateSensorValues(){
     Serial.println("");
     sensor_readings[readingsListIndex].temperature = temperature;
     sensor_readings[readingsListIndex].humidity = humidity;
-    setAnalogToBrightness();
-    sensor_readings[readingsListIndex].brightness = analogRead(A0);
-    // switch with multiplexer
-    setAnalogToMoisture();
     sensor_readings[readingsListIndex].waterLevel = distance;
 
     readingsListIndex = (readingsListIndex + 1) % NUM_READINGS;
@@ -171,21 +147,11 @@ bool updateSensorValues(){
 }
 
 void printCurrentReading(){
-    // brightness
     Serial.println("New Reading");
-    Serial.print("brightness ");
     Serial.println(analogRead(A0));
 
 
     // and some more
 
     Serial.println("\n");
-}
-
-void setAnalogToBrightness(){
-    // set correct Pin High
-}
-
-void setAnalogToMoisture(){
-    // set correct Pin Low
 }

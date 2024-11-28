@@ -19,8 +19,6 @@
 
 #define STATUS_PIN 13
 
-#define ANALOG_SWITCH 4 // D2
-
 // half the speed of sound
 // for the distance calculation
 #define DISTANCE_CONVERSION 17
@@ -72,8 +70,5 @@ int readAtIndex();
  *
  */
 void printCurrentReading();
-
-void setAnalogToBrightness();
-void setAnalogToMoisture();
 
 #endif
