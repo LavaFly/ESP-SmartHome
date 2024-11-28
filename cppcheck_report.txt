@@ -214,7 +214,7 @@ ledModule/src/main.cpp:157:25: style: Unused variable: currentTime [unusedVariab
 baseModule/src/sensor_handling.cpp:21:9: error: The one definition rule is violated, different classes/structs have the same name 'sensor_reading' [ctuOneDefinitionRuleViolation]
 typedef struct {
         ^
-growModule/src/sensor_handling.cpp:23:9: note: The one definition rule is violated, different classes/structs have the same name 'sensor_reading'
+growModule/src/sensor_handling.cpp:20:9: note: The one definition rule is violated, different classes/structs have the same name 'sensor_reading'
 typedef struct {
         ^
 baseModule/src/sensor_handling.cpp:21:9: note: The one definition rule is violated, different classes/structs have the same name 'sensor_reading'
@@ -233,6 +233,15 @@ baseModule/src/sensor_handling.cpp:21:9: error: The one definition rule is viola
 typedef struct {
         ^
 pcModule/src/sensor_handling.cpp:16:9: note: The one definition rule is violated, different classes/structs have the same name 'sensor_reading'
+typedef struct {
+        ^
+baseModule/src/sensor_handling.cpp:21:9: note: The one definition rule is violated, different classes/structs have the same name 'sensor_reading'
+typedef struct {
+        ^
+baseModule/src/sensor_handling.cpp:21:9: error: The one definition rule is violated, different classes/structs have the same name 'sensor_reading' [ctuOneDefinitionRuleViolation]
+typedef struct {
+        ^
+tentModule/src/sensor_handling.cpp:15:9: note: The one definition rule is violated, different classes/structs have the same name 'sensor_reading'
 typedef struct {
         ^
 baseModule/src/sensor_handling.cpp:21:9: note: The one definition rule is violated, different classes/structs have the same name 'sensor_reading'
