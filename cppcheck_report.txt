@@ -274,6 +274,9 @@ baseModule/lib/VoiceRecognitionV3/VoiceRecognitionV3.cpp:968:0: style: The funct
 baseModule/src/sd_handling.cpp:131:0: style: The function 'dumpSDInfo' is never used. [unusedFunction]
 
 ^
+growModule/src/actuator_handling.cpp:7:0: style: The function 'getActuatorStatus' is never used. [unusedFunction]
+
+^
 ledModule/src/led_handling.cpp:425:0: style: The function 'getRainbowColor' is never used. [unusedFunction]
 
 ^
