@@ -5,7 +5,7 @@
         "temperature": 22.56895256,
         "humidity": 58.00375748,
         "quality": 100406,
-        "co2": 32,
+        "co2": 100,
         "brightness": 36
     },
     {
@@ -14,7 +14,7 @@
         "temperature": 22.58532143,
         "humidity": 57.93455505,
         "quality": 101382,
-        "co2": 33,
+        "co2": 250,
         "brightness": 28
     },
     {
@@ -23,7 +23,7 @@
         "temperature": 22.60074615,
         "humidity": 57.92372513,
         "quality": 102692,
-        "co2": 34,
+        "co2": 300,
         "brightness": 24
     },
     {
@@ -32,7 +32,7 @@
         "temperature": 22.61585617,
         "humidity": 57.90635681,
         "quality": 103584,
-        "co2": 35,
+        "co2": 250,
         "brightness": 21
     },
     {
@@ -41,7 +41,7 @@
         "temperature": 22.62907791,
         "humidity": 57.8887291,
         "quality": 105085,
-        "co2": 36,
+        "co2": 330,
         "brightness": 30
     },
     {
@@ -50,7 +50,7 @@
         "temperature": 22.64387321,
         "humidity": 57.88430786,
         "quality": 106222,
-        "co2": 37,
+        "co2": 450,
         "brightness": 355
     },
     {
@@ -59,7 +59,7 @@
         "temperature": 22.66213036,
         "humidity": 57.81541443,
         "quality": 107522,
-        "co2": 38,
+        "co2": 430,
         "brightness": 375
     },
     {
@@ -68,7 +68,7 @@
         "temperature": 22.6803875,
         "humidity": 57.77901077,
         "quality": 109498,
-        "co2": 39,
+        "co2": 400,
         "brightness": 15
     },
     {
@@ -77,7 +77,7 @@
         "temperature": 22.70179367,
         "humidity": 57.80148697,
         "quality": 108571,
-        "co2": 40,
+        "co2": 470,
         "brightness": 29
     },
     {
@@ -86,7 +86,7 @@
         "temperature": 23.82623482,
         "humidity": 78.02667999,
         "quality": 80668,
-        "co2": 41,
+        "co2": 500,
         "brightness": 31
     },
     {
@@ -95,7 +95,7 @@
         "temperature": 24.58332253,
         "humidity": 86.09028625,
         "quality": 72345,
-        "co2": 42,
+        "co2": 510,
         "brightness": 21
     },
     {
@@ -104,7 +104,7 @@
         "temperature": 25.02718735,
         "humidity": 88.78977203,
         "quality": 69512,
-        "co2": 43,
+        "co2": 520,
         "brightness": 21
     },
     {
@@ -113,7 +113,7 @@
         "temperature": 25.37787437,
         "humidity": 90.41683197,
         "quality": 67054,
-        "co2": 44,
+        "co2": 550,
         "brightness": 97
     },
     {
@@ -122,7 +122,7 @@
         "temperature": 25.4395752,
         "humidity": 90.79762268,
         "quality": 66679,
-        "co2": 45,
+        "co2": 550,
         "brightness": 27
     },
     {
@@ -131,7 +131,7 @@
         "temperature": 25.34608078,
         "humidity": 90.98226166,
         "quality": 67434,
-        "co2": 46,
+        "co2": 620,
         "brightness": 28
     },
     {
@@ -140,7 +140,7 @@
         "temperature": 25.18804932,
         "humidity": 90.25153351,
         "quality": 68767,
-        "co2": 47,
+        "co2": 700,
         "brightness": 34
     },
     {
@@ -149,7 +149,7 @@
         "temperature": 25.00105858,
         "humidity": 88.01683044,
         "quality": 71172,
-        "co2": 48,
+        "co2": 800,
         "brightness": 25
     },
     {
@@ -158,7 +158,7 @@
         "temperature": 24.81658554,
         "humidity": 84.49996185,
         "quality": 74410,
-        "co2": 49,
+        "co2": 1100,
         "brightness": 27
     },
     {
@@ -167,7 +167,7 @@
         "temperature": 24.65163231,
         "humidity": 80.41484833,
         "quality": 78248,
-        "co2": 50,
+        "co2": 1300,
         "brightness": 27
     },
     {
@@ -176,7 +176,7 @@
         "temperature": 24.50777054,
         "humidity": 76.32429504,
         "quality": 82097,
-        "co2": 51,
+        "co2": 1400,
         "brightness": 28
     },
     {
@@ -185,7 +185,7 @@
         "temperature": 24.39129448,
         "humidity": 73.03585052,
         "quality": 85636,
-        "co2": 52,
+        "co2": 1500,
         "brightness": 30
     },
     {
@@ -194,7 +194,7 @@
         "temperature": 24.30031967,
         "humidity": 71.43180847,
         "quality": 88544,
-        "co2": 53,
+        "co2": 1600,
         "brightness": 29
     },
     {
@@ -203,7 +203,7 @@
         "temperature": 24.22193527,
         "humidity": 69.33887482,
         "quality": 91657,
-        "co2": 54,
+        "co2": 1700,
         "brightness": 27
     },
     {
@@ -212,7 +212,7 @@
         "temperature": 24.12403297,
         "humidity": 65.06053162,
         "quality": 94173,
-        "co2": 55,
+        "co2": 1400,
         "brightness": 19
     },
     {
@@ -221,7 +221,7 @@
         "temperature": 23.95278358,
         "humidity": 59.25204468,
         "quality": 99745,
-        "co2": 56,
+        "co2": 1200,
         "brightness": 10
     },
     {
@@ -230,7 +230,7 @@
         "temperature": 23.70346451,
         "humidity": 56.26486969,
         "quality": 106493,
-        "co2": 57,
+        "co2": 1100,
         "brightness": 10
     },
     {
@@ -239,7 +239,7 @@
         "temperature": 23.38237572,
         "humidity": 52.73842239,
         "quality": 112677,
-        "co2": 58,
+        "co2": 1000,
         "brightness": 18
     },
     {
@@ -248,7 +248,7 @@
         "temperature": 22.99329185,
         "humidity": 52.35227203,
         "quality": 117105,
-        "co2": 59,
+        "co2": 900,
         "brightness": 19
     },
     {
@@ -257,7 +257,7 @@
         "temperature": 22.61491013,
         "humidity": 52.9159584,
         "quality": 121895,
-        "co2": 0,
+        "co2": 800,
         "brightness": 12
     },
     {
@@ -266,7 +266,7 @@
         "temperature": 22.20631409,
         "humidity": 52.79917145,
         "quality": 123886,
-        "co2": 1,
+        "co2": 700,
         "brightness": 12
     },
     {
@@ -275,7 +275,7 @@
         "temperature": 21.87326813,
         "humidity": 52.26980209,
         "quality": 131397,
-        "co2": 2,
+        "co2": 650,
         "brightness": 12
     },
     {
@@ -284,7 +284,7 @@
         "temperature": 21.50339127,
         "humidity": 51.85715103,
         "quality": 136447,
-        "co2": 3,
+        "co2": 600,
         "brightness": 12
     },
     {
@@ -293,7 +293,7 @@
         "temperature": 21.09070778,
         "humidity": 51.37157822,
         "quality": 139411,
-        "co2": 4,
+        "co2": 550,
         "brightness": 13
     },
     {
@@ -302,7 +302,7 @@
         "temperature": 20.79732704,
         "humidity": 54.57555771,
         "quality": 138600,
-        "co2": 5,
+        "co2": 525,
         "brightness": 12
     },
     {
@@ -311,7 +311,7 @@
         "temperature": 20.54518509,
         "humidity": 55.56426239,
         "quality": 141060,
-        "co2": 6,
+        "co2": 500,
         "brightness": 12
     },
     {
@@ -320,7 +320,7 @@
         "temperature": 20.3390007,
         "humidity": 56.93759155,
         "quality": 141900,
-        "co2": 7,
+        "co2": 475,
         "brightness": 13
     },
     {
@@ -329,7 +329,7 @@
         "temperature": 20.14855957,
         "humidity": 57.3829422,
         "quality": 145108,
-        "co2": 8,
+        "co2": 450,
         "brightness": 13
     },
     {
@@ -338,7 +338,7 @@
         "temperature": 19.97826004,
         "humidity": 57.11434174,
         "quality": 147285,
-        "co2": 9,
+        "co2": 425,
         "brightness": 12
     },
     {
@@ -347,7 +347,7 @@
         "temperature": 19.83629417,
         "humidity": 57.29517365,
         "quality": 147416,
-        "co2": 10,
+        "co2": 400,
         "brightness": 12
     },
     {
@@ -356,7 +356,7 @@
         "temperature": 19.71699142,
         "humidity": 59.23218918,
         "quality": 146767,
-        "co2": 11,
+        "co2": 400,
         "brightness": 19
     },
     {
@@ -365,7 +365,7 @@
         "temperature": 19.58163834,
         "humidity": 59.52003479,
         "quality": 151018,
-        "co2": 12,
+        "co2": 410,
         "brightness": 12
     },
     {
@@ -374,7 +374,7 @@
         "temperature": 19.393713,
         "humidity": 57.66796112,
         "quality": 152956,
-        "co2": 13,
+        "co2": 410,
         "brightness": 12
     },
     {
@@ -383,7 +383,7 @@
         "temperature": 19.20138359,
         "humidity": 58.06899261,
         "quality": 153943,
-        "co2": 14,
+        "co2": 415,
         "brightness": 12
     },
     {
@@ -392,7 +392,7 @@
         "temperature": 19.01062775,
         "humidity": 59.16027069,
         "quality": 158025,
-        "co2": 15,
+        "co2": 420,
         "brightness": 13
     },
     {
@@ -401,7 +401,7 @@
         "temperature": 18.80098534,
         "humidity": 58.55910492,
         "quality": 161076,
-        "co2": 16,
+        "co2": 410,
         "brightness": 12
     },
     {
@@ -410,7 +410,7 @@
         "temperature": 18.57056808,
         "humidity": 58.13857269,
         "quality": 165059,
-        "co2": 17,
+        "co2": 405,
         "brightness": 12
     },
     {
@@ -419,7 +419,7 @@
         "temperature": 18.34613228,
         "humidity": 58.50999451,
         "quality": 168220,
-        "co2": 18,
+        "co2": 400,
         "brightness": 19
     },
     {
@@ -428,7 +428,7 @@
         "temperature": 18.11130905,
         "humidity": 58.52347946,
         "quality": 172036,
-        "co2": 19,
+        "co2": 400,
         "brightness": 13
     },
     {
@@ -437,7 +437,7 @@
         "temperature": 17.88718987,
         "humidity": 58.48009109,
         "quality": 173286,
-        "co2": 20,
+        "co2": 400,
         "brightness": 13
     },
     {
@@ -446,7 +446,7 @@
         "temperature": 17.66684914,
         "humidity": 59.21014023,
         "quality": 176214,
-        "co2": 21,
+        "co2": 400,
         "brightness": 13
     },
     {
@@ -455,7 +455,7 @@
         "temperature": 17.39456749,
         "humidity": 59.14053345,
         "quality": 179628,
-        "co2": 22,
+        "co2": 390,
         "brightness": 12
     },
     {
@@ -464,7 +464,7 @@
         "temperature": 17.17422867,
         "humidity": 59.01313782,
         "quality": 180405,
-        "co2": 23,
+        "co2": 385,
         "brightness": 19
     },
     {
@@ -473,7 +473,7 @@
         "temperature": 17.01904678,
         "humidity": 61.78554535,
         "quality": 176214,
-        "co2": 24,
+        "co2": 380,
         "brightness": 12
     },
     {
@@ -482,7 +482,7 @@
         "temperature": 16.8692131,
         "humidity": 62.53009033,
         "quality": 176774,
-        "co2": 25,
+        "co2": 375,
         "brightness": 19
     },
     {
@@ -491,7 +491,7 @@
         "temperature": 16.71120071,
         "humidity": 63.35569763,
         "quality": 178858,
-        "co2": 26,
+        "co2": 370,
         "brightness": 12
     },
     {
@@ -500,7 +500,7 @@
         "temperature": 16.53052139,
         "humidity": 62.23812866,
         "quality": 182976,
-        "co2": 27,
+        "co2": 350,
         "brightness": 12
     },
     {
@@ -509,7 +509,7 @@
         "temperature": 16.39800453,
         "humidity": 63.39093018,
         "quality": 179628,
-        "co2": 28,
+        "co2": 330,
         "brightness": 18
     },
     {
@@ -518,7 +518,7 @@
         "temperature": 16.25887489,
         "humidity": 63.71658325,
         "quality": 185005,
-        "co2": 29,
+        "co2": 320,
         "brightness": 12
     },
     {
@@ -527,7 +527,7 @@
         "temperature": 16.16916656,
         "humidity": 64.94371033,
         "quality": 182576,
-        "co2": 30,
+        "co2": 310,
         "brightness": 12
     },
     {
@@ -536,7 +536,7 @@
         "temperature": 16.11565781,
         "humidity": 66.26397705,
         "quality": 180600,
-        "co2": 31,
+        "co2": 300,
         "brightness": 12
     }
 ]
