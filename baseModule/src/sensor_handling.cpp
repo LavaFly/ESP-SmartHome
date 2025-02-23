@@ -2,7 +2,9 @@
 #include "time_handling.h"
 
 JsonDocument jsonResponse;
-Adafruit_BME680 bme;
+SensirionI2cScd30 co2Sensor;
+static char errMsg[64]; // this is choosen w/o thought
+static int16_t errNum;
 
 int pwmPin = 15;
 int ppmrange = 5000;
@@ -20,11 +22,9 @@ uint8_t readingsListIndex = 0;
  */
 typedef struct {
     uint32_t time;
-    // bme680
+    // scd30
     float temperature;
     float humidity;
-    float quality;
-    // co2 sensor
     float co2;
     // photo
     uint16_t brightness;
@@ -34,19 +34,24 @@ sensor_reading sensor_readings[NUM_READINGS];
 void initSensor(){
     Serial.println("start init");
 
-    while(!bme.begin(119)){
-        Serial.print(".");
-        delay(50);
-    }
-    bme.setTemperatureOversampling(BME680_OS_8X);
-    bme.setHumidityOversampling(BME680_OS_2X);
-    bme.setPressureOversampling(BME680_OS_4X);
-    bme.setIIRFilterSize(BME680_FILTER_SIZE_3);
-    bme.setGasHeater(320, 150);
+    Wire.begin();
+    co2Sensor.begin(Wire, SCD30_I2C_ADDR_61);
 
-    // is left out for now
+    co2Sensor.stopPeriodicMeasurement();
+    co2Sensor.softReset();
+    co2Sensor.setMeasurementInterval(10);
+
+    errNum = co2Sensor.startPeriodicMeasurement(0);
+    if(errNum != NO_ERROR){
+        Serial.println("Error trying to execute startPeriodicMeasurement(): ");
+        Serial.println(errMsg);
+        return;
+    }
+
+
     // init co2
     /**
+    will move this somewhere else, but keep for now
     pinMode(pwmPin, INPUT);
     pwmtime = pulseIn(pwmPin, HIGH, 2000000) / 1000;
     float pulsepercent = pwmtime / 1004.0;
@@ -76,24 +81,32 @@ void readCo2(){
 }
 
 void getSensorReading(char* formattedResponse, size_t maxResponseLen){
-    if(bme.performReading()){
-        jsonResponse["sensor"] = "base";
-        jsonResponse["time"] = getEpochTime();
-        jsonResponse["temperature"] = bme.temperature;
-        jsonResponse["humidity"] = bme.humidity;
-        jsonResponse["quality"] = bme.gas_resistance;
-        jsonResponse["co2"] = 0;
-        jsonResponse["brightness"] = analogRead(A0);
+    float temperature = 0.0;
+    float humidity = 0.0;
+    float co2 = 0.0;
+    uint16_t dataReady = 0;
 
-    } else {
+    dataReady = co2Sensor.getDataReady(dataReady);
+
+    if(dataReady == 0){
+        Serial.println("no data ready, reading failed");
+
         // i should probably print or log this
         jsonResponse["sensor"] = "invalid";
         jsonResponse["time"] = getEpochTime();
         jsonResponse["temperature"] = 0;
         jsonResponse["humidity"] = 0;
-        jsonResponse["quality"] = 0;
         jsonResponse["co2"] = 0;
         jsonResponse["brightness"] = 0;
+    } else {
+        co2Sensor.readMeasurementData(co2, temperature, humidity);
+
+        jsonResponse["sensor"] = "base";
+        jsonResponse["time"] = getEpochTime();
+        jsonResponse["temperature"] = temperature;
+        jsonResponse["humidity"] = humidity;
+        jsonResponse["co2"] = co2;
+        jsonResponse["brightness"] = analogRead(A0);
     }
 
     jsonResponse.shrinkToFit();
@@ -109,7 +122,7 @@ void getSensorReadingFromList(char* formattedResponse, size_t maxResponseLen, ui
     jsonResponse["time"] = sensor_readings[temp].time;
     jsonResponse["temperature"] = sensor_readings[temp].temperature;
     jsonResponse["humidity"] = sensor_readings[temp].humidity;
-    jsonResponse["quality"] = sensor_readings[temp].quality;
+    //jsonResponse["quality"] = sensor_readings[temp].quality;
     jsonResponse["co2"] = sensor_readings[temp].co2;
     jsonResponse["brightness"] = sensor_readings[temp].brightness;
 
@@ -126,17 +139,23 @@ int getNumOfReadingsInList(){
 
 bool updateSensorValues(){
     // if reading values from the sensor fails, return false, else store values and return true
-    if(!bme.performReading()){
+    float temperature = 0.0;
+    float humidity = 0.0;
+    float co2 = 0.0;
+    uint16_t dataReady = 0;
+
+    dataReady = co2Sensor.getDataReady(dataReady);
+    if(dataReady != 1){
         return false;
     }
+    co2Sensor.readMeasurementData(co2, temperature, humidity);
 
     sensor_readings[readingsListIndex].time = getEpochTime();
     Serial.println(sensor_readings[readingsListIndex].time);
     Serial.println("");
-    sensor_readings[readingsListIndex].temperature = bme.temperature;
-    sensor_readings[readingsListIndex].humidity = bme.humidity;
-    sensor_readings[readingsListIndex].quality = bme.gas_resistance;
-    sensor_readings[readingsListIndex].co2 = readingsListIndex;
+    sensor_readings[readingsListIndex].temperature = temperature;
+    sensor_readings[readingsListIndex].humidity = humidity;
+    sensor_readings[readingsListIndex].co2 = co2;
     sensor_readings[readingsListIndex].brightness = analogRead(A0);
 
     readingsListIndex = (readingsListIndex + 1) % NUM_READINGS;
@@ -148,28 +167,6 @@ void printCurrentReading(){
     Serial.println("New Reading");
     Serial.print("brightness ");
     Serial.println(analogRead(A0));
-
-    // BME680
-    bme.performReading();
-    Serial.print("temperature: ");
-    Serial.println(bme.temperature);
-
-    Serial.print("humidity: ");
-    Serial.println(bme.humidity);
-    Serial.print("gas_resistance: ");
-    Serial.println(bme.gas_resistance);
-
-    // CO2
-    /**
-    pwmtime = pulseIn(pwmPin, HIGH, 2000000) / 1000;
-    float pulsepercent = pwmtime / 1004.0;
-    PPM = ppmrange * pulsepercent;
-    Serial.print("co2: ");
-    Serial.println(PPM);
-    **/
-
-    // time
-    //Serial.println("time: ");
 
     Serial.println("\n");
 }
