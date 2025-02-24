@@ -6,13 +6,6 @@ SensirionI2cScd30 co2Sensor;
 static char errMsg[64]; // this is choosen w/o thought
 static int16_t errNum;
 
-int pwmPin = 15;
-int ppmrange = 5000;
-unsigned long pwmtime;
-
-int PPM = 0;
-float pulsepercent=0;
-
 uint8_t readingsListIndex = 0;
 
 /**
@@ -48,16 +41,6 @@ void initSensor(){
         return;
     }
 
-
-    // init co2
-    /**
-    will move this somewhere else, but keep for now
-    pinMode(pwmPin, INPUT);
-    pwmtime = pulseIn(pwmPin, HIGH, 2000000) / 1000;
-    float pulsepercent = pwmtime / 1004.0;
-    PPM = ppmrange * pulsepercent;
-    **/
-
     // init photo
     analogRead(A0);
 
@@ -66,10 +49,6 @@ void initSensor(){
 
 
 void readCo2(){
-    pwmtime = pulseIn(pwmPin, HIGH, 2000000) / 1000;
-    float pulsepercent = pwmtime / 1004.0;
-    PPM = ppmrange * pulsepercent;
-
     /* taken from
      * https://iotspace.dev/arduino-co2-sensor-mh-z19-beispiel-und-sketch/
      * <400  - frische Außenluft
