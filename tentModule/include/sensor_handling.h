@@ -6,15 +6,18 @@
 
 #include <inttypes.h>
 #include <ArduinoJson.h>
+#include <DHT.h>
 
 
 // Maximum Number of concurrent Sensor Readings that will be stored at any time
 // the handleJson function fails after 79 elements(will send 79 elements without
 // the closing ']')
 // will investigate why at some point
-#define NUM_READINGS 60
+#define NUM_READINGS 130
 
 #define STATUS_PIN 13
+
+#define DHTTYPE DHT11
 
 
 /*

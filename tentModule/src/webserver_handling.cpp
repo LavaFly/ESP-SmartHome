@@ -7,6 +7,7 @@
 #include "actuator_handling.h"
 #include "internet_settings.h"
 
+#define PUMP_POWER 13 // D7
 
 AsyncWebServer server(80);
 
@@ -38,10 +39,6 @@ void initWebserver(){
     server.on("/currentReading", handleSensorReading);
     server.on("/json", handleJSONRequest);
 
-    // this can be done better, i know, but will work for now
-    server.on("/light/on", handleLightOn);
-    server.on("/light/off", handleLightOff);
-    server.on("/light/seconds", handleLightSecondsTimer);
 
     DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
     server.begin();
@@ -54,7 +51,7 @@ void loopOTA(){
 
 
 void setupMDNS(){
-    if(!MDNS.begin("growModule")){
+    if(!MDNS.begin("tentModule")){
         Serial.println("Error setting up mDNS responder!");
         while(1){ delay(1000); }
     }
@@ -114,20 +111,8 @@ void handlePumpOff(AsyncWebServerRequest *request){
 }
 
 void handlePumpMilliLiter(AsyncWebServerRequest *request){
+    activateActuator();
+    //wait a bit
+    deactivateActuator();
 
 }
-
-
-// these will be implemented soon, wanted to get the rough outline first
-void handleLightOn(AsyncWebServerRequest *request){
-
-}
-
-void handleLightOff(AsyncWebServerRequest *request){
-
-}
-
-void handleLightSecondsTimer(AsyncWebServerRequest *request){
-
-}
-

@@ -3,10 +3,11 @@
 
 JsonDocument jsonResponse;
 uint8_t readingsListIndex = 0;
+DHT dht(STATUS_PIN, DHTTYPE);
 
-// Photoresistor-Pin D8
-#define BRIGHTNESS_PIN 15
-
+// this ugly
+#define PWM_PIN 15
+const int ppmrange = 5000;
 
 /**
  * @brief This Structure holds all information that is stored from a sensor reading
@@ -14,15 +15,19 @@ uint8_t readingsListIndex = 0;
  */
 typedef struct {
     uint32_t time;
-    // photo
+    // dht11
+    float temperature;
+    float humidity;
     uint16_t brightness;
-    float waterLevel;
+    uint8_t co2;
 } sensor_reading;
 sensor_reading sensor_readings[NUM_READINGS];
 
 void initSensor(){
     Serial.println("start init");
-    pinMode(BRIGHTNESS_PIN, INPUT);
+    pinMode(PWM_PIN, INPUT);
+
+    dht.begin();
 
     analogRead(A0);
     Serial.println("Sensor setup done");
@@ -30,18 +35,33 @@ void initSensor(){
 
 
 void getSensorReading(char* formattedResponse, size_t maxResponseLen){
+    float pulsepercent;
+    uint32_t co2;
+    unsigned long pwmtime;
+    pwmtime = pulseIn(PWM_PIN, HIGH, 2000000) / 1000;
+    pulsepercent = pwmtime / 1004.0;
+    co2 = ppmrange * pulsepercent;
+
+    float temperature = dht.readTemperature();
+    float humidity = dht.readHumidity();
 
     // do this prettier at some point
-    if(true){
+    if(!isnan(temperature) || !isnan(humidity)){
         jsonResponse["sensor"] = "tent";
         jsonResponse["time"] = getEpochTime();
+        jsonResponse["temperature"] = temperature;
+        jsonResponse["humidity"] = humidity;
         jsonResponse["brightness"] = analogRead(A0);
+        jsonResponse["co2"] = co2;
 
     } else {
         // i should probably print or log this
         jsonResponse["sensor"] = "invalid";
         jsonResponse["time"] = getEpochTime();
+        jsonResponse["temperature"] = 0;
+        jsonResponse["humidity"] = 0;
         jsonResponse["brightness"] = 0;
+        jsonResponse["co2"] = 0;
     }
 
     jsonResponse.shrinkToFit();
@@ -55,7 +75,10 @@ void getSensorReadingFromList(char* formattedResponse, size_t maxResponseLen, ui
 
     jsonResponse["sensor"] = "base";
     jsonResponse["time"] = sensor_readings[temp].time;
+    jsonResponse["temperature"] = sensor_readings[temp].temperature;
+    jsonResponse["humidity"] = sensor_readings[temp].humidity;
     jsonResponse["brightness"] = sensor_readings[temp].brightness;
+    jsonResponse["co2"] = sensor_readings[temp].co2;
 
     jsonResponse.shrinkToFit();
     serializeJson(jsonResponse, formattedResponse, maxResponseLen);
@@ -69,10 +92,27 @@ int getNumOfReadingsInList(){
 }
 
 bool updateSensorValues(){
+    float pulsepercent;
+    uint32_t co2;
+    unsigned long pwmtime;
+    pwmtime = pulseIn(PWM_PIN, HIGH, 2000000) / 1000;
+    pulsepercent = pwmtime / 1004.0;
+    co2 = ppmrange * pulsepercent;
+
+    float temperature = dht.readTemperature();
+    float humidity = dht.readHumidity();
+
+    if(isnan(temperature) || isnan(humidity)){
+        return false;
+    }
+
     sensor_readings[readingsListIndex].time = getEpochTime();
     Serial.println(sensor_readings[readingsListIndex].time);
     Serial.println("");
+    sensor_readings[readingsListIndex].temperature = temperature;
+    sensor_readings[readingsListIndex].humidity = humidity;
     sensor_readings[readingsListIndex].brightness = analogRead(A0);
+    sensor_readings[readingsListIndex].co2 = co2;
 
     readingsListIndex = (readingsListIndex + 1) % NUM_READINGS;
     return true;
