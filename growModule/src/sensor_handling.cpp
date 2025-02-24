@@ -2,7 +2,6 @@
 #include "time_handling.h"
 
 JsonDocument jsonResponse;
-DHT dht(STATUS_PIN, DHTTYPE);
 
 uint8_t readingsListIndex = 0;
 
@@ -19,9 +18,6 @@ uint8_t readingsListIndex = 0;
  */
 typedef struct {
     uint32_t time;
-    // dht22
-    float temperature;
-    float humidity;
     // photo
     float waterLevel;
 } sensor_reading;
@@ -31,7 +27,6 @@ void initSensor(){
     Serial.println("start init");
     pinMode(MOISTURE_PIN, INPUT);
 
-    dht.begin();
 
     analogRead(A0);
 
@@ -44,10 +39,6 @@ void initSensor(){
 
 
 void getSensorReading(char* formattedResponse, size_t maxResponseLen){
-    float temperature = dht.readTemperature();
-    float humidity = dht.readHumidity();
-
-
     float distance = 0;
     long duration = 0;
 
@@ -68,19 +59,15 @@ void getSensorReading(char* formattedResponse, size_t maxResponseLen){
 
 
     // do this prettier at some point
-    if(!isnan(temperature) || !isnan(humidity)){
+    if(true){
         jsonResponse["sensor"] = "base";
         jsonResponse["time"] = getEpochTime();
-        jsonResponse["temperature"] = temperature;
-        jsonResponse["humidity"] = humidity;
         jsonResponse["waterLevel"] = distance;
 
     } else {
         // i should probably print or log this
         jsonResponse["sensor"] = "invalid";
         jsonResponse["time"] = getEpochTime();
-        jsonResponse["temperature"] = 0;
-        jsonResponse["humidity"] = 0;
         jsonResponse["waterLevel"] = 0;
     }
 
@@ -95,8 +82,6 @@ void getSensorReadingFromList(char* formattedResponse, size_t maxResponseLen, ui
 
     jsonResponse["sensor"] = "base";
     jsonResponse["time"] = sensor_readings[temp].time;
-    jsonResponse["temperature"] = sensor_readings[temp].temperature;
-    jsonResponse["humidity"] = sensor_readings[temp].humidity;
     jsonResponse["waterLevel"] = sensor_readings[temp].waterLevel;
 
     jsonResponse.shrinkToFit();
@@ -111,13 +96,6 @@ int getNumOfReadingsInList(){
 }
 
 bool updateSensorValues(){
-    float temperature = dht.readTemperature();
-    float humidity = dht.readHumidity();
-
-    // do this prettier at some point
-    if(isnan(temperature) || isnan(humidity)){
-        return false;
-    }
     float distance;
     long duration = 0;
 
@@ -138,8 +116,6 @@ bool updateSensorValues(){
     sensor_readings[readingsListIndex].time = getEpochTime();
     Serial.println(sensor_readings[readingsListIndex].time);
     Serial.println("");
-    sensor_readings[readingsListIndex].temperature = temperature;
-    sensor_readings[readingsListIndex].humidity = humidity;
     sensor_readings[readingsListIndex].waterLevel = distance;
 
     readingsListIndex = (readingsListIndex + 1) % NUM_READINGS;

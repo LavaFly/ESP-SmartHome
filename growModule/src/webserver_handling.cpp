@@ -43,6 +43,11 @@ void initWebserver(){
     server.on("/pump/off", handlePumpOff);
     server.on("/pump/ml", handlePumpMilliLiter);
 
+    server.on("/light/on", handleLightOn);
+    server.on("/light/off", handleLightOff);
+    server.on("/light/seconds", handleLightSecondsTimer);
+
+
     DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
     server.begin();
     ArduinoOTA.begin();
@@ -114,5 +119,20 @@ void handlePumpOff(AsyncWebServerRequest *request){
 }
 
 void handlePumpMilliLiter(AsyncWebServerRequest *request){
+    pumpActive = 1;
+    pumpWorkaround = 20;
+}
+
+
+// these will be implemented soon, wanted to get the rough outline first
+void handleLightOn(AsyncWebServerRequest *request){
+
+}
+
+void handleLightOff(AsyncWebServerRequest *request){
+
+}
+
+void handleLightSecondsTimer(AsyncWebServerRequest *request){
 
 }

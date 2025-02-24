@@ -36,6 +36,8 @@ void handleLiveStatus(AsyncWebServerRequest *request);
 extern void getSensorReading(char *formattedResponse, size_t maxResponseLen);
 extern void activateActuator();
 extern void deactivateActuator();
+extern uint8_t pumpActive;
+extern uint8_t pumpWorkaround;
 
 void handlePumpOn(AsyncWebServerRequest *request);
 void handlePumpOff(AsyncWebServerRequest *request);
