@@ -32,7 +32,6 @@ void initWebserver(){
     if(WiFi.status() != WL_CONNECTED){
         return;
     }
-    server.on("/", handleHTMLRequest);
     server.on("/isLive", handleLiveStatus);
     server.on("/pcStatus", handleStatusRequest);
     server.on("/pcPowerOn", handlePowerOn);

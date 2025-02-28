@@ -78,7 +78,6 @@ void handleLiveStatus(AsyncWebServerRequest *request){
 
 void handleHTMLRequest(AsyncWebServerRequest *request){
     const char* dataType = "text/html";
-    //Serial.println("Streaming Page!");
     AsyncWebServerResponse *response = request->beginResponse_P(200, dataType, webpage_html_gz, webpage_html_gz_len);
     response->addHeader("Content-Encoding", "gzip");
     request->send(response);
@@ -86,7 +85,6 @@ void handleHTMLRequest(AsyncWebServerRequest *request){
 
 void handleJSRequest(AsyncWebServerRequest *request){
     const char* dataType = "text/javascript";
-    //Serial.println("Streaming Page!");
     AsyncWebServerResponse *response = request->beginResponse_P(200, dataType, webpage_js_gz, webpage_js_gz_len);
     response->addHeader("Content-Encoding", "gzip");
     request->send(response);
@@ -96,7 +94,6 @@ void handleJSRequest(AsyncWebServerRequest *request){
 
 void handleCSSRequest(AsyncWebServerRequest *request){
     const char* dataType = "text/css";
-    //Serial.println("Streaming Page!");
     AsyncWebServerResponse *response = request->beginResponse_P(200, dataType, webpage_css_gz, webpage_css_gz_len);
     response->addHeader("Content-Encoding", "gzip");
     request->send(response);
@@ -108,7 +105,7 @@ void handleJSONRequest(AsyncWebServerRequest *request){
     Serial.println("got json request");
     int numberOfCurrentReadings = getNumOfReadingsInList();
     char* sensorData = (char*)malloc(sizeof(char) * 180); // rougly 124 will be used
-                                                          // check if null
+                                                          // check if null!
 
     AsyncResponseStream *response = request->beginResponseStream("application/json");
 

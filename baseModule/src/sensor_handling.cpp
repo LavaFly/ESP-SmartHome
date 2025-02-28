@@ -47,18 +47,6 @@ void initSensor(){
     Serial.println("Sensor setup done");
 }
 
-
-void readCo2(){
-    /* taken from
-     * https://iotspace.dev/arduino-co2-sensor-mh-z19-beispiel-und-sketch/
-     * <400  - frische Außenluft
-     * <800  - hohe Raumluftqualität
-     * <1000 - akzeptable "Pettenkoferzahl"
-     * <2000 - hygienisch auffällig
-     * >2000 - hygienisch inakzeptabel
-     */
-}
-
 void getSensorReading(char* formattedResponse, size_t maxResponseLen){
     float temperature = 0.0;
     float humidity = 0.0;
@@ -67,9 +55,10 @@ void getSensorReading(char* formattedResponse, size_t maxResponseLen){
 
     dataReady = co2Sensor.getDataReady(dataReady);
 
+    // the brightness measurement "cannot" fail due to software
+    // reasons so only check the scd30 sensor
     if(dataReady == 0){
         Serial.println("no data ready, reading failed");
-
         // i should probably print or log this
         jsonResponse["sensor"] = "invalid";
         jsonResponse["time"] = getEpochTime();
@@ -101,7 +90,6 @@ void getSensorReadingFromList(char* formattedResponse, size_t maxResponseLen, ui
     jsonResponse["time"] = sensor_readings[temp].time;
     jsonResponse["temperature"] = sensor_readings[temp].temperature;
     jsonResponse["humidity"] = sensor_readings[temp].humidity;
-    //jsonResponse["quality"] = sensor_readings[temp].quality;
     jsonResponse["co2"] = sensor_readings[temp].co2;
     jsonResponse["brightness"] = sensor_readings[temp].brightness;
 
@@ -130,8 +118,6 @@ bool updateSensorValues(){
     co2Sensor.readMeasurementData(co2, temperature, humidity);
 
     sensor_readings[readingsListIndex].time = getEpochTime();
-    Serial.println(sensor_readings[readingsListIndex].time);
-    Serial.println("");
     sensor_readings[readingsListIndex].temperature = temperature;
     sensor_readings[readingsListIndex].humidity = humidity;
     sensor_readings[readingsListIndex].co2 = co2;
@@ -143,9 +129,7 @@ bool updateSensorValues(){
 
 void printCurrentReading(){
     // brightness
-    Serial.println("New Reading");
     Serial.print("brightness ");
     Serial.println(analogRead(A0));
-
     Serial.println("\n");
 }

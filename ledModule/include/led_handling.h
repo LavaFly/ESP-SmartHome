@@ -18,8 +18,6 @@ struct activeLed {
 void initialiseLedMap();
 void initialiseLedMapBorders();
 uint8_t getNumberOfDigits(uint16_t number);
-//void projectPattern(uint8_t *pattern, uint8_t xOffset, uint8_t yOffset);
-void projectPattern(uint8_t *pattern, uint8_t xOffset, uint8_t yOffset, uint8_t patternWidth, uint8_t patternHeight);
 void projectDigit(uint8_t digit, uint8_t xOffset, uint8_t yOffset);
 void projectNumber(uint16_t number);
 void projectNumber(uint16_t number, uint8_t xOffset, uint8_t yOffset);

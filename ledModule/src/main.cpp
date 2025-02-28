@@ -14,30 +14,11 @@ uint8_t irInput;
 
 unsigned long currentTime = 0;
 unsigned long clearTimer = 0;
-unsigned long vrClearTimer = 0;
 
 
 bool loopActive = false;
 bool animationActive = false;
 bool toBeCleared = false;
-
-
-
-// 1 = PC, 2 = Light
-uint8_t vrTreeBranch = 0;
-void setupEventResponse();
-
-void vr_pc();
-void vr_light();
-void vr_time();
-void vr_weather();
-void vr_temperature();
-void vr_co2();
-void vr_on();
-void vr_off();
-void vr_brighter();
-void vr_darker();
-void vr_empty();
 
 void setup() {
     //Serial.begin(9600,SERIAL_8N1,SERIAL_TX_ONLY); // to limit inbound serial comminucation from interefering
@@ -88,11 +69,13 @@ void loop() {
         toBeCleared = false;
         Serial.println("clearing Screen");
     }
+    /**
     if(vrClearTimer != 0 && millis() > vrClearTimer + 3000){
         loadDefaultVR();
         vrClearTimer = 0;
-    }
+    }**/
 
+    // remove this serial part as it is only for debugging
     if(Serial.available() > 0){
         clearActiveLeds();
         serialInput = Serial.readStringUntil('\n');
@@ -154,7 +137,7 @@ void loop() {
     // will later be replaced by some proper mapping of each button to a
     // function, but havent decided most of them yet so this will suffice
 
-    struct simpleTime * currentTime;
+    struct simpleTime * currentTimeStruct;
     switch (irInput) {
         case 0x12:
             Serial.println("lighting on");
@@ -190,11 +173,11 @@ void loop() {
             break;
             /**
         case 0x03:
-            currentTime = (struct simpleTime*)malloc(sizeof(struct simpleTime));
+            currentTimeStruct = (struct simpleTime*)malloc(sizeof(struct simpleTime));
             Serial.println("projecting time");
-            getSimpleTime(currentTime);
-            projectTime(currentTime->hour, currentTime->minute);
-            free(currentTime);
+            getSimpleTime(currentTimeStruct);
+            projectTime(currentTimeStruct->hour, currentTimeStruct->minute);
+            free(currentTimeStruct);
             break;
         case 0x0e:
             Serial.println("raising brightness");
@@ -212,21 +195,21 @@ void loop() {
 }
 
 void showTime(){
-    struct simpleTime * currentTime;
-    currentTime = (struct simpleTime*)malloc(sizeof(struct simpleTime));
+    struct simpleTime * currentTimeStruct;
+    currentTimeStruct = (struct simpleTime*)malloc(sizeof(struct simpleTime));
     Serial.println("projecting time");
 
-    getSimpleTime(currentTime);
-    Serial.print(currentTime->hour);
+    getSimpleTime(currentTimeStruct);
+    Serial.print(currentTimeStruct->hour);
     Serial.print(":");
-    Serial.println(currentTime->minute);
+    Serial.println(currentTimeStruct->minute);
 
-    projectTime(currentTime->hour, currentTime->minute);
+    projectTime(currentTimeStruct->hour, currentTimeStruct->minute);
 
     clearTimer = millis();
     toBeCleared = true;
 
-    free(currentTime);
+    free(currentTimeStruct);
 }
 
 void setupTextAnimation(String message){
@@ -237,91 +220,4 @@ void setupTextAnimation(String message){
     uint8_t num = serialInput.length();
     startSlideAnimation(serialInput.c_str(), num);
     animationActive = true;
-}
-
-void setupEventResponse(){
-    addToEventReponse(0, vr_pc);
-    addToEventReponse(1, vr_light);
-    addToEventReponse(2, vr_time);
-    addToEventReponse(3, vr_weather);
-    addToEventReponse(4, vr_temperature);
-    addToEventReponse(5, vr_co2);
-    addToEventReponse(6, vr_empty);
-    addToEventReponse(7, vr_empty);
-    addToEventReponse(8, vr_on);
-    addToEventReponse(9, vr_off);
-    addToEventReponse(10, vr_brighter);
-    addToEventReponse(11, vr_darker);
-}
-
-void vr_pc(){
-    vrTreeBranch = 1;
-    loadOnOff();
-    vrClearTimer = millis();
-}
-void vr_light(){
-    vrTreeBranch = 2;
-    loadOnOffBrighterDarker();
-    vrClearTimer = millis();
-}
-void vr_time(){
-    showTime();
-}
-void vr_weather(){
-    Serial.println("");
-
-}
-void vr_temperature(){
-    Serial.println("");
-
-}
-void vr_co2(){
-    Serial.println("");
-
-}
-void vr_on(){
-    Serial.println("");
-    if(vrTreeBranch == 1){
-        httpGetRequestIgnoreResponse("http://lightingModule.local/pcPowerOn");
-    } else if(vrTreeBranch == 2){
-        httpGetRequestIgnoreResponse("http://lightingModule.local/lightingOn");
-    } else {
-
-    }
-    loadDefaultVR();
-}
-void vr_off(){
-    Serial.println("");
-    if(vrTreeBranch == 1){
-        Serial.println("not properly implemented, as i havent spliced the necessary cable yet");
-        httpGetRequestIgnoreResponse("http://lightingModule.local/pcPowerOn");
-    } else if(vrTreeBranch == 2){
-        httpGetRequestIgnoreResponse("http://lightingModule.local/lightingOff");
-    } else {
-
-    }
-    loadDefaultVR();
-}
-void vr_brighter(){
-    if(vrTreeBranch == 1){
-        Serial.println("impossible");
-    } else if(vrTreeBranch == 2){
-        httpGetRequestIgnoreResponse("http://lightingModule.local/raiseBrightness");
-    } else {
-
-    }
-    loadDefaultVR();
-}
-void vr_darker(){
-    if(vrTreeBranch == 1){
-        Serial.println("impossible");
-    } else if(vrTreeBranch == 2){
-        httpGetRequestIgnoreResponse("http://lightingModule.local/lowerBrightness");
-    } else {
-
-    }
-    loadDefaultVR();
-}
-void vr_empty(){
-    loadDefaultVR();
 }

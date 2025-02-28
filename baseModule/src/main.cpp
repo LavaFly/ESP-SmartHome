@@ -41,18 +41,18 @@ void sensorCallback(){
         Serial.println("failed to read out sensors");
     }
 
-    /**
-    // write own values to sd card
-    char* sensorData = (char*)malloc(sizeof(char) * 180); // rougly 124 will be used
-
-    getSensorReading(sensorData, 180);
-
-    writeJsonToFile(sensorData);
-
-    free(sensorData);
-
-    // write pcModule values to sdcard
-    const char* responseData = httpGetRequest("http://pcModule.local/sensorReading")->c_str();
-    writeJsonToFile(responseData);
-    **/
 }
+/**
+// write own values to sd card
+char* sensorData = (char*)malloc(sizeof(char) * 180); // rougly 124 will be used
+
+getSensorReading(sensorData, 180);
+
+writeJsonToFile(sensorData);
+
+free(sensorData);
+
+// write pcModule values to sdcard
+const char* responseData = httpGetRequest("http://pcModule.local/sensorReading")->c_str();
+writeJsonToFile(responseData);
+**/

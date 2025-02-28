@@ -47,8 +47,8 @@ bool initWebserver(){
     server.on("/isLive", handleLiveStatus);
     server.on("/showTime", handleTimeRequest);
     server.on("/showTemperature", handleTemperatureRequest);
-    server.on("/showQuality", handleQualityRequest);
     server.on("/showCO2", handleCO2Request);
+    server.on("/json", handleJSONRequest);
     DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
     server.begin();
     ArduinoOTA.begin();
@@ -86,23 +86,13 @@ void handleTimeRequest(AsyncWebServerRequest *request){
     request->send(200);
 }
 
-void handleTemperatureRequest(AsyncWebServerRequest *request){
-    // request temperature from baseModule
-    // show return + °C
-    // else show No Data Available
-
-}
-
-void handleQualityRequest(AsyncWebServerRequest *request){
-
-}
-
-void handleCO2Request(AsyncWebServerRequest *request){
-
-}
-
 void handleJSONRequest(AsyncWebServerRequest *request){
 
+}
+
+void handleTemperatureRequest(AsyncWebServerRequest *request){
+}
+void handleCO2Request(AsyncWebServerRequest *request){
 }
 
 int httpGetRequestIgnoreResponse(const char* path){

@@ -27,7 +27,6 @@ int8_t *offsetList = 0;
 int8_t widthOfProjectedString = 0;
 uint8_t lengthOfProjectedString = 0;
 uint8_t animationDuration = 0;
-//extern uint8_t numbers[10][5][3];
 
 CHSV color(0, 255, 180);
 CHSV returnColor(0, 255, 180);
@@ -41,6 +40,7 @@ void incColor();
 void initialiseLedMap(){
     // i will clean this mess up another time, it works for now
     // docu will also follow soon
+    // hehehe
 
     uint8_t segmentWidth = 0;
     for(uint8_t i = 0; i < wallHeight; i++){
@@ -71,6 +71,8 @@ void initialiseLedMap(){
 }
 
 void initialiseLedMapBorders(){
+    // i have yet to figure out a neat formular to generate
+    // the edges of the ledMap so this will do for now
     ledMap[0][0] = 6;
     ledMap[1][0] = 5;
     ledMap[1][1] = 7;
@@ -313,8 +315,6 @@ bool advanceSlideAnimation(){
         projectString(charList, lengthOfProjectedString, offsetList);
 
         animationDuration--;
-        //Serial.print("dur: ");
-        //Serial.println(animationDuration);
         return true;
     }
 
@@ -392,28 +392,6 @@ void middleOutEffect(){
     // for loop ( 0 < i < lenOfString)
     //  projectStringCentric(.., i, ..)
 }
-
-
-void projectPattern(uint8_t *pattern, uint8_t xOffset, uint8_t yOffset){
-    // this is true for all digits
-    //projectPattern(pattern, xOffset, yOffset, 3, 4);
-}
-/**
-void projectPattern(uint8_t *pattern, uint8_t xOffset, uint8_t yOffset, uint8_t patternWidth, uint8_t patternHeight){
-    uint8_t yPosition, xPosition, ledIndex;
-    for(uint8_t y = 0; y < patternHeight; y++){
-        for(uint8_t x = 0; x < patternWidth; x++){
-            if(pattern[y][x]){
-                yPosition = y + yOffset;
-                xPosition = x + xOffset - ((yPosition > wallHeight / 2) ? (yPosition - wallHeight / 2) : 0);
-                if(yPosition < wallHeight || xPosition < wallWidth - abs(-(wallHeight / 2) + yPosition)){
-                    ledIndex = ledMap[yPosition][xPosition];
-                    leds[ledIndex] = CRGB::White;
-                }
-            }
-        }
-    }
-}**/
 
 void clearActiveLeds(){
     for(uint8_t i = 0; i < numberOfLeds; i++){
