@@ -2,12 +2,15 @@
 #include "time_handling.h"
 
 JsonDocument jsonResponse;
+Adafruit_BME680 bme;
+
 uint8_t readingsListIndex = 0;
-DHT dht(STATUS_PIN, DHTTYPE);
+
 
 // this ugly
 #define PWM_PIN 15
 const int ppmrange = 5000;
+
 
 /**
  * @brief This Structure holds all information that is stored from a sensor reading
@@ -15,9 +18,10 @@ const int ppmrange = 5000;
  */
 typedef struct {
     uint32_t time;
-    // dht11
     float temperature;
     float humidity;
+    float quality;
+
     uint16_t brightness;
     uint8_t co2;
 } sensor_reading;
@@ -27,7 +31,15 @@ void initSensor(){
     Serial.println("start init");
     pinMode(PWM_PIN, INPUT);
 
-    dht.begin();
+    while(!bme.begin(119)){
+        Serial.print(".");
+        delay(50);
+    }
+    bme.setTemperatureOversampling(BME680_OS_8X);
+    bme.setHumidityOversampling(BME680_OS_2X);
+    bme.setPressureOversampling(BME680_OS_4X);
+    bme.setIIRFilterSize(BME680_FILTER_SIZE_3);
+    bme.setGasHeater(320, 150);
 
     analogRead(A0);
     Serial.println("Sensor setup done");
@@ -42,15 +54,13 @@ void getSensorReading(char* formattedResponse, size_t maxResponseLen){
     pulsepercent = pwmtime / 1004.0;
     co2 = ppmrange * pulsepercent;
 
-    float temperature = dht.readTemperature();
-    float humidity = dht.readHumidity();
-
     // do this prettier at some point
-    if(!isnan(temperature) || !isnan(humidity)){
+    if(bme.performReading()){
         jsonResponse["sensor"] = "tent";
         jsonResponse["time"] = getEpochTime();
-        jsonResponse["temperature"] = temperature;
-        jsonResponse["humidity"] = humidity;
+        jsonResponse["temperature"] = bme.temperature;
+        jsonResponse["humidity"] = bme.humidity;
+        jsonResponse["quality"] = bme.gas_resistance;
         jsonResponse["brightness"] = analogRead(A0);
         jsonResponse["co2"] = co2;
 
@@ -60,6 +70,7 @@ void getSensorReading(char* formattedResponse, size_t maxResponseLen){
         jsonResponse["time"] = getEpochTime();
         jsonResponse["temperature"] = 0;
         jsonResponse["humidity"] = 0;
+        jsonResponse["quality"] = 0;
         jsonResponse["brightness"] = 0;
         jsonResponse["co2"] = 0;
     }
@@ -99,18 +110,16 @@ bool updateSensorValues(){
     pulsepercent = pwmtime / 1004.0;
     co2 = ppmrange * pulsepercent;
 
-    float temperature = dht.readTemperature();
-    float humidity = dht.readHumidity();
-
-    if(isnan(temperature) || isnan(humidity)){
+    if(!bme.performReading()){
         return false;
     }
 
     sensor_readings[readingsListIndex].time = getEpochTime();
     Serial.println(sensor_readings[readingsListIndex].time);
     Serial.println("");
-    sensor_readings[readingsListIndex].temperature = temperature;
-    sensor_readings[readingsListIndex].humidity = humidity;
+    sensor_readings[readingsListIndex].temperature = bme.temperature;
+    sensor_readings[readingsListIndex].humidity = bme.humidity;
+    sensor_readings[readingsListIndex].quality = bme.gas_resistance;
     sensor_readings[readingsListIndex].brightness = analogRead(A0);
     sensor_readings[readingsListIndex].co2 = co2;
 

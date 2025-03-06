@@ -6,8 +6,7 @@
 
 #include <inttypes.h>
 #include <ArduinoJson.h>
-#include <DHT.h>
-
+#include "Adafruit_BME680.h"
 
 // Maximum Number of concurrent Sensor Readings that will be stored at any time
 // the handleJson function fails after 79 elements(will send 79 elements without

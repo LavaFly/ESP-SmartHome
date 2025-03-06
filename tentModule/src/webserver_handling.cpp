@@ -4,7 +4,6 @@
 
 #include "webserver_handling.h"
 #include "sensor_handling.h"
-#include "actuator_handling.h"
 #include "internet_settings.h"
 
 #define PUMP_POWER 13 // D7
@@ -96,23 +95,4 @@ void handleSensorReading(AsyncWebServerRequest *request){
     request->send(response);
 
     free(sensorData);
-}
-
-
-
-void handlePumpOn(AsyncWebServerRequest *request){
-    activateActuator();
-    request->send(200);
-}
-
-void handlePumpOff(AsyncWebServerRequest *request){
-    deactivateActuator();
-    request->send(200);
-}
-
-void handlePumpMilliLiter(AsyncWebServerRequest *request){
-    activateActuator();
-    //wait a bit
-    deactivateActuator();
-
 }
