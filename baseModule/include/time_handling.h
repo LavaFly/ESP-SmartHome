@@ -8,6 +8,7 @@ typedef struct {
     uint8_t minute;
 }simpleTime;
 
+void setupNTPServer();
 bool buildTimeConnection();
 bool updateTimeClient();
 void getSimpleTime(simpleTime *currentTime);

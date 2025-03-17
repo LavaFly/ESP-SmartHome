@@ -7,6 +7,7 @@
 #include <inttypes.h>
 #include <ArduinoJson.h>
 #include <SensirionI2cScd30.h>
+#include <RTClib.h>
 
 
 // Maximum Number of concurrent Sensor Readings that will be stored at any time
@@ -22,6 +23,8 @@
     Simple Implementation of a ring array by storing number of current Readings and start index of the list
 */
 
+unsigned long getSensorTime();
+void setSenorTime(unsigned long timeStamp);
 void initSensor();
 void getSensorReading(char* formattedResponse, size_t maxResponseLen);
 void getSensorReadingFromList(char* formattedResponse, size_t maxResponseLen, uint8_t listIndex);

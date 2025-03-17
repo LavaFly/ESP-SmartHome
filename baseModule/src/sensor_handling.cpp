@@ -3,6 +3,7 @@
 
 JsonDocument jsonResponse;
 SensirionI2cScd30 co2Sensor;
+RTC_DS3231 rtc;
 static char errMsg[64]; // this is choosen w/o thought
 static int16_t errNum;
 
@@ -24,6 +25,7 @@ typedef struct {
 } sensor_reading;
 sensor_reading sensor_readings[NUM_READINGS];
 
+void setTimeFromNTP();
 void initSensor(){
     Serial.println("start init");
 
@@ -40,6 +42,11 @@ void initSensor(){
         Serial.println(errMsg);
         return;
     }
+
+    rtc.begin();
+    //rtc.adjust(DateTime(__DATE__, __TIME__));
+
+    setTimeFromNTP();
 
     // init photo
     analogRead(A0);
@@ -109,13 +116,12 @@ bool updateSensorValues(){
     float temperature = 0.0;
     float humidity = 0.0;
     float co2 = 0.0;
-    uint16_t dataReady = 0;
 
-    dataReady = co2Sensor.getDataReady(dataReady);
-    if(dataReady != 1){
+    errNum = co2Sensor.blockingReadMeasurementData(co2, temperature, humidity);
+
+    if(errNum != NO_ERROR){
         return false;
     }
-    co2Sensor.readMeasurementData(co2, temperature, humidity);
 
     sensor_readings[readingsListIndex].time = getEpochTime();
     sensor_readings[readingsListIndex].temperature = temperature;
@@ -132,4 +138,27 @@ void printCurrentReading(){
     Serial.print("brightness ");
     Serial.println(analogRead(A0));
     Serial.println("\n");
+}
+
+
+unsigned long getSensorTime(){
+    return rtc.now().unixtime();
+}
+
+void setSenorTime(unsigned long timeStamp){
+    rtc.adjust(timeStamp);
+}
+
+void setTimeFromNTP() {
+
+    if(updateTimeClient()){
+        unsigned long epochTime = getEpochTime();
+
+        rtc.adjust(DateTime(epochTime));
+        Serial.println(epochTime);
+
+    } else {
+        Serial.println("fuck2");
+    }
+
 }

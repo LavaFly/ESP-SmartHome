@@ -12,14 +12,26 @@ void setup() {
     Serial.begin(9600);
     Serial.println("Starting...");
 
-    initSensor();
+    delay(1000);
+    //connect to the internet
     buildRouterConnection();
-    buildTimeConnection();
-    initWebserver();
+    buildTimeConnection(); // this is obsolete
+    //connect to the sensor
+    //get and set the time
+    initSensor();
+    //disconnect from the network
+
+    //connect to other network
+    //setup server
+    setupNTPServer();
+
+    //setupNTPServer();
+    //initWebserver();
     setupMDNS();
     Serial.println("setup done");
     //printWeatherData();
     //printForecastData();
+
 
     //initSDCard();
     //createDir();
@@ -33,6 +45,7 @@ void loop() {
 }
 
 void sensorCallback(){
+    Serial.println(getSensorTime());
     Serial.println(getEpochTime());
     if(!updateTimeClient()){
         Serial.println("failed to update timeClient");

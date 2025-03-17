@@ -8,6 +8,7 @@ unsigned long timeNow = 0;
 unsigned long timeLast = 0;
 uint8_t secondsPassed = 0;
 uint8_t millisecondsPassed = 0;
+bool isInitialized = false;
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "europe.pool.ntp.org", 3600, 120000);
 
@@ -17,12 +18,16 @@ bool buildTimeConnection(){
         timeClient.begin();
         timeClient.setTimeOffset(7200);
         timeClient.update();
+        isInitialized = true;
         return true;
     }
     return false;
 }
 
 void getSimpleTime(simpleTime *currentTime){
+    if(!isInitialized){
+        buildTimeConnection();
+    }
     currentTime->hour = timeClient.getHours();
     currentTime->minute = timeClient.getMinutes();
 }
@@ -41,6 +46,9 @@ bool updateTimeClient(){
 
 
 bool setTimerMilliseconds(uint8_t milliseconds){
+    if(!isInitialized){
+        buildTimeConnection();
+    }
     timeNow = millis();
     millisecondsPassed = timeNow - timeLast;
     if(millisecondsPassed >= milliseconds){
