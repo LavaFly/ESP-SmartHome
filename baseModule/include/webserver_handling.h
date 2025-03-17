@@ -17,7 +17,11 @@
  */
 bool buildRouterConnection();
 
-void initWebserver();
+bool buildAP();
+
+bool buildNTPServer();
+
+bool initWebserver();
 
 void setupMDNS();
 

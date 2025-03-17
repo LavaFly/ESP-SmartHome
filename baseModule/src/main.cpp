@@ -30,12 +30,11 @@ void loop() {
     MDNS.update();
     loopOTA();
 
-    setTimerSecondsCallback(10, &sensorCallback);
+    setTimerMinutesCallback(10, &sensorCallback);
 }
 
 void sensorCallback(){
-    //Serial.println(getSensorTime());
-    //Serial.println(getEpochTime());
+    Serial.println(getEpochTime());
     if(!updateTimeClient()){
         Serial.println("failed to update timeClient");
     }

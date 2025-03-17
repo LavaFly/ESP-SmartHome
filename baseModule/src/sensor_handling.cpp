@@ -34,7 +34,7 @@ void initSensor(){
 
     co2Sensor.stopPeriodicMeasurement();
     co2Sensor.softReset();
-    co2Sensor.setMeasurementInterval(5);
+    co2Sensor.setMeasurementInterval(20);
 
     errNum = co2Sensor.startPeriodicMeasurement(0);
     if(errNum != NO_ERROR){
