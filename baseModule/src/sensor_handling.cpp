@@ -34,7 +34,7 @@ void initSensor(){
 
     co2Sensor.stopPeriodicMeasurement();
     co2Sensor.softReset();
-    co2Sensor.setMeasurementInterval(10);
+    co2Sensor.setMeasurementInterval(5);
 
     errNum = co2Sensor.startPeriodicMeasurement(0);
     if(errNum != NO_ERROR){
@@ -44,6 +44,7 @@ void initSensor(){
     }
 
     rtc.begin();
+    //use for testing
     //rtc.adjust(DateTime(__DATE__, __TIME__));
 
     setTimeFromNTP();
@@ -145,7 +146,7 @@ unsigned long getSensorTime(){
     return rtc.now().unixtime();
 }
 
-void setSenorTime(unsigned long timeStamp){
+void setSensorTime(unsigned long timeStamp){
     rtc.adjust(timeStamp);
 }
 
@@ -156,7 +157,6 @@ void setTimeFromNTP() {
 
         rtc.adjust(DateTime(epochTime));
         Serial.println(epochTime);
-
     } else {
         Serial.println("fuck2");
     }

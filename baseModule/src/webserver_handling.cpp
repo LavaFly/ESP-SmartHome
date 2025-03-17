@@ -29,57 +29,46 @@ IPAddress subnet(255,255,255,0);
 bool buildRouterConnection(){
     Serial.println("Connecting to WiFi");
 
+    if(WiFi.status() == WL_CONNECTED){
+        WiFi.disconnect();
+    }
+
     WiFi.begin(SSID, PASS);
     if(WiFi.waitForConnectResult() == WL_CONNECTED){
         Serial.println("Connected to local network");
         Serial.println(WiFi.localIP());
         return true;
     } else {
-        Serial.println("Starting AP-Mode");
-        WiFi.softAPConfig(local_IP, gateway, subnet);
-        WiFi.softAP(APSSID, APPASS, 1, 7);
-        Serial.println(WiFi.softAPIP());
         return true;
     }
     return false;
 }
 
-void setupNTPServer(){
-    WiFi.disconnect();
+bool buildAP(){
+    if(WiFi.status() == WL_CONNECTED){
+        WiFi.disconnect();
+    }
 
-    WiFi.begin("testNetwork", "thisisatest");
-    WiFi.waitForConnectResult();
+    Serial.println("Starting AP-Mode");
+    WiFi.softAPConfig(local_IP, gateway, subnet);
+    WiFi.softAP(APSSID, APPASS, 1, 7);
+    Serial.println(WiFi.softAPIP());
 
+    // check this
+    return true;
+}
+
+bool buildNTPServer(){
+    //if(WiFi.status() == WL_CONNECTED) check if this is true, if in ap mode
     if(udp.listen(123)){
         Serial.println("udp time request");
         udp.onPacket(handleTimeRequest);
+        return true;
     }
-    Serial.print("IP: ");
-    Serial.println(WiFi.softAPIP());
-    /**
+    return false;
 
-    // Connect to local network
-    WiFi.begin(SSID, PASS);
-    if(WiFi.waitForConnectResult() == WL_CONNECTED){
-        Serial.println("Connected to local network");
-        Serial.println(WiFi.localIP());
-        uint32_t timeStamp = getEpochTime();
-        setSenorTime(timeStamp),
-        Serial.println("Starting AP-Mode");
-        //WiFi.softAPConfig(local_IP, gateway, subnet);
-        //WiFi.softAP(APSSID, APPASS, 1, 7);
-
-    } else {
-        Serial.println("fuck");
-    }
-
-    **/
-
-
-    // Get current time
-    // Set rtc time
-    // disconnect from loca network and setup own ap
 }
+
 
 void handleTimeRequest(AsyncUDPPacket &packet){
     // Taken from and adapted from
@@ -155,14 +144,12 @@ void handleTimeRequest(AsyncUDPPacket &packet){
     AsyncUDPMessage ans(48);
     ans.write(packetBuffer, 48);
     packet.send(ans);
-
-
 }
 
 
-void initWebserver(){
+bool initWebserver(){
     if(WiFi.status() != WL_CONNECTED){
-        return;
+        return false;
     }
     server.on("/", handleHTMLRequest);
     server.on("/js", handleJSRequest);
@@ -173,6 +160,7 @@ void initWebserver(){
     DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
     server.begin();
     ArduinoOTA.begin();
+    return true;
 }
 
 void loopOTA(){
