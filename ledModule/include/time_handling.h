@@ -19,5 +19,5 @@ bool setTimerSeconds(uint8_t seconds);
 void setTimerSecondsCallback(uint8_t seconds, void (*callbackFunction)());
 bool setTimerMinutes(uint8_t minutes);
 void setTimerMinutesCallback(uint8_t minutes, void (*callbackFunction)());
-u
+
 #endif

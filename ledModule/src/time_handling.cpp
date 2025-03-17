@@ -4,10 +4,7 @@
 #include <NTPClient.h>
 #include "time_handling.h"
 
-unsigned long timeNow = 0;
 unsigned long timeLast = 0;
-uint8_t secondsPassed = 0;
-uint8_t millisecondsPassed = 0;
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "baseModule.local", 3600, 120000);//europe.pool.ntp.org
 
