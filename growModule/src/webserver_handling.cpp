@@ -14,18 +14,20 @@ AsyncWebServer server(80);
 bool buildRouterConnection(){
     Serial.println("Connecting to WiFi");
 
-    WiFi.begin(SSID, PASS);
-    if(WiFi.waitForConnectResult() == WL_CONNECTED){
-        Serial.println("Connected to local network");
-        Serial.println(WiFi.localIP());
-        return true;
-    }
     WiFi.begin(APSSID, APPASS);
     if(WiFi.waitForConnectResult() == WL_CONNECTED){
         Serial.println("Connected to ap network");
         Serial.println(WiFi.localIP());
         return true;
     }
+
+    WiFi.begin(SSID, PASS);
+    if(WiFi.waitForConnectResult() == WL_CONNECTED){
+        Serial.println("Connected to local network");
+        Serial.println(WiFi.localIP());
+        return true;
+    }
+
     return false;
 }
 

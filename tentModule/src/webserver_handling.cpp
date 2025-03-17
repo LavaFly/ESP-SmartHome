@@ -5,6 +5,7 @@
 #include "webserver_handling.h"
 #include "sensor_handling.h"
 #include "internet_settings.h"
+#include "time_handling.h"
 
 #define PUMP_POWER 13 // D7
 
@@ -14,18 +15,20 @@ AsyncWebServer server(80);
 bool buildRouterConnection(){
     Serial.println("Connecting to WiFi");
 
-    WiFi.begin(SSID, PASS);
-    if(WiFi.waitForConnectResult() == WL_CONNECTED){
-        Serial.println("Connected to local network");
-        Serial.println(WiFi.localIP());
-        return true;
-    }
     WiFi.begin(APSSID, APPASS);
     if(WiFi.waitForConnectResult() == WL_CONNECTED){
         Serial.println("Connected to ap network");
         Serial.println(WiFi.localIP());
         return true;
     }
+
+    WiFi.begin(SSID, PASS);
+    if(WiFi.waitForConnectResult() == WL_CONNECTED){
+        Serial.println("Connected to local network");
+        Serial.println(WiFi.localIP());
+        return true;
+    }
+
     return false;
 }
 
@@ -37,6 +40,7 @@ void initWebserver(){
     // calling this url will crash the mc, i will fix this someday
     server.on("/currentReading", handleSensorReading);
     server.on("/json", handleJSONRequest);
+    server.on("/time", handleTimeRequest);
 
 
     DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
@@ -50,7 +54,7 @@ void loopOTA(){
 
 
 void setupMDNS(){
-    if(!MDNS.begin("tentModule")){
+    if(!MDNS.begin("stuff")){
         Serial.println("Error setting up mDNS responder!");
         while(1){ delay(1000); }
     }
@@ -84,6 +88,14 @@ void handleJSONRequest(AsyncWebServerRequest *request){
     response->print("]");
     request->send(response);
     free(sensorData);
+}
+
+void handleTimeRequest(AsyncWebServerRequest *request){
+    uint32_t unixTimestamp = getEpochTime();
+
+    Serial.println(unixTimestamp);
+    AsyncWebServerResponse *response = request->beginResponse(200, "text/html", "hello");
+    request->send(response);
 }
 void handleSensorReading(AsyncWebServerRequest *request){
     char* sensorData = (char*)malloc(sizeof(char) * 180); // rougly 124 will be used

@@ -11,6 +11,7 @@ void setup() {
     Serial.begin(9600);
     Serial.println("Starting...");
     initSensor();
+    delay(2000);
 
     buildRouterConnection();
     buildTimeConnection();
@@ -23,7 +24,7 @@ void loop() {
     MDNS.update();
     loopOTA();
 
-    setTimerSecondsCallback(10, &sensorCallback);
+    setTimerMinutesCallback(10, &sensorCallback);
 }
 
 void sensorCallback(){

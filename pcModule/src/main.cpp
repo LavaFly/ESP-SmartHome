@@ -19,18 +19,13 @@ void setup() {
     setupMDNS();
     initSensor();
     Serial.println("setup done");
-
-    // TODO implement setTimerSecondsCallback from base
-    //      implement list for sensor readings
-    //      fix getPCValues in webpage
-    //      build all and test
 }
 
 void loop() {
     MDNS.update();
     loopOTA();
 
-    setTimerSecondsCallback(10, &sensorCallback);
+    setTimerMinutesCallback(10, &sensorCallback);
 }
 
 void sensorCallback(){

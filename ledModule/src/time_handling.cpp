@@ -9,7 +9,7 @@ unsigned long timeLast = 0;
 uint8_t secondsPassed = 0;
 uint8_t millisecondsPassed = 0;
 WiFiUDP ntpUDP;
-NTPClient timeClient(ntpUDP, "europe.pool.ntp.org", 3600, 120000);
+NTPClient timeClient(ntpUDP, "baseModule.local", 3600, 120000);//europe.pool.ntp.org
 
 bool buildTimeConnection(){
     if(WiFi.status() == WL_CONNECTED){
