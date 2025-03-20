@@ -1,30 +1,38 @@
 #include "ir_handling.h"
+#include <IRremoteESP8266.h>
+#include <IRsend.h>
 
-int signalBuffer = 0;
+IRsend IrSender(4);
+uint8_t signalContent = 0;
+uint32_t signalData;
 
 void buildIrConnection(){
-    //IrSender.begin(false);
+    IrSender.begin();
 }
 
+// the async webserver doesnt like it, when the response functions do too much stuff
+// so im only setting storing the desired signal upon a webserver request and sending
+// them later in the main loop
 void sendOffSignal(){
-    signalBuffer = LIGHT_OFF;
+    signalContent = LIGHT_OFF;
 }
 void sendOnSignal(){
-    signalBuffer = LIGHT_ON;
+    signalContent = LIGHT_ON;
 }
 void sendBrighterSignal(){
-    signalBuffer = LIGHT_BRIGHTER;
+    signalContent = LIGHT_BRIGHTER;
 }
 void sendDarkerSignal(){
-    signalBuffer = LIGHT_DARKER;
+    signalContent = LIGHT_DARKER;
 }
 void sendSignal(){
-    //IrSender.sendNEC(2, IR_ADDRESS, signalBuffer);
-    Serial.print(signalBuffer);
-    signalBuffer = 0;
+    signalData = IrSender.encodeNEC(0x80, signalContent);
+    IrSender.sendNEC(signalData, 32, 2);
+    signalContent = 0;
 }
 
-int readSignalBuffer(){
-    return signalBuffer;
+// if return != 0 then new message
+uint8_t checkForNewMessage(){
+    return signalContent;
 }
 

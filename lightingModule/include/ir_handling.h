@@ -3,7 +3,6 @@
 
 #include <Arduino.h>
 
-#define IR_SEND_PIN     12
 #define IR_ADDRESS      0x80
 #define LIGHT_ON        0x12
 #define LIGHT_OFF       0x1e
@@ -16,6 +15,6 @@ void sendOnSignal();
 void sendBrighterSignal();
 void sendDarkerSignal();
 void sendSignal();
-int readSignalBuffer();
+uint8_t checkForNewMessage();
 
 #endif

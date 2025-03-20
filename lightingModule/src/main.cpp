@@ -1,20 +1,18 @@
-//#include <Arduino.h>
 #include "ir_handling.h"
 #include "webserver_handling.h"
 
-void setup() {
-    Serial.begin(9600);
-
-    buildRouterConnection();
-    buildIrConnection();
-    initWebserver();
-    setupMDNS();
+void setup(){
+   Serial.begin(9600);
+   buildRouterConnection();
+   buildIrConnection();
+   initWebserver();
+   setupMDNS();
 }
 
-void loop() {
+void loop(){
     MDNS.update();
     loopOTA();
-    if(readSignalBuffer() != 0){
+    if(checkForNewMessage() != 0){
         sendSignal();
     }
 }

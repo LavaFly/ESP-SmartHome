@@ -10,18 +10,20 @@ AsyncWebServer server(80);
 bool buildRouterConnection(){
     //Serial.println("Connecting to WiFi");
 
-    WiFi.begin(SSID, PASS);
-    if(WiFi.waitForConnectResult() == WL_CONNECTED){
-        //Serial.println("Connected to local network");
-        //Serial.println(WiFi.localIP());
-        return true;
-    }
     WiFi.begin(APSSID, APPASS);
     if(WiFi.waitForConnectResult() == WL_CONNECTED){
         //Serial.println("Connected to ap network");
         //Serial.println(WiFi.localIP());
         return true;
     }
+
+    WiFi.begin(SSID, PASS);
+    if(WiFi.waitForConnectResult() == WL_CONNECTED){
+        //Serial.println("Connected to local network");
+        //Serial.println(WiFi.localIP());
+        return true;
+    }
+
     return false;
 }
 
@@ -30,7 +32,7 @@ void setupMDNS(){
         //Serial.println("Error setting up mDNS responder!");
         while(1){ delay(1000); }
     }
-    Serial.println("mDNS responder started");
+    //Serial.println("mDNS responder started");
 
     // assumes the server has been started, but should be checked for
     MDNS.addService("http", "tcp", 80);
