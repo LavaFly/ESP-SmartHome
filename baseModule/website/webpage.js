@@ -55,18 +55,8 @@ window.onload = function () {
             tickColor: "#CD7045",
             labelFontColor: "#CD7045",
             titleFontColor: "#999999"
-        }
-        ,
-        axisY2: {
-            title: "Humidity",
-            suffix: "%",
-            lineColor: "#00BFFF",
-            tickColor: "#00BFFF",
-            labelFontColor: "#00BFFF",
-            titleFontColor: "#999999"
-        }
-        ,
-        toolTip: {
+        },
+       toolTip: {
             shared: true
         },
         legend: {
@@ -100,8 +90,12 @@ window.onload = function () {
             name: "CO2",
             connectNullData: true,
             axisYType: "secondary",
+            xValueType: "dateTime",
+            xValueFormatString: "HH:mm DD/MMMM",
+            yValueFormatString: '###.##',
+            axisYIndex: 0,
             showInLegend: true,
-            color: "#A9A9A9",
+            color: "#58c95a", // #A9A9A9
             dataPoints: baseData.co2
         },
         {
@@ -123,7 +117,7 @@ window.onload = function () {
         animationEnabled: true,
         backgroundColor: "",
         title: {
-            text: "Base Module",
+            text: "Tent Module",
             fontColor: "#999999"
         },
         axisX: {
@@ -261,7 +255,7 @@ window.onload = function () {
         },
         data: [{
             type: "spline",
-            name: "BME680",
+            name: "Temperature",
             connectNullData: true,
             //nullDataLineDashType: "solid",
             xValueType: "dateTime",
@@ -274,7 +268,7 @@ window.onload = function () {
         },
         {
             type: "spline",
-            name: "DHT22",
+            name: "Humidity",
             connectNullData: true,
             axisYIndex: 1,
             axisYType: "secondary",
@@ -287,6 +281,116 @@ window.onload = function () {
             maintainAspectRatio: false
         }
     });
+    var airqualityChart = new CanvasJS.Chart("airqualityChart", {
+        //exportEnabled: true,
+        animationEnabled: true,
+        backgroundColor: "",
+        title: {
+            text: "CO2-Concentration",
+            fontColor: "#999999"
+        },
+        axisX: {
+            lableAngle: -50,
+            valueFormatString: "DD HH:mm",
+            labelFontColor: "#fffff0"
+        },
+        axisY: {
+            title: "Concentration",
+            suffix: "ppm",
+            minimum: 0,
+            maximum: 2000,
+            lineColor: "#58c95a",
+            tickColor: "#58c95a",
+            labelFontColor: "#58c95a",
+            titleFontColor: "#999999",
+            // <400 Greatest
+            // 400 - 600 Very Good
+            // 600 - 1000 Good
+            // 1000 - 1500 Recommended to ventilate
+            // >1500 Required to ventilate
+            stripLines: [
+                {
+                    startValue: 0,
+                    endValue: 400,
+                    color: "#008000",
+                    opacity: .2,
+                    label: "Outdoor",
+                    labelBackgroundColor: "transparent"
+                },
+                {
+                    startValue: 401,
+                    endValue: 600,
+                    color: "#00FF00",
+                    opacity: .2,
+                    label: "Very Good",
+                    labelBackgroundColor: "transparent"
+                },
+                {
+                    startValue: 601,
+                    endValue: 1000,
+                    color: "#A2FF00",
+                    opacity: .2,
+                    label: "Okay",
+                    labelBackgroundColor: "transparent"
+                },
+                {
+                    startValue: 1001,
+                    endValue: 1500,
+                    color: "#ffff00",
+                    opacity: .2,
+                    label: "Ventilate",
+                    labelBackgroundColor: "transparent"
+                },
+                {
+                    startValue: 1501,
+                    endValue: 2000,
+                    color: "#e69138",
+                    opacity: .2,
+                    label: "Ventilate!!",
+                    labelBackgroundColor: "transparent"
+                }
+            ],
+
+        },
+        toolTip: {
+            shared: true
+        },
+        legend: {
+            cursor: "pointer",
+            itemclick: toggleDataSeries,
+            fontColor: "#999999"
+        },
+        data: [{
+            type: "spline",
+            name: "CO2",
+            connectNullData: true,
+            xValueType: "dateTime",
+            xValueFormatString: "HH:mm DD/MMMM",
+            yValueFormatString: "###.##",
+            axisYIndex: 0,
+            showInLegend: true,
+            color: "#58c95a",
+            dataPoints: baseData.co2
+        },
+        {
+            type: "spline",
+            name: "CO2",
+            connectNullData: true,
+            xValueType: "dateTime",
+            xValueFormatString: "HH:mm DD/MMMM",
+            yValueFormatString: "###.##",
+            axisYIndex: 0,
+            showInLegend: true,
+            color: "#227f5f",
+            dataPoints: tentData.co2
+        }
+        ],
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+
     function toggleDataSeries(e) {
         if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
             e.dataSeries.visible = false;
@@ -297,7 +401,7 @@ window.onload = function () {
     }
     function addBaseData(data) {
         // clear previous
-        baseData = { temperature: [], humidity: [], co2: [], brightness: [] }
+        //baseData = { temperature: [], humidity: [], co2: [], brightness: [] }
         for (var i = 0; i < data.length; i++) {
             // canvasjs wants timestamps with milliseconds
             data[i].time = data[i].time * 1000;
@@ -320,7 +424,7 @@ window.onload = function () {
         }
     }
     function addPcData(data) {
-        pcData = { temperature: [], humidity: [] }
+        //pcData = { temperature: [], humidity: [] }
         for (var i = 0; i < data.length; i++) {
             data[i].time = data[i].time * 1000;
             pcData.temperature.push({
@@ -332,9 +436,10 @@ window.onload = function () {
                 y: data[i].humidity
             });
         }
+        renderCharts();
     }
     function addTentData(data) {
-        tentData = { temperature: [], humidity: [], co2: [], brightness: [], resistance: [] }
+        //tentData = { temperature: [], humidity: [], co2: [], brightness: [], resistance: [] }
         for (var i = 0; i < data.length; i++) {
             data[i].time = data[i].time * 1000;
             tentData.temperature.push({
@@ -355,7 +460,7 @@ window.onload = function () {
             });
             tentData.resistance.push({
                 x: new Date(data[i].time),
-                y: data[i].resistance
+                y: data[i].quality
             });
         }
 
@@ -363,16 +468,16 @@ window.onload = function () {
     function setupCharts() {
         //$.getJSON(pathToServer, addBaseData);
         $.getJSON(pathToBase, addBaseData);
-        $.getJSON(pathToPc, addPcData);
         $.getJSON(pathToTent, addTentData);
+        $.getJSON(pathToPc, addPcData);
         //setInterval($.getJSON(pathToServer, addData), 60000);
-
         renderCharts();
     }
     function renderCharts() {
         baseChart.render();
         tentChart.render();
         pcChart.render();
+        airqualityChart.render();
     }
     checkWebsiteStatus('http://baseModule.local/isLive', document.getElementById('baseStatus'));
     checkWebsiteStatus('http://ledModule.local/isLive', document.getElementById('ledStatus'));
