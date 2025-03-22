@@ -12,7 +12,7 @@
 // the handleJson function fails after 79 elements(will send 79 elements without
 // the closing ']')
 // will investigate why at some point
-#define NUM_READINGS 130
+#define NUM_READINGS 120
 
 #define STATUS_PIN 13
 

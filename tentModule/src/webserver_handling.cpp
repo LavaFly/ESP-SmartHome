@@ -54,7 +54,7 @@ void loopOTA(){
 
 
 void setupMDNS(){
-    if(!MDNS.begin("stuff")){
+    if(!MDNS.begin("tent")){
         Serial.println("Error setting up mDNS responder!");
         while(1){ delay(1000); }
     }

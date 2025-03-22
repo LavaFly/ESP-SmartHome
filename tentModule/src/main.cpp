@@ -11,7 +11,6 @@ void setup() {
     Serial.begin(9600);
     Serial.println("Starting...");
     initSensor();
-    delay(2000);
 
     buildRouterConnection();
     buildTimeConnection();

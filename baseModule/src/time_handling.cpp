@@ -43,9 +43,6 @@ bool updateTimeClient(){
 
 
 bool setTimerMilliseconds(uint8_t milliseconds){
-    if(!isInitialized){
-        buildTimeConnection();
-    }
     uint32_t timeNow = millis();
     uint32_t millisecondsPassed = timeNow - timeLast;
     if(millisecondsPassed >= milliseconds){
