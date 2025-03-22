@@ -63,7 +63,7 @@ nav a {
     padding-top: 2em;
 }
 
-#bigChart {
+#baseChart {
     width: 95%;
     height: 500px;
     margin: 0 auto;

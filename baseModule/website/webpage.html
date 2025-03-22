@@ -28,13 +28,13 @@
             <h2> ESP-SmartHome Overview </h2>
         </section>
         <section class="bigPlot">
-            <div id="bigChart" style="height: 500px; width: 95%;"></div>
+            <div id="baseChart" style="height: 500px; width: 95%;"></div>
         </section>
         <section class="mainContent">
             <div class="cardGrid">
-                <div class="card">
+                <!-- <div class="card">
                     <div id="airqualityChart" style="height: 400px; width: 100%;"></div>
-                </div>
+                </div> -->
                 <div class="card">
                     <!-- shows which module is online -->
                     <div class="statusGrid">
@@ -55,8 +55,8 @@
                             <p> PcModule </p>
                         </div>
                         <div class="statusGridElement">
-                            <span class="statusCircle" id="displayStatus"></span>
-                            <p> DisplayModule </p>
+                            <span class="statusCircle" id="tentStatus"></span>
+                            <p> TentModule </p>
                         </div>
                         <div class="statusGridElement">
                             <span class="statusCircle" id="camStatus"></span>
@@ -107,13 +107,10 @@
                     </div>
                 </div>
                 <div class="card">
-                    <div id="baseChart" style="height: 400px; width: 100%;"></div>
+                    <div id="tentChart" style="height: 400px; width: 100%;"></div>
                 </div>
                 <div class="card">
                     <div id="pcChart" style="height: 400px; width: 100%;"></div>
-                </div>
-                <div class="card">
-                    <div id="sensorChart" style="height: 400px; width: 100%;"></div>
                 </div>
             </div>
         </section>
@@ -137,7 +134,8 @@
             </li>
         </ul>
         <p id="copyright">
-            Luca Kannenberg @ 2024
+            <!-- use my code as you please, though i'd be nice if you credit me -->
+            Luca Kannenberg @ 2025
         </p>
     </footer>
 </body>
