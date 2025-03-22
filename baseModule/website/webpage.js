@@ -34,8 +34,8 @@ window.onload = function () {
     var co2_data = []
     var resistance_data = [];
     var brightness_data = [];
-    var pathToBase = "http://baseModule.local/json"
-    var pathToPc = "http://pcModule.local/json"
+    var pathToBase = "http://localhost:8080/website/mock_sensor.json" // http://baseModule.local/json
+    var pathToPc = "http://localhost:8080/website/mock_sensor.json" // http://pcModule.local/json
     var bigChart = new CanvasJS.Chart("bigChart", {
         //exportEnabled: true,
         animationEnabled: true,

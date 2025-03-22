@@ -4,10 +4,10 @@
 <head>
     <meta charset="utf-8">
     <title>ESP-SmartHome</title>
-    <link rel="stylesheet" href="http://baseModule.local/css">
-    <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
-    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
-    <script src="http://baseModule.local/js"></script>
+    <link rel="stylesheet" href="http://localhost:8080/website/webpage.css"> <!-- http://baseModule.local/css -->
+    <script src="http://localhost:8080/website/jquery-1.11.1.min.js"></script> <!-- https://canvasjs.com/assets/script/jquery-1.11.1.min.js -->
+    <script src="http://localhost:8080/website/canvasjs.min.js"></script> <!-- https://canvasjs.com/assets/script/canvasjs.min.js -->
+    <script src="http://localhost:8080/website/webpage.js"></script> <!-- http://base.local/js -->
 </head>
 
 <body>
@@ -36,6 +36,7 @@
                     <div id="airqualityChart" style="height: 400px; width: 100%;"></div>
                 </div>
                 <div class="card">
+                    <!-- shows which module is online -->
                     <div class="statusGrid">
                         <div class="statusGridElement">
                             <span class="statusCircle" id="baseStatus"></span>

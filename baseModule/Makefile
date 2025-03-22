@@ -32,6 +32,9 @@ characters:
 	kotlinc toNumArray.kt -include-runtime -d toNumArray.jar
 	java -jar toNumArray.jar alphabet_lower
 
+webserver:
+	python3 website/webserver.py 8080
+
 clean:
 	rm -f toByteArray.jar
 	rm -f include/webpage.h
