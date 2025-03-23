@@ -79,6 +79,28 @@ void writeJsonToFile(const char* jsonContent){
     }
 }
 
+// function for preparing for respone
+//  check if another file is open, close if true
+//  open desired file
+bool prepareResponse(const char* pathToFile){
+    myFile.open(pathToFile, FILE_READ);
+    if(myFile){
+        return true;
+    } else {
+        return false;
+    }
+}
+
+size_t readFileForResponse(uint8_t* buffer, size_t maxLen, size_t index) {
+    if (myFile.available()) {
+        return myFile.read(buffer, maxLen);
+    } else {
+        // close file
+        myFile.close();
+        return 0;
+    }
+}
+
 void readFromFile(){
     Serial.println("readFromFile");
     //myFile = sd.open("testFolder/text.txt");
@@ -132,5 +154,4 @@ void dumpSDInfo(){
     Serial.println("dumpSDInfo");
     Serial.println(SD_FAT_VERSION);
 }
-
 

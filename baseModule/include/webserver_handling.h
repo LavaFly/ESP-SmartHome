@@ -53,6 +53,9 @@ void handleJSONRequest(AsyncWebServerRequest*);
 void handleJSRequest(AsyncWebServerRequest*);
 void handleCSSRequest(AsyncWebServerRequest*);
 
+void handleCanvasRequest(AsyncWebServerRequest*);
+void handleJQueryRequest(AsyncWebServerRequest*);
+
 int httpGetRequestIgnoreResponse(const char* path);
 
 const String* httpGetRequest(const char* path);

@@ -16,6 +16,8 @@ void writeToFile();
 void readFromFile();
 void readDir();
 void removeDir();
+bool prepareResponse(const char* pathToFile);
+size_t readFileForResponse(uint8_t* buffer, size_t maxLen, size_t index);
 
 void writeJsonToFile(const char* jsonContent);
 void readJsonFile();

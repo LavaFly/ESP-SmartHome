@@ -7,6 +7,7 @@
 #include "webserver_handling.h"
 #include "sensor_handling.h"
 #include "internet_settings.h"
+#include "sd_handling.h"
 #include "time_handling.h"
 
 #include "webpage_html.h"
@@ -156,6 +157,8 @@ bool initWebserver(){
     server.on("/css", handleCSSRequest);
     server.on("/isLive", handleLiveStatus);
     server.on("/json", handleJSONRequest);
+    server.on("/canvas", handleCanvasRequest);
+    server.on("/jquery", handleJQueryRequest);
     server.on("/currentReading", handleSensorReading);
     DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
     server.begin();
@@ -239,6 +242,34 @@ void handleSensorReading(AsyncWebServerRequest *request){
     request->send(response);
 
     free(sensorData);
+}
+
+void handleCanvasRequest(AsyncWebServerRequest *request){
+    if (request->args() > 0){
+        if (request->hasParam("f")) {
+            prepareResponse("canvasjs.min.js");
+            AsyncWebServerResponse* response = request->beginChunkedResponse("text/javascript", [](uint8_t* buffer, size_t maxLen, size_t index) -> size_t {
+                return readFileForResponse(buffer, 2048, index);
+            });
+            request->send(response);
+        }
+    } else {
+        request->send(200);
+    }
+}
+
+void handleJQueryRequest(AsyncWebServerRequest *request){
+    if (request->args() > 0){
+        if (request->hasParam("f")) {
+            prepareResponse("canvasjs.min.js");
+            AsyncWebServerResponse* response = request->beginChunkedResponse("text/javascript", [](uint8_t* buffer, size_t maxLen, size_t index) -> size_t {
+                return readFileForResponse(buffer, 2048, index);
+            });
+            request->send(response);
+        }
+    } else {
+        request->send(200);
+    }
 }
 
 int httpGetRequestIgnoreResponse(const char* path){

@@ -31,9 +31,9 @@ window.onload = function () {
     var tentData = { temperature: [], humidity: [], co2: [], brightness: [], resistance: [] }
     var pcData = { temperature: [], humidity: [] }
 
-    var pathToBase = "http://localhost:8080/website/mock_sensor.json" // http://baseModule.local/json
-    var pathToTent = "http://localhost:8080/website/mock_sensor.json" // http://tentModule.local/json
-    var pathToPc = "http://localhost:8080/website/mock_sensor.json" // http://pcModule.local/json
+    var pathToBase = "http://baseModule.local/json" //  http://localhost:8080/website/mock_sensor.json
+    var pathToTent = "http://tent.local/json" //  http://localhost:8080/website/mock_sensor.json
+    var pathToPc = "http://pcModule.local/json" //  http://localhost:8080/website/mock_sensor.json
 
     var baseChart = new CanvasJS.Chart("baseChart", {
         //exportEnabled: true,
