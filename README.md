@@ -15,5 +15,5 @@ Here is some text
 Again, some text
 
 ## Acknowledgements
-The Base-module is largely inspired by this build i found a while ago
+The Led-module is largely inspired by this build i found a while ago
 https://www.instructables.com/Ping-Pong-Ball-LED-Clock/
