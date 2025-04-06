@@ -28,7 +28,7 @@ bool buildRouterConnection(){
 }
 
 void setupMDNS(){
-    if(!MDNS.begin("lightingModule")){
+    if(!MDNS.begin("lighting")){
         //Serial.println("Error setting up mDNS responder!");
         while(1){ delay(1000); }
     }
@@ -96,13 +96,7 @@ void initWebserver(){
     server.on("/lightingOff", lightingOff);
     server.on("/raiseBrightness", raiseBrightness);
     server.on("/lowerBrightness", lowerBrightness);
-    DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
-    /*
-    server.on("/", HTTP_GET, [](AsyncWebserverRequest *request){
-              request->send(SD, "/index.html", "text/html");
-    });
-    server.serveStatic("/", SD, "/");
-    */
+    DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "http://lighting.local");
     server.begin();
     ArduinoOTA.begin();
 }

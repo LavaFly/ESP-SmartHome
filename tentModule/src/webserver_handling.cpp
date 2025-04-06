@@ -43,7 +43,7 @@ void initWebserver(){
     server.on("/time", handleTimeRequest);
 
 
-    DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
+    DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "http://tent.local");
     server.begin();
     ArduinoOTA.begin();
 }

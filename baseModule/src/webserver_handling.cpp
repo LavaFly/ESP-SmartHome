@@ -13,6 +13,7 @@
 #include "webpage_html.h"
 #include "webpage_js.h"
 #include "webpage_css.h"
+#include "jquerygz_js.h"
 
 AsyncWebServer server(80);
 AsyncUDP udp;
@@ -39,24 +40,28 @@ bool buildRouterConnection(){
         Serial.println("Connected to local network");
         Serial.println(WiFi.localIP());
         return true;
-    } else {
-        return true;
     }
     return false;
 }
 
 bool buildAP(){
-    if(WiFi.status() == WL_CONNECTED){
-        WiFi.disconnect();
+    // does not build an own ap as i had trouble connecting
+    // many clients and dont want to troubleshoot this problem
+    // right now, instead connecting to another local network
+
+    //Serial.println("Starting AP-Mode");
+    //WiFi.softAPConfig(local_IP, gateway, subnet);
+    //WiFi.softAP(APSSID, APPASS, 1, 9);
+    //Serial.println(WiFi.softAPIP());
+
+
+    WiFi.begin(APSSID, APPASS);
+    if(WiFi.waitForConnectResult() == WL_CONNECTED){
+        Serial.println("Connected to another local network");
+        Serial.println(WiFi.localIP());
+        return true;
     }
-
-    Serial.println("Starting AP-Mode");
-    WiFi.softAPConfig(local_IP, gateway, subnet);
-    WiFi.softAP(APSSID, APPASS, 1, 7);
-    Serial.println(WiFi.softAPIP());
-
-    // check this
-    return true;
+    return false;
 }
 
 bool buildNTPServer(){
@@ -74,7 +79,6 @@ bool buildNTPServer(){
 void handleTimeRequest(AsyncUDPPacket &packet){
     // Taken from and adapted from
     // https://github.com/Willtech/NTP-Server-for-ESP8266
-
 
     // Output IP of NTP request
     Serial.print("Received NTP request from IP: ");
@@ -150,17 +154,18 @@ void handleTimeRequest(AsyncUDPPacket &packet){
 
 bool initWebserver(){
     if(WiFi.status() != WL_CONNECTED){
-        return false;
+        Serial.println("fuck this");
+        //return false;
     }
     server.on("/", handleHTMLRequest);
     server.on("/js", handleJSRequest);
     server.on("/css", handleCSSRequest);
     server.on("/isLive", handleLiveStatus);
     server.on("/json", handleJSONRequest);
-    server.on("/canvas", handleCanvasRequest);
-    server.on("/jquery", handleJQueryRequest);
+    server.on("/canvasgz", handleCanvasRequest);
+    server.on("/jquerygz", handleJQueryRequest);
     server.on("/currentReading", handleSensorReading);
-    DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
+    DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "http://baseModule.local");
     server.begin();
     ArduinoOTA.begin();
     return true;
@@ -199,7 +204,6 @@ void handleJSRequest(AsyncWebServerRequest *request){
     AsyncWebServerResponse *response = request->beginResponse_P(200, dataType, webpage_js_gz, webpage_js_gz_len);
     response->addHeader("Content-Encoding", "gzip");
     request->send(response);
-
 }
 
 
@@ -218,6 +222,8 @@ void handleJSONRequest(AsyncWebServerRequest *request){
     char* sensorData = (char*)malloc(sizeof(char) * 180); // rougly 124 will be used
                                                           // check if null!
 
+    // i should use a chunked response or another type as this will fail if the
+    // response is too large
     AsyncResponseStream *response = request->beginResponseStream("application/json");
 
     response->print("[");
@@ -245,31 +251,25 @@ void handleSensorReading(AsyncWebServerRequest *request){
 }
 
 void handleCanvasRequest(AsyncWebServerRequest *request){
-    if (request->args() > 0){
-        if (request->hasParam("f")) {
-            prepareResponse("canvasjs.min.js");
-            AsyncWebServerResponse* response = request->beginChunkedResponse("text/javascript", [](uint8_t* buffer, size_t maxLen, size_t index) -> size_t {
-                return readFileForResponse(buffer, 2048, index);
-            });
-            request->send(response);
-        }
-    } else {
-        request->send(200);
-    }
+    Serial.println("called canvas");
+    prepareResponse("canvasjs.min.js.gz"); // this might create a race condition, if another file is being read out while
+                                        // one is already open, could use a lock or something, but dont want
+                                        // to wait inside the response function, ideally wait until first
+                                        // request is done and the resume the other one, see documentation
+                                        // as of now, i just ensure that this doesnt happen with a bad workaround
+    AsyncWebServerResponse* response = request->beginChunkedResponse("text/javascript", [](uint8_t* buffer, size_t maxLen, size_t index) -> size_t {
+        return readFileForResponse(buffer, 256, index);
+    });
+    response->addHeader("Content-Encoding", "gzip");
+    request->send(response);
 }
 
 void handleJQueryRequest(AsyncWebServerRequest *request){
-    if (request->args() > 0){
-        if (request->hasParam("f")) {
-            prepareResponse("canvasjs.min.js");
-            AsyncWebServerResponse* response = request->beginChunkedResponse("text/javascript", [](uint8_t* buffer, size_t maxLen, size_t index) -> size_t {
-                return readFileForResponse(buffer, 2048, index);
-            });
-            request->send(response);
-        }
-    } else {
-        request->send(200);
-    }
+    Serial.println("called jquery");
+    const char* dataType = "text/javascript";
+    AsyncWebServerResponse *response = request->beginResponse_P(200, dataType, jquerygz_js_gz, jquerygz_js_gz_len);
+    response->addHeader("Content-Encoding", "gzip");
+    request->send(response);
 }
 
 int httpGetRequestIgnoreResponse(const char* path){

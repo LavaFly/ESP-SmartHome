@@ -50,7 +50,7 @@ bool initWebserver(){
     server.on("/showTemperature", handleTemperatureRequest);
     server.on("/showCO2", handleCO2Request);
     server.on("/json", handleJSONRequest);
-    DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
+    DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "http://led.local");
     server.begin();
     ArduinoOTA.begin();
     return true;
@@ -62,7 +62,7 @@ void loopOTA(){
 
 
 void setupMDNS(){
-    if(!MDNS.begin("ledModule")){
+    if(!MDNS.begin("led")){
         Serial.println("Error setting up mDNS responder!");
         while(1){ delay(1000); }
     }

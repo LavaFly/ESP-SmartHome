@@ -50,7 +50,7 @@ void initWebserver(){
     server.on("/light/seconds", handleLightSecondsTimer);
 
 
-    DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
+    DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "http://grow.local");
     server.begin();
     ArduinoOTA.begin();
 }
@@ -61,7 +61,7 @@ void loopOTA(){
 
 
 void setupMDNS(){
-    if(!MDNS.begin("growModule")){
+    if(!MDNS.begin("grow")){
         Serial.println("Error setting up mDNS responder!");
         while(1){ delay(1000); }
     }
