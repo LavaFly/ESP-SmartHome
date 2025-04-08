@@ -165,7 +165,7 @@ bool initWebserver(){
     server.on("/canvasgz", handleCanvasRequest);
     server.on("/jquerygz", handleJQueryRequest);
     server.on("/currentReading", handleSensorReading);
-    DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "http://baseModule.local");
+    DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "http://base.local");
     server.begin();
     ArduinoOTA.begin();
     return true;
@@ -177,7 +177,7 @@ void loopOTA(){
 
 
 void setupMDNS(){
-    if(!MDNS.begin("baseModule")){
+    if(!MDNS.begin("base")){
         Serial.println("Error setting up mDNS responder!");
         while(1){ delay(1000); }
     }

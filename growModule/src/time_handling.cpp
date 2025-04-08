@@ -6,7 +6,7 @@
 
 unsigned long timeLast = 0;
 WiFiUDP ntpUDP;
-NTPClient timeClient(ntpUDP, "baseModule.local", 3600, 120000);//europe.pool.ntp.org
+NTPClient timeClient(ntpUDP, "base.local", 3600, 120000);//europe.pool.ntp.org
 
 
 bool buildTimeConnection(){

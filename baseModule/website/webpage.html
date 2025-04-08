@@ -4,10 +4,14 @@
 <head>
     <meta charset="utf-8">
     <title>ESP-SmartHome</title>
-    <link rel="stylesheet" href="http://baseModule.local/css"> <!--  http://localhost:8080/website/webpage.css -->
-    <script src="http://base.local/jquery"></script> <!-- http://localhost:8080/website/jquery-1.11.1.min.js https://canvasjs.com/assets/script/jquery-1.11.1.min.js -->
-    <script src="http://base.local/canvas"></script> <!-- https://canvasjs.com/assets/script/canvasjs.min.js http://localhost:8080/website/canvasjs.min.js -->
-    <script src="http://base.local/js"></script> <!--  http://localhost:8080/website/webpage.js -->
+    <link rel="stylesheet" href="http://base.local/css "> <!-- http://localhost:8080/website/webpage.css -->
+
+    <script src="http://base.local/jquerygz"></script> <!-- https://canvasjs.com/assets/script/jquery-1.11.1.min.js  -->
+    <script src="http://base.local/canvasgz" async></script> <!-- https://canvasjs.com/assets/script/canvasjs.min.js -->
+    <script src="http://base.local/js "></script> <!-- http://localhost:8080/website/webpage.js -->
+
+    <!-- http://localhost:8080/website/canvasjs.min.js -->
+    <!-- http://localhost:8080/website/jquery-1.11.1.min.js -->
 </head>
 
 <body>
@@ -69,20 +73,20 @@
                     <div class="ctrlGrid">
                         <p class="fatText gridHeader"> Lighting Control </p>
                         <button class="fancyButton" role="button"
-                            onclick="sendGetRequest('lightingModule','lightingOn')">On</button>
+                            onclick="sendGetRequest('lighting','lightingOn')">On</button>
                         <button class="fancyButton" role="button"
-                            onclick="sendGetRequest('lightingModule','lightingOff')">Off</button>
+                            onclick="sendGetRequest('lighting','lightingOff')">Off</button>
                         <button class="fancyButton" role="button"
-                            onclick="sendGetRequest('lightingModule','raiseBrightness')">Brighter</button>
+                            onclick="sendGetRequest('lighting','raiseBrightness')">Brighter</button>
                         <button class="fancyButton" role="button"
-                            onclick="sendGetRequest('lightingModule','lowerBrightness')">Darker</button>
+                            onclick="sendGetRequest('lighting','lowerBrightness')">Darker</button>
 
                         <!-- PcCtlr -->
                         <p class="fatText gridHeader"> PC Control </p>
                         <button class="fancyButton" role="button"
-                            onclick="sendGetRequest('pcModule','pcPowerOn')">On</button>
+                            onclick="sendGetRequest('pc','pcPowerOn')">On</button>
                         <button class="fancyButton" role="button"
-                            onclick="sendGetRequest('pcModule','pcPowerOn')">Off</button>
+                            onclick="sendGetRequest('pc','pcPowerOn')">Off</button>
 
 
                     </div>
@@ -101,9 +105,9 @@
                         <!-- LedCtrl  -->
                         <p class="fatText gridHeader"> Led Control </p>
                         <button class="fancyButton" role="button"
-                            onclick="sendGetRequest('ledModule','showTime')">Time</button>
+                            onclick="sendGetRequest('led','showTime')">Time</button>
                         <button class="fancyButton" role="button"
-                            onclick="sendGetRequest('ledModule','makeItRain')">Rain</button>
+                            onclick="sendGetRequest('led','makeItRain')">Rain</button>
                     </div>
                 </div>
                 <div class="card">

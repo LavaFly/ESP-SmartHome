@@ -4,9 +4,16 @@
 #include <NTPClient.h>
 #include "time_handling.h"
 
+
+// this should be a linked list
 unsigned long timeLast = 0;
 WiFiUDP ntpUDP;
-NTPClient timeClient(ntpUDP, "baseModule.local", 3600, 120000);//europe.pool.ntp.org
+NTPClient timeClient(ntpUDP, "base.local", 3600, 120000);//europe.pool.ntp.org
+
+typedef struct {
+    uint32_t timeStamp;
+    uint8_t durationSeconds;
+} timerElement;
 
 bool buildTimeConnection(){
     if(WiFi.status() == WL_CONNECTED){
@@ -48,6 +55,21 @@ void setTimerMillisecondsCallback(uint8_t milliseconds, void (*callbackFunction)
 }
 
 
+
+// these will be changed soon, only placeholder for proper implementation
+bool checkTimer(uint8_t timerIndex){
+    return false;
+}
+
+uint8_t addTimer(uint8_t seconds){
+    return 0;
+}
+uint8_t deleteTimer(uint8_t timerIndex){
+    return 0;
+}
+uint8_t resetTimer(uint8_t timerIndex){
+    return 0;
+}
 bool setTimerSeconds(uint8_t seconds){
     uint32_t timeNow = millis()/1000;
     uint8_t secondsPassed = timeNow - timeLast;

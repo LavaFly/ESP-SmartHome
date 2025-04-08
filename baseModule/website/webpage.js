@@ -31,9 +31,9 @@ window.onload = function () {
     var tentData = { temperature: [], humidity: [], co2: [], brightness: [], resistance: [] }
     var pcData = { temperature: [], humidity: [] }
 
-    var pathToBase = "http://baseModule.local/json" //  http://localhost:8080/website/mock_sensor.json
+    var pathToBase = "http://base.local/json" //  http://localhost:8080/website/mock_sensor.json
     var pathToTent = "http://tent.local/json" //  http://localhost:8080/website/mock_sensor.json
-    var pathToPc = "http://pcModule.local/json" //  http://localhost:8080/website/mock_sensor.json
+    var pathToPc = "http://pc.local/json" //  http://localhost:8080/website/mock_sensor.json
 
     var baseChart = new CanvasJS.Chart("baseChart", {
         //exportEnabled: true,
@@ -479,12 +479,12 @@ window.onload = function () {
         pcChart.render();
         airqualityChart.render();
     }
-    checkWebsiteStatus('http://baseModule.local/isLive', document.getElementById('baseStatus'));
-    checkWebsiteStatus('http://ledModule.local/isLive', document.getElementById('ledStatus'));
-    checkWebsiteStatus('http://lightingModule.local/isLive', document.getElementById('lightingStatus'));
-    checkWebsiteStatus('http://pcModule.local/isLive', document.getElementById('pcStatus'));
-    checkWebsiteStatus('http://tentModule.local/isLive', document.getElementById('tentStatus'));
-    checkWebsiteStatus('http://camModule.local/isLive', document.getElementById('camStatus'));
+    checkWebsiteStatus('http://base.local/isLive', document.getElementById('baseStatus'));
+    checkWebsiteStatus('http://led.local/isLive', document.getElementById('ledStatus'));
+    checkWebsiteStatus('http://lighting.local/isLive', document.getElementById('lightingStatus'));
+    checkWebsiteStatus('http://pc.local/isLive', document.getElementById('pcStatus'));
+    checkWebsiteStatus('http://tent.local/isLive', document.getElementById('tentStatus'));
+    checkWebsiteStatus('http://cam.local/isLive', document.getElementById('camStatus'));
     setupCharts();
     initWebSocket();
     initButton();
@@ -499,7 +499,7 @@ window.onload = function () {
         });
     });**/
 }
-var wsHost = 'ws://ledModule.local/ws';
+var wsHost = 'ws://led.local/ws';
 var websocket;
 function initWebSocket() {
     console.log('Trying to open a WebSocket connection...');
