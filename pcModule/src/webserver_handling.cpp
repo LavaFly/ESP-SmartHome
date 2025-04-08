@@ -36,7 +36,8 @@ void initWebserver(){
     }
     server.on("/isLive", handleLiveStatus);
     server.on("/pcStatus", handleStatusRequest);
-    server.on("/pcPowerOn", handlePowerOn);
+    server.on("/on", handlePowerOn);
+    server.on("/off", handlePowerOff);
     server.on("/currentReading", handleSensorReading);
     server.on("/json", handleJSONRequest);
     DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "http://pc.local");
@@ -93,6 +94,16 @@ void handleJSONRequest(AsyncWebServerRequest *request){
 
 void handlePowerOn(AsyncWebServerRequest *request){
     Serial.println("powerOn");
+    // first check if already on
+    request->send(200);
+    digitalWrite(POWERPIN, HIGH);
+    delay(100);
+    digitalWrite(POWERPIN, LOW);
+}
+
+void handlePowerOff(AsyncWebServerRequest *request){
+    Serial.println("powerOff");
+    // first check if already off
     request->send(200);
     digitalWrite(POWERPIN, HIGH);
     delay(100);

@@ -32,6 +32,7 @@ void handleJSONRequest(AsyncWebServerRequest*);
 void handleStatusRequest(AsyncWebServerRequest*);
 
 void handlePowerOn(AsyncWebServerRequest*);
+void handlePowerOff(AsyncWebServerRequest *request);
 
 void handleLiveStatus(AsyncWebServerRequest *request);
 

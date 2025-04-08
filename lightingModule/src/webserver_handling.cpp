@@ -92,8 +92,8 @@ void initWebserver(){
 
     server.on("/", baseResponse);
     server.on("/isLive", handleLiveStatus);
-    server.on("/lightingOn", lightingOn);
-    server.on("/lightingOff", lightingOff);
+    server.on("/on", lightingOn);
+    server.on("/off", lightingOff);
     server.on("/raiseBrightness", raiseBrightness);
     server.on("/lowerBrightness", lowerBrightness);
     DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "http://lighting.local");
