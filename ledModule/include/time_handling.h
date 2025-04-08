@@ -11,6 +11,8 @@ struct simpleTime {
     uint8_t minute;
 };
 
+
+
 bool buildTimeConnection();
 void getSimpleTime(struct simpleTime *currentTime);
 bool setTimerMilliseconds(uint8_t milliseconds);
@@ -19,5 +21,11 @@ bool setTimerSeconds(uint8_t seconds);
 void setTimerSecondsCallback(uint8_t seconds, void (*callbackFunction)());
 bool setTimerMinutes(uint8_t minutes);
 void setTimerMinutesCallback(uint8_t minutes, void (*callbackFunction)());
+bool checkTimer(uint8_t timerIndex);
+uint8_t addTimer(uint8_t seconds);
+uint8_t deleteTimer(uint8_t timerIndex);
+uint8_t resetTimer(uint8_t timerIndex);
+
+
 
 #endif

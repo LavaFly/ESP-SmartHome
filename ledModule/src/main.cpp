@@ -27,7 +27,7 @@ void setup() {
     Serial.println("starting the setup");
 
     buildIrConnection();
-    //initVR();
+    initVR();
     buildRouterConnection();
     buildTimeConnection();
     initWebserver();
@@ -39,7 +39,7 @@ void setup() {
     initialiseLedMap();
     clearActiveLeds();
 
-    //setupEventResponse();
+    setupEventResponse();
 
     currentTime = millis();
     Serial.println("finishing the setup");
@@ -48,7 +48,7 @@ void setup() {
 void loop() {
     MDNS.update();
     loopOTA();
-    //handleVR();
+    handleVR();
     cleanUpSockets();
 
     if(animationActive && millis() > currentTime + 150){
@@ -69,12 +69,6 @@ void loop() {
         toBeCleared = false;
         Serial.println("clearing Screen");
     }
-    /**
-    if(vrClearTimer != 0 && millis() > vrClearTimer + 3000){
-        loadDefaultVR();
-        vrClearTimer = 0;
-    }**/
-
     // remove this serial part as it is only for debugging
     if(Serial.available() > 0){
         clearActiveLeds();

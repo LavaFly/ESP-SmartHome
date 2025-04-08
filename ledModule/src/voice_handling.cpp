@@ -1,6 +1,8 @@
 #include <SoftwareSerial.h>
 #include "VoiceRecognitionV3.h"
+#include "time_handling.h"
 #include "voice_handling.h"
+#include "led_handling.h"
 
 
 // Audio                Index
@@ -10,18 +12,40 @@
 #define VR_WEATHER      3
 #define VR_TEMPERATURE  4
 #define VR_CO2          5
+#define VR_HUMIDITY     6
+#define VR_BRIGHTNESS   7
 
 #define VR_ON           8
 #define VR_OFF          9
 #define VR_BRIGHTER     10
 #define VR_DARKER       11
+#define VR_TENT         12
+
+typedef struct {
+    //0-254 -> slot
+    //255   -> ignore
+    uint8_t recordMap[7];
+
+    // 0 -> remain in state till t > ~3s then 1
+    // 1 -> call defaultResponse, clear timer, load default recordMap
+    uint8_t nodeType;
+
+    // returns nodeType
+    // 0 -> call requestUrl, clean
+    // 1 -> clean
+    uint8_t (*eventResponse)();
+} vrEvent;
+vrEvent eventMap[14];
+
 
 // D1 - TX, D2 - RX
 VR myVR(5,4);
 uint8_t records[7];
 uint8_t buf[64];
+char requestUrl[64];
+uint8_t vrTimerIndex; // change to ref to struct later
 
-void (*EventResponse[12])();
+uint8_t (*EventResponse[12])();
 //void (*EventResponse[12])(void (*responseCallback)());
 
 
@@ -34,10 +58,11 @@ void initVR(){
         Serial.println("VR not cleared");
     }
 
-    loadDefaultVR();
+    loadDefaultResponse();
 }
 
-void loadDefaultVR(){
+
+void loadDefaultResponse(){
     myVR.clear();
 
     records[0] = VR_PC;
@@ -48,6 +73,18 @@ void loadDefaultVR(){
     records[5] = VR_CO2;
 
     myVR.load(records, 6);
+}
+
+bool loadEventResponse(uint8_t indexOfRecord){
+    uint8_t emptyRecordMap = true;
+    for(uint8_t i = 0; i < 7; i++){
+        if(eventMap[indexOfRecord].recordMap[i] != 255){
+            records[i] = eventMap[indexOfRecord].recordMap[i];
+            emptyRecordMap = false;
+        }
+    }
+    myVR.load(records, 7);
+    return emptyRecordMap;
 }
 
 void loadOnOff(){
@@ -75,36 +112,38 @@ void loadOnOffBrighterDarker(){
 void handleVR(){
     int ret = myVR.recognize(buf, 50);
     if(ret > 0){
-        // buf[2] contains record index ( < 7 )
+        // buf[2] contains record index ( > 7 )
         // buf[3] contains length of signature if present
         // buf[4 - x] contains the signature
-        int numberOfRecord = buf[1];
-        (*EventResponse[numberOfRecord])();
+
+        uint8_t indexOfRecord = buf[2];
+        //  load new records / call EventRespose
+        uint8_t isLeaf = eventMap[indexOfRecord].nodeType;
+
+        if(!isLeaf){
+            vrTimerIndex = setTimerSeconds(3);
+            loadEventResponse(indexOfRecord);
+        }
+
+        // timer must exist and not have run out, otherwise leave function
+        if(vrTimerIndex != 0 && !checkTimer(vrTimerIndex)){
+            return;
+        }
+
+        eventMap[indexOfRecord].eventResponse();
+        deleteTimer(vrTimerIndex);
+        vrTimerIndex = 0; // later nullptr
+        loadDefaultResponse();
     }
 }
 
 
-void addToEventReponse(uint8_t index, void (*response)()){
+void addToEventReponse(uint8_t index, uint8_t (*response)()){
     EventResponse[index] = response;
 }
 
 
 unsigned long vrClearTimer = 0;
-// 1 = PC, 2 = Light
-uint8_t vrTreeBranch = 0;
-void setupEventResponse();
-
-void vr_pc();
-void vr_light();
-void vr_time();
-void vr_weather();
-void vr_temperature();
-void vr_co2();
-void vr_on();
-void vr_off();
-void vr_brighter();
-void vr_darker();
-void vr_empty();
 
 
 // all of this will be moved to vr_handling at some point
@@ -123,74 +162,105 @@ void setupEventResponse(){
     addToEventReponse(11, vr_darker);
 }
 
-void vr_pc(){
-    vrTreeBranch = 1;
-    loadOnOff();
-    vrClearTimer = millis();
+void setupEventMap(){
+    eventMap[0].recordMap[0] = VR_ON;
+    eventMap[0].recordMap[1] = VR_OFF;
+    eventMap[0].nodeType = 0;
+    eventMap[0].eventResponse = vr_pc;
+
+
+    eventMap[1].recordMap[0] = VR_ON;
+    eventMap[1].recordMap[1] = VR_OFF;
+    eventMap[1].recordMap[2] = VR_BRIGHTER;
+    eventMap[1].recordMap[3] = VR_DARKER;
+    eventMap[1].nodeType = 0;
+    eventMap[1].eventResponse = vr_light;
+
+
+    eventMap[2].nodeType = 1;
+    eventMap[2].eventResponse = vr_time;
+
+    eventMap[3].nodeType = 1;
+    eventMap[3].eventResponse = vr_weather;
+
+    eventMap[4].recordMap[0] = VR_TENT;
+    eventMap[4].nodeType = 0;
+    eventMap[4].eventResponse = vr_weather;
+
+    eventMap[5].recordMap[0] = VR_TENT;
+    eventMap[5].nodeType = 1;
+    eventMap[5].eventResponse = vr_empty;
+
+
+    eventMap[6].recordMap[0] = VR_TENT;
+    eventMap[6].nodeType = 1;
+    eventMap[6].eventResponse = vr_co2;
+
+
+    eventMap[6].recordMap[0] = VR_TENT;
+    eventMap[6].nodeType = 1;
+    eventMap[6].eventResponse = vr_empty;
 }
-void vr_light(){
-    vrTreeBranch = 2;
+
+uint8_t vr_pc(){
+    strcpy(requestUrl, "http://pc.local/");
+    return 0;
+}
+uint8_t vr_light(){
+    strcat(requestUrl, "raiseBrightness");
     loadOnOffBrighterDarker();
     vrClearTimer = millis();
-}
-void vr_time(){
-    //showTime();
-}
-void vr_weather(){
-    Serial.println("");
+    return 0;
 
 }
-void vr_temperature(){
-    Serial.println("");
+uint8_t vr_time(){
+    strcpy(requestUrl, "http://base.local/showTime");
+    // actually just show time without web request, this is just a placeholder
+    return 0;
+}
+uint8_t vr_weather(){
+    // same here
+    return 0;
 
 }
-void vr_co2(){
+uint8_t vr_temperature(){
     Serial.println("");
+    return 0;
 
 }
-void vr_on(){
+uint8_t vr_co2(){
     Serial.println("");
-    if(vrTreeBranch == 1){
-        //httpGetRequestIgnoreResponse("http://lightingModule.local/pcPowerOn");
-    } else if(vrTreeBranch == 2){
-        //httpGetRequestIgnoreResponse("http://lightingModule.local/lightingOn");
-    } else {
+    return 0;
 
+}
+uint8_t vr_on(){
+    strcat(requestUrl, "on");
+    return 0;
+}
+uint8_t vr_off(){
+    strcat(requestUrl, "off");
+    return 0;
+}
+uint8_t vr_brighter(){
+    strcat(requestUrl, "raiseBrightness");
+    //httpGetRequestIgnoreResponse("http://lightingModule.local/raiseBrightness");
+    return 0;
+}
+uint8_t vr_darker(){
+    strcat(requestUrl, "lowerBrightness");
+    return 0;
+}
+uint8_t vr_empty(){
+    return 0;
+}
+
+bool checkVrTimer(uint8_t vrResetTimeSeconds){
+    if(vrClearTimer != 0 && millis() > vrClearTimer + vrResetTimeSeconds){
+        return true;
     }
-    loadDefaultVR();
+    return false;
 }
-void vr_off(){
-    Serial.println("");
-    if(vrTreeBranch == 1){
-        Serial.println("not properly implemented, as i havent spliced the necessary cable yet");
-        //httpGetRequestIgnoreResponse("http://lightingModule.local/pcPowerOn");
-    } else if(vrTreeBranch == 2){
-        //httpGetRequestIgnoreResponse("http://lightingModule.local/lightingOff");
-    } else {
 
-    }
-    loadDefaultVR();
-}
-void vr_brighter(){
-    if(vrTreeBranch == 1){
-        Serial.println("impossible");
-    } else if(vrTreeBranch == 2){
-        //httpGetRequestIgnoreResponse("http://lightingModule.local/raiseBrightness");
-    } else {
-
-    }
-    loadDefaultVR();
-}
-void vr_darker(){
-    if(vrTreeBranch == 1){
-        Serial.println("impossible");
-    } else if(vrTreeBranch == 2){
-        //httpGetRequestIgnoreResponse("http://lightingModule.local/lowerBrightness");
-    } else {
-
-    }
-    loadDefaultVR();
-}
-void vr_empty(){
-    loadDefaultVR();
+void clearVrTimer(){
+    vrClearTimer = 0;
 }
