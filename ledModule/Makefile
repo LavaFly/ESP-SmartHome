@@ -17,7 +17,7 @@ characters:
 	java -jar toNumArray.jar alphabet
 
 websocket:
-	websocat ws://ledModule.local/ws
+	websocat ws://led.local/ws
 
 clean:
 	pio run -t clean

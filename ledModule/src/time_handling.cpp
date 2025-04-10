@@ -8,17 +8,21 @@
 // this should be a linked list
 unsigned long timeLast = 0;
 WiFiUDP ntpUDP;
-NTPClient timeClient(ntpUDP, "base.local", 3600, 120000);//europe.pool.ntp.org
+NTPClient timeClient(ntpUDP, "base.local", 0, 120000);//europe.pool.ntp.org
 
-typedef struct {
+typedef struct timerElement{
     uint32_t timeStamp;
+    struct timerElement* next;
     uint8_t durationSeconds;
+    uint8_t hasRunOut;
 } timerElement;
+
+timerElement* head = nullptr;
 
 bool buildTimeConnection(){
     if(WiFi.status() == WL_CONNECTED){
         timeClient.begin();
-        timeClient.setTimeOffset(3600);//7200
+        timeClient.setTimeOffset(0);//7200
         timeClient.update();
         return true;
     }
@@ -55,21 +59,70 @@ void setTimerMillisecondsCallback(uint8_t milliseconds, void (*callbackFunction)
 }
 
 
+timerElement* addTimer(uint8_t seconds){
+    timerElement *newTimer = (timerElement *)malloc(sizeof(timerElement));
+    if(newTimer == NULL){
+        Serial.println("a great big fuck up");
+    }
+    newTimer->timeStamp = millis();
+    newTimer->durationSeconds = seconds;
 
-// these will be changed soon, only placeholder for proper implementation
-bool checkTimer(uint8_t timerIndex){
+    if(head == NULL){
+        head = newTimer;
+    } else {
+        //append to end of list
+        timerElement *iterator = head->next;
+        while(iterator != NULL){
+            iterator = iterator->next;
+        }
+        iterator->next = newTimer;
+    }
+    return newTimer;
+}
+
+bool checkTimer(timerElement* timerPtr){
+    uint32_t currentTime = millis();
+
+    if(timerPtr->hasRunOut || timerPtr->timeStamp + timerPtr->durationSeconds * 1000 < currentTime){
+        timerPtr->hasRunOut = true;
+        return true;
+    }
     return false;
 }
 
-uint8_t addTimer(uint8_t seconds){
-    return 0;
+uint8_t deleteTimer(timerElement* timerPtr){
+    // traverse list until ptr is found
+    timerElement *iterator = head;
+    if(head == NULL){
+        Serial.println("bad");
+        return 0;
+    }
+
+    if(head->next == NULL){
+        Serial.println("also bad");
+        return 0;
+    }
+
+    while(iterator->next != timerPtr){
+        iterator = iterator->next;
+    }
+    timerElement *prev = iterator;
+    timerElement *post = iterator->next->next;
+
+    prev->next = post;
+
+    free(timerPtr);
+
+    return 1;
 }
-uint8_t deleteTimer(uint8_t timerIndex){
-    return 0;
+
+timerElement* resetTimer(timerElement* timerPtr){
+    timerPtr->hasRunOut = false;
+    timerPtr->timeStamp = millis();
+    return timerPtr;
 }
-uint8_t resetTimer(uint8_t timerIndex){
-    return 0;
-}
+
+
 bool setTimerSeconds(uint8_t seconds){
     uint32_t timeNow = millis()/1000;
     uint8_t secondsPassed = timeNow - timeLast;

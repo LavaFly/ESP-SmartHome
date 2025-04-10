@@ -44,6 +44,7 @@ uint8_t records[7];
 uint8_t buf[64];
 char requestUrl[64];
 uint8_t vrTimerIndex; // change to ref to struct later
+timerElement* vrTimer;
 
 uint8_t (*EventResponse[12])();
 //void (*EventResponse[12])(void (*responseCallback)());
@@ -121,18 +122,23 @@ void handleVR(){
         uint8_t isLeaf = eventMap[indexOfRecord].nodeType;
 
         if(!isLeaf){
-            vrTimerIndex = setTimerSeconds(3);
+            //vrTimerIndex = setTimerSeconds(3);
+            vrTimer = addTimer(3);
             loadEventResponse(indexOfRecord);
         }
 
         // timer must exist and not have run out, otherwise leave function
-        if(vrTimerIndex != 0 && !checkTimer(vrTimerIndex)){
+        //if(vrTimerIndex != 0 && !checkTimer(vrTimerIndex)){
+            //return;
+        //}
+        if(vrTimer != NULL && !checkTimer(vrTimer)){
+            Serial.println("this debug");
             return;
         }
 
         eventMap[indexOfRecord].eventResponse();
-        deleteTimer(vrTimerIndex);
-        vrTimerIndex = 0; // later nullptr
+        deleteTimer(vrTimer);
+
         loadDefaultResponse();
     }
 }
