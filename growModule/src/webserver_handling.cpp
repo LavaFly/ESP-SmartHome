@@ -50,7 +50,7 @@ void initWebserver(){
     server.on("/light/seconds", handleLightSecondsTimer);
 
 
-    DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "http://grow.local");
+    DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "http://base.local");
     server.begin();
     ArduinoOTA.begin();
 }

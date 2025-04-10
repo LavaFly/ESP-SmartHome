@@ -40,7 +40,7 @@ void initWebserver(){
     server.on("/off", handlePowerOff);
     server.on("/currentReading", handleSensorReading);
     server.on("/json", handleJSONRequest);
-    DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "http://pc.local");
+    DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "http://base.local");
     server.begin();
     ArduinoOTA.begin();
 }

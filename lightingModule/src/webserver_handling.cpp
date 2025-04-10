@@ -96,7 +96,7 @@ void initWebserver(){
     server.on("/off", lightingOff);
     server.on("/raiseBrightness", raiseBrightness);
     server.on("/lowerBrightness", lowerBrightness);
-    DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "http://lighting.local");
+    DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "http://base.local");
     server.begin();
     ArduinoOTA.begin();
 }

@@ -50,7 +50,7 @@ bool initWebserver(){
     server.on("/showTemperature", handleTemperatureRequest);
     server.on("/showCO2", handleCO2Request);
     server.on("/json", handleJSONRequest);
-    DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "http://led.local");
+    DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "http://base.local");
     server.begin();
     ArduinoOTA.begin();
     return true;
