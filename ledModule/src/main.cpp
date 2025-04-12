@@ -135,17 +135,17 @@ void loop() {
     switch (irInput) {
         case 0x12:
             Serial.println("lighting on");
-            httpGetRequestIgnoreResponse("http://lightingModule.local/lightingOn");
+            httpGetRequestIgnoreResponse("http://lighting.local/on");
             break;
         case 0x1e:
             Serial.println("lighting off");
-            httpGetRequestIgnoreResponse("http://lightingModule.local/lightingOff");
+            httpGetRequestIgnoreResponse("http://lighting.local/off");
             break;
         case 0x0e:
-            httpGetRequestIgnoreResponse("http://lightingModule.local/raiseBrightness");
+            httpGetRequestIgnoreResponse("http://lighting.local/raiseBrightness");
             break;
         case 0x0c:
-            httpGetRequestIgnoreResponse("http://lightingModule.local/lowerBrightness");
+            httpGetRequestIgnoreResponse("http://lighting.local/lowerBrightness");
             break;
         case 0x01:
             Serial.println("Example String");
@@ -175,11 +175,11 @@ void loop() {
             break;
         case 0x0e:
             Serial.println("raising brightness");
-            httpGetRequestIgnoreResponse("http://lightingModule.local/raiseBrightness");
+            httpGetRequestIgnoreResponse("http://lighting.local/raiseBrightness");
             break;
         case 0x0c:
             Serial.println("lowering brightness");
-            httpGetRequestIgnoreResponse("http://lightingModule.local/lowerBrightness");
+            httpGetRequestIgnoreResponse("http://lighting.local/lowerBrightness");
             break;
         case 0x1a:
             httpGetRequestIgnoreResponse("http://pcModule.local/pcPowerOn");

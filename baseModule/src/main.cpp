@@ -13,20 +13,22 @@ void setup() {
     Serial.println("Starting...");
 
     // this is not really pretty
+    initSDCard();
     buildRouterConnection();
     buildTimeConnection();
     initSensor();
     buildAP();
+    buildNTPServer();
 
     initWebserver();
     setupMDNS();
     Serial.println("setup done");
 
-    //initSDCard();
     //createDir();
 }
 
 void loop() {
+    yield();
     MDNS.update();
     loopOTA();
 
