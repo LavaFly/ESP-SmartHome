@@ -190,9 +190,42 @@ ledModule/src/led_handling.cpp:60:30: style: Variable 'ledLeftNeighbour' is assi
 ledModule/src/led_handling.cpp:229:22: style: Variable 'currentChar' is assigned a value that is never used. [unreadVariable]
     char currentChar = ' ';
                      ^
-ledModule/src/main.cpp:140:25: style: Unused variable: currentTimeStruct [unusedVariable]
+ledModule/src/main.cpp:134:25: style: Unused variable: currentTimeStruct [unusedVariable]
     struct simpleTime * currentTimeStruct;
                         ^
+ledModule/src/time_handling.cpp:14:14: style: struct member 'timerElement::timeStamp' is never used. [unusedStructMember]
+    uint32_t timeStamp;
+             ^
+ledModule/src/time_handling.cpp:15:13: style: struct member 'timerElement::durationSeconds' is never used. [unusedStructMember]
+    uint8_t durationSeconds;
+            ^
+ledModule/src/voice_handling.cpp:200:30: style: Variable 'eventMap[6].recordMap[0]' is reassigned a value before the old one has been used. [redundantAssignment]
+    eventMap[6].recordMap[0] = VR_TENT;
+                             ^
+ledModule/src/voice_handling.cpp:195:30: note: eventMap[6].recordMap[0] is assigned
+    eventMap[6].recordMap[0] = VR_TENT;
+                             ^
+ledModule/src/voice_handling.cpp:200:30: note: eventMap[6].recordMap[0] is overwritten
+    eventMap[6].recordMap[0] = VR_TENT;
+                             ^
+ledModule/src/voice_handling.cpp:201:26: style: Variable 'eventMap[6].nodeType' is reassigned a value before the old one has been used. [redundantAssignment]
+    eventMap[6].nodeType = 1;
+                         ^
+ledModule/src/voice_handling.cpp:196:26: note: eventMap[6].nodeType is assigned
+    eventMap[6].nodeType = 1;
+                         ^
+ledModule/src/voice_handling.cpp:201:26: note: eventMap[6].nodeType is overwritten
+    eventMap[6].nodeType = 1;
+                         ^
+ledModule/src/voice_handling.cpp:202:31: style: Variable 'eventMap[6].eventResponse' is reassigned a value before the old one has been used. [redundantAssignment]
+    eventMap[6].eventResponse = vr_empty;
+                              ^
+ledModule/src/voice_handling.cpp:197:31: note: eventMap[6].eventResponse is assigned
+    eventMap[6].eventResponse = vr_co2;
+                              ^
+ledModule/src/voice_handling.cpp:202:31: note: eventMap[6].eventResponse is overwritten
+    eventMap[6].eventResponse = vr_empty;
+                              ^
 baseModule/src/sensor_handling.cpp:17:9: error: The one definition rule is violated, different classes/structs have the same name 'sensor_reading' [ctuOneDefinitionRuleViolation]
 typedef struct {
         ^
@@ -229,7 +262,10 @@ typedef struct {
 baseModule/src/sensor_handling.cpp:17:9: note: The one definition rule is violated, different classes/structs have the same name 'sensor_reading'
 typedef struct {
         ^
-baseModule/src/webserver_handling.cpp:62:0: style: The function 'buildNTPServer' is never used. [unusedFunction]
+ledModule/src/time_handling.cpp:64:0: style: The function 'addTimer' is never used. [unusedFunction]
+
+^
+baseModule/src/webserver_handling.cpp:67:0: style: The function 'buildNTPServer' is never used. [unusedFunction]
 
 ^
 baseModule/lib/VoiceRecognitionV3/VoiceRecognitionV3.cpp:543:0: style: The function 'checkGroupControl' is never used. [unusedFunction]
@@ -248,6 +284,12 @@ baseModule/lib/VoiceRecognitionV3/VoiceRecognitionV3.cpp:780:0: style: The funct
 
 ^
 baseModule/lib/VoiceRecognitionV3/VoiceRecognitionV3.cpp:608:0: style: The function 'checkUserGroup' is never used. [unusedFunction]
+
+^
+ledModule/src/voice_handling.cpp:257:0: style: The function 'checkVrTimer' is never used. [unusedFunction]
+
+^
+ledModule/src/voice_handling.cpp:264:0: style: The function 'clearVrTimer' is never used. [unusedFunction]
 
 ^
 baseModule/lib/VoiceRecognitionV3/VoiceRecognitionV3.cpp:1044:0: style: The function 'cmp' is never used. [unusedFunction]
@@ -277,16 +319,13 @@ ledModule/src/led_handling.cpp:403:0: style: The function 'getRainbowColor' is n
 lightingModule/src/webserver_handling.cpp:73:0: style: The function 'handleUnkownRequest' is never used. [unusedFunction]
 
 ^
-ledModule/src/voice_handling.cpp:75:0: style: The function 'handleVR' is never used. [unusedFunction]
-
-^
 ledModule/src/led_handling.cpp:409:0: style: The function 'incColor' is never used. [unusedFunction]
 
 ^
 baseModule/src/sd_handling.cpp:135:0: style: The function 'initSDCard' is never used. [unusedFunction]
 
 ^
-ledModule/src/voice_handling.cpp:28:0: style: The function 'initVR' is never used. [unusedFunction]
+ledModule/src/voice_handling.cpp:90:0: style: The function 'loadOnOff' is never used. [unusedFunction]
 
 ^
 baseModule/lib/VoiceRecognitionV3/VoiceRecognitionV3.cpp:672:0: style: The function 'loadSystemGroup' is never used. [unusedFunction]
@@ -331,6 +370,9 @@ baseModule/src/sd_handling.cpp:30:0: style: The function 'removeDir' is never us
 baseModule/lib/VoiceRecognitionV3/VoiceRecognitionV3.cpp:880:0: style: The function 'resetIO' is never used. [unusedFunction]
 
 ^
+ledModule/src/time_handling.cpp:70:0: style: The function 'resetTimer' is never used. [unusedFunction]
+
+^
 baseModule/lib/VoiceRecognitionV3/VoiceRecognitionV3.cpp:753:0: style: The function 'restoreSystemSettings' is never used. [unusedFunction]
 
 ^
@@ -361,7 +403,7 @@ baseModule/lib/VoiceRecognitionV3/VoiceRecognitionV3.cpp:572:0: style: The funct
 baseModule/src/main.cpp:11:0: style: The function 'setup' is never used. [unusedFunction]
 
 ^
-ledModule/src/voice_handling.cpp:111:0: style: The function 'setupEventResponse' is never used. [unusedFunction]
+ledModule/src/voice_handling.cpp:165:0: style: The function 'setupEventMap' is never used. [unusedFunction]
 
 ^
 camModule/src/app_httpd.cpp:1386:0: style: The function 'setupLedFlash' is never used. [unusedFunction]
