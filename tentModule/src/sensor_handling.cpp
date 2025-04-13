@@ -8,7 +8,7 @@ uint8_t readingsListIndex = 0;
 
 
 // this ugly
-#define PWM_PIN 15
+#define PWM_PIN 16
 const int ppmrange = 5000;
 
 

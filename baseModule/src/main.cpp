@@ -2,7 +2,6 @@
 #include "sensor_handling.h"
 #include "webserver_handling.h"
 #include "time_handling.h"
-#include "sd_handling.h"
 
 String serialInput;
 
@@ -13,7 +12,6 @@ void setup() {
     Serial.println("Starting...");
 
     // this is not really pretty
-    initSDCard();
     buildRouterConnection();
     buildTimeConnection();
     initSensor();
@@ -23,6 +21,7 @@ void setup() {
     initWebserver();
     setupMDNS();
     Serial.println("setup done");
+
 
     //createDir();
 }

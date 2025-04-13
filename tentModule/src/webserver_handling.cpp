@@ -6,6 +6,7 @@
 #include "sensor_handling.h"
 #include "internet_settings.h"
 #include "time_handling.h"
+#include "sd_handling.h"
 
 #define PUMP_POWER 13 // D7
 
@@ -41,6 +42,7 @@ void initWebserver(){
     server.on("/currentReading", handleSensorReading);
     server.on("/json", handleJSONRequest);
     server.on("/time", handleTimeRequest);
+    server.on("/canvasgz", handleCanvasRequest);
 
 
     DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "http://base.local");
@@ -107,4 +109,18 @@ void handleSensorReading(AsyncWebServerRequest *request){
     request->send(response);
 
     free(sensorData);
+}
+
+void handleCanvasRequest(AsyncWebServerRequest *request){
+    Serial.println("called canvas");
+    prepareResponse("canvasjs.min.js.gz"); // this might create a race condition, if another file is being read out while
+                                        // one is already open, could use a lock or something, but dont want
+                                        // to wait inside the response function, ideally wait until first
+                                        // request is done and the resume the other one, see documentation
+                                        // as of now, i just ensure that this doesnt happen with a bad workaround
+    AsyncWebServerResponse* response = request->beginChunkedResponse("text/javascript", [](uint8_t* buffer, size_t maxLen, size_t index) -> size_t {
+        return readFileForResponse(buffer, 256, index);
+    });
+    response->addHeader("Content-Encoding", "gzip");
+    request->send(response);
 }

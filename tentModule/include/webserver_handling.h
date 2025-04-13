@@ -33,6 +33,7 @@ void handleSensorReading(AsyncWebServerRequest *request);
 
 void handleLiveStatus(AsyncWebServerRequest *request);
 void handleTimeRequest(AsyncWebServerRequest *request);
+void handleCanvasRequest(AsyncWebServerRequest *request);
 
 extern void getSensorReading(char *formattedResponse, size_t maxResponseLen);
 extern void activateActuator();

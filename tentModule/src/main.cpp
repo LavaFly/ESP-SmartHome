@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include "sd_handling.h"
 #include "sensor_handling.h"
 #include "webserver_handling.h"
 #include "time_handling.h"
@@ -11,6 +12,7 @@ void setup() {
     Serial.begin(9600);
     Serial.println("Starting...");
     initSensor();
+    initSDCard();
 
     buildRouterConnection();
     buildTimeConnection();

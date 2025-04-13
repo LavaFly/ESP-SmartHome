@@ -7,7 +7,6 @@
 #include "webserver_handling.h"
 #include "sensor_handling.h"
 #include "internet_settings.h"
-#include "sd_handling.h"
 #include "time_handling.h"
 
 #include "webpage_html.h"
@@ -162,7 +161,7 @@ bool initWebserver(){
     server.on("/css", handleCSSRequest);
     server.on("/isLive", handleLiveStatus);
     server.on("/json", handleJSONRequest);
-    server.on("/canvasgz", handleCanvasRequest);
+    server.on("/time", handleTimeStringRequest);
     server.on("/jquerygz", handleJQueryRequest);
     server.on("/currentReading", handleSensorReading);
     DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "http://base.local");
@@ -216,6 +215,19 @@ void handleCSSRequest(AsyncWebServerRequest *request){
 }
 
 
+void handleTimeStringRequest(AsyncWebServerRequest *request){
+    Serial.println("time string request");
+    AsyncResponseStream *response = request->beginResponseStream("text/html");
+    // get time
+    uint32_t timeStamp = getSensorTime();
+    Serial.print("time is = ");
+    Serial.println(timeStamp);
+
+    response->print(timeStamp);
+    request->send(response);
+}
+
+
 void handleJSONRequest(AsyncWebServerRequest *request){
     Serial.println("got json request");
     int numberOfCurrentReadings = getNumOfReadingsInList();
@@ -250,19 +262,6 @@ void handleSensorReading(AsyncWebServerRequest *request){
     free(sensorData);
 }
 
-void handleCanvasRequest(AsyncWebServerRequest *request){
-    Serial.println("called canvas");
-    prepareResponse("canvasjs.min.js.gz"); // this might create a race condition, if another file is being read out while
-                                        // one is already open, could use a lock or something, but dont want
-                                        // to wait inside the response function, ideally wait until first
-                                        // request is done and the resume the other one, see documentation
-                                        // as of now, i just ensure that this doesnt happen with a bad workaround
-    AsyncWebServerResponse* response = request->beginChunkedResponse("text/javascript", [](uint8_t* buffer, size_t maxLen, size_t index) -> size_t {
-        return readFileForResponse(buffer, 256, index);
-    });
-    response->addHeader("Content-Encoding", "gzip");
-    request->send(response);
-}
 
 void handleJQueryRequest(AsyncWebServerRequest *request){
     Serial.println("called jquery");
