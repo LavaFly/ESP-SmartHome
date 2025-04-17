@@ -13,6 +13,8 @@ void setupEventResponse();
 bool checkVrTimer(uint8_t vrResetTimeSeconds);
 void clearVrTimer();
 
+void setupEventMap();
+void testEventResponse();
 
 
 uint8_t vr_pc();

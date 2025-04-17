@@ -38,12 +38,12 @@ typedef struct {
 vrEvent eventMap[14];
 
 
-// D1 - TX, D2 - RX
-VR myVR(5,4);
+// D7 - TX, D8 - RX
+VR myVR(13,15);
 uint8_t records[7];
 uint8_t buf[64];
 char requestUrl[64];
-uint8_t vrTimerIndex; // change to ref to struct later
+uint8_t eventMapIndex;
 timerElement* vrTimer;
 
 uint8_t (*EventResponse[12])();
@@ -79,12 +79,19 @@ void loadDefaultResponse(){
 bool loadEventResponse(uint8_t indexOfRecord){
     uint8_t emptyRecordMap = true;
     for(uint8_t i = 0; i < 7; i++){
+        // 255 = empty
         if(eventMap[indexOfRecord].recordMap[i] != 255){
             records[i] = eventMap[indexOfRecord].recordMap[i];
+            Serial.print("i = ");
+            Serial.print(i);
+            Serial.print(" val = ");
+            Serial.println(records[i]);
             emptyRecordMap = false;
         }
     }
-    myVR.load(records, 7);
+    if(myVR.load(records, 7) == -1){
+        Serial.println("load unsuccesssfulllll");
+    }
     return emptyRecordMap;
 }
 
@@ -112,12 +119,21 @@ void loadOnOffBrighterDarker(){
 
 void handleVR(){
     int ret = myVR.recognize(buf, 50);
+    // set ret by Serial input
+    if(Serial.available() > 0){
+        ret = Serial.readStringUntil('\n').toInt();
+    }
     if(ret > 0){
         // buf[2] contains record index ( > 7 )
         // buf[3] contains length of signature if present
         // buf[4 - x] contains the signature
 
         uint8_t indexOfRecord = buf[2];
+        while(Serial.available() == 0){
+        }
+        indexOfRecord = Serial.readStringUntil('\n').toInt();
+        // set indexOfRecord by serial input
+        eventMapIndex = indexOfRecord;
         //  load new records / call EventRespose
         uint8_t isLeaf = eventMap[indexOfRecord].nodeType;
 
@@ -131,15 +147,37 @@ void handleVR(){
         //if(vrTimerIndex != 0 && !checkTimer(vrTimerIndex)){
             //return;
         //}
+        if(vrTimer != NULL){
+            Serial.println("hel");
+        }
+        if(!checkTimer(vrTimer)){
+            Serial.println("hjerhje");
+        }
         if(vrTimer != NULL && !checkTimer(vrTimer)){
             Serial.println("this debug");
             return;
         }
 
-        eventMap[indexOfRecord].eventResponse();
+        eventMap[eventMapIndex].eventResponse();
         deleteTimer(vrTimer);
+        eventMapIndex = 0;
 
         loadDefaultResponse();
+    }
+
+    if(vrTimer != NULL){
+        Serial.println("1");
+        // check timer
+        if(checkTimer(vrTimer)){
+            Serial.println("2");
+            Serial.println(eventMapIndex);
+            eventMap[eventMapIndex].eventResponse();
+            Serial.println("3");
+            deleteTimer(vrTimer);
+            Serial.println("4");
+            eventMapIndex = 0;
+            vrTimer = NULL;
+        }
     }
 }
 
@@ -166,6 +204,11 @@ void setupEventResponse(){
     addToEventReponse(9, vr_off);
     addToEventReponse(10, vr_brighter);
     addToEventReponse(11, vr_darker);
+}
+
+void testEventResponse(){
+    eventMap[1].eventResponse();
+    eventMap[2].eventResponse();
 }
 
 void setupEventMap(){
@@ -209,10 +252,12 @@ void setupEventMap(){
 }
 
 uint8_t vr_pc(){
+    Serial.println("pc");
     strcpy(requestUrl, "http://pc.local/");
     return 0;
 }
 uint8_t vr_light(){
+    Serial.println("light");
     strcat(requestUrl, "raiseBrightness");
     loadOnOffBrighterDarker();
     vrClearTimer = millis();
@@ -220,43 +265,50 @@ uint8_t vr_light(){
 
 }
 uint8_t vr_time(){
+    Serial.println("time");
     strcpy(requestUrl, "http://base.local/showTime");
     // actually just show time without web request, this is just a placeholder
     return 0;
 }
 uint8_t vr_weather(){
+    Serial.println("weather");
     // same here
     return 0;
 
 }
 uint8_t vr_temperature(){
-    Serial.println("");
+    Serial.println("temperature");
     return 0;
 
 }
 uint8_t vr_co2(){
-    Serial.println("");
+    Serial.println("co2");
     return 0;
 
 }
 uint8_t vr_on(){
+    Serial.println("on");
     strcat(requestUrl, "on");
     return 0;
 }
 uint8_t vr_off(){
+    Serial.println("off");
     strcat(requestUrl, "off");
     return 0;
 }
 uint8_t vr_brighter(){
+    Serial.println("brighter");
     strcat(requestUrl, "raiseBrightness");
     //httpGetRequestIgnoreResponse("http://lightingModule.local/raiseBrightness");
     return 0;
 }
 uint8_t vr_darker(){
+    Serial.println("darker");
     strcat(requestUrl, "lowerBrightness");
     return 0;
 }
 uint8_t vr_empty(){
+    Serial.println("empty");
     return 0;
 }
 
