@@ -199,31 +199,40 @@ ledModule/src/time_handling.cpp:75:24: note: Assuming that condition 'iterator!=
 ledModule/src/time_handling.cpp:78:9: note: Null pointer dereference
         iterator->next = newTimer;
         ^
-ledModule/src/voice_handling.cpp:206:30: style: Variable 'eventMap[6].recordMap[0]' is reassigned a value before the old one has been used. [redundantAssignment]
+ledModule/src/voice_handling.cpp:134:23: style: Redundant initialization for 'indexOfRecord'. The initialized value is overwritten before it is read. [redundantInitialization]
+        indexOfRecord = Serial.readStringUntil('\n').toInt();
+                      ^
+ledModule/src/voice_handling.cpp:131:31: note: indexOfRecord is initialized
+        uint8_t indexOfRecord = buf[2];
+                              ^
+ledModule/src/voice_handling.cpp:134:23: note: indexOfRecord is overwritten
+        indexOfRecord = Serial.readStringUntil('\n').toInt();
+                      ^
+ledModule/src/voice_handling.cpp:249:30: style: Variable 'eventMap[6].recordMap[0]' is reassigned a value before the old one has been used. [redundantAssignment]
     eventMap[6].recordMap[0] = VR_TENT;
                              ^
-ledModule/src/voice_handling.cpp:201:30: note: eventMap[6].recordMap[0] is assigned
+ledModule/src/voice_handling.cpp:244:30: note: eventMap[6].recordMap[0] is assigned
     eventMap[6].recordMap[0] = VR_TENT;
                              ^
-ledModule/src/voice_handling.cpp:206:30: note: eventMap[6].recordMap[0] is overwritten
+ledModule/src/voice_handling.cpp:249:30: note: eventMap[6].recordMap[0] is overwritten
     eventMap[6].recordMap[0] = VR_TENT;
                              ^
-ledModule/src/voice_handling.cpp:207:26: style: Variable 'eventMap[6].nodeType' is reassigned a value before the old one has been used. [redundantAssignment]
+ledModule/src/voice_handling.cpp:250:26: style: Variable 'eventMap[6].nodeType' is reassigned a value before the old one has been used. [redundantAssignment]
     eventMap[6].nodeType = 1;
                          ^
-ledModule/src/voice_handling.cpp:202:26: note: eventMap[6].nodeType is assigned
+ledModule/src/voice_handling.cpp:245:26: note: eventMap[6].nodeType is assigned
     eventMap[6].nodeType = 1;
                          ^
-ledModule/src/voice_handling.cpp:207:26: note: eventMap[6].nodeType is overwritten
+ledModule/src/voice_handling.cpp:250:26: note: eventMap[6].nodeType is overwritten
     eventMap[6].nodeType = 1;
                          ^
-ledModule/src/voice_handling.cpp:208:31: style: Variable 'eventMap[6].eventResponse' is reassigned a value before the old one has been used. [redundantAssignment]
+ledModule/src/voice_handling.cpp:251:31: style: Variable 'eventMap[6].eventResponse' is reassigned a value before the old one has been used. [redundantAssignment]
     eventMap[6].eventResponse = vr_empty;
                               ^
-ledModule/src/voice_handling.cpp:203:31: note: eventMap[6].eventResponse is assigned
+ledModule/src/voice_handling.cpp:246:31: note: eventMap[6].eventResponse is assigned
     eventMap[6].eventResponse = vr_co2;
                               ^
-ledModule/src/voice_handling.cpp:208:31: note: eventMap[6].eventResponse is overwritten
+ledModule/src/voice_handling.cpp:251:31: note: eventMap[6].eventResponse is overwritten
     eventMap[6].eventResponse = vr_empty;
                               ^
 baseModule/src/sensor_handling.cpp:17:9: error: The one definition rule is violated, different classes/structs have the same name 'sensor_reading' [ctuOneDefinitionRuleViolation]
@@ -289,10 +298,10 @@ baseModule/lib/VoiceRecognitionV3/VoiceRecognitionV3.cpp:780:0: style: The funct
 baseModule/lib/VoiceRecognitionV3/VoiceRecognitionV3.cpp:608:0: style: The function 'checkUserGroup' is never used. [unusedFunction]
 
 ^
-ledModule/src/voice_handling.cpp:263:0: style: The function 'checkVrTimer' is never used. [unusedFunction]
+ledModule/src/voice_handling.cpp:315:0: style: The function 'checkVrTimer' is never used. [unusedFunction]
 
 ^
-ledModule/src/voice_handling.cpp:270:0: style: The function 'clearVrTimer' is never used. [unusedFunction]
+ledModule/src/voice_handling.cpp:322:0: style: The function 'clearVrTimer' is never used. [unusedFunction]
 
 ^
 baseModule/lib/VoiceRecognitionV3/VoiceRecognitionV3.cpp:1044:0: style: The function 'cmp' is never used. [unusedFunction]
@@ -319,7 +328,7 @@ lightingModule/src/webserver_handling.cpp:73:0: style: The function 'handleUnkow
 ledModule/src/led_handling.cpp:409:0: style: The function 'incColor' is never used. [unusedFunction]
 
 ^
-ledModule/src/voice_handling.cpp:91:0: style: The function 'loadOnOff' is never used. [unusedFunction]
+ledModule/src/voice_handling.cpp:98:0: style: The function 'loadOnOff' is never used. [unusedFunction]
 
 ^
 baseModule/lib/VoiceRecognitionV3/VoiceRecognitionV3.cpp:672:0: style: The function 'loadSystemGroup' is never used. [unusedFunction]
@@ -385,7 +394,7 @@ baseModule/lib/VoiceRecognitionV3/VoiceRecognitionV3.cpp:572:0: style: The funct
 baseModule/src/main.cpp:10:0: style: The function 'setup' is never used. [unusedFunction]
 
 ^
-ledModule/src/voice_handling.cpp:171:0: style: The function 'setupEventMap' is never used. [unusedFunction]
+ledModule/src/voice_handling.cpp:214:0: style: The function 'setupEventMap' is never used. [unusedFunction]
 
 ^
 camModule/src/app_httpd.cpp:1386:0: style: The function 'setupLedFlash' is never used. [unusedFunction]
@@ -401,6 +410,9 @@ camModule/src/main.cpp:155:0: style: The function 'start_mdns_service' is never 
 
 ^
 baseModule/lib/VoiceRecognitionV3/VoiceRecognitionV3.cpp:973:0: style: The function 'test' is never used. [unusedFunction]
+
+^
+ledModule/src/voice_handling.cpp:209:0: style: The function 'testEventResponse' is never used. [unusedFunction]
 
 ^
 baseModule/lib/VoiceRecognitionV3/VoiceRecognitionV3.cpp:180:0: style: The function 'trainWithSignature' is never used. [unusedFunction]
