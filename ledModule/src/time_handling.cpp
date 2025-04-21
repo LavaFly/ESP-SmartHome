@@ -88,6 +88,11 @@ timerElement* addTimer(uint8_t seconds){
 bool checkTimer(timerElement* timerPtr){
     uint32_t currentTime = millis();
 
+    if(timerPtr == NULL){
+        Serial.println("timerPtr is null");
+        return false;
+    }
+
     if(timerPtr->hasRunOut){
         Serial.println("flag set");
         return true;

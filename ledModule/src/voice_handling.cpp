@@ -132,15 +132,17 @@ void handleVR(){
         Serial.print("pressed = ");
         Serial.println(ret);
 
+    }
+
     // currently testing via serial
-    //if(ret > 0){
+    if(ret > 0){
         // buf[2] contains record index ( > 7 )
         // buf[3] contains length of signature if present
         // buf[4 - x] contains the signature
 
         uint8_t indexOfRecord = buf[2];
         // this is confusing and unnecessary
-        indexOfRecord = ret;
+        //indexOfRecord = ret;
         // set indexOfRecord by serial input
         eventMapIndex = indexOfRecord;
         //  load new records / call EventRespose

@@ -18,181 +18,69 @@ unsigned long clearTimer = 0;
 
 bool loopActive = false;
 bool animationActive = false;
-bool toBeCleared = false;
+bool endlessAnimation = false;
+timerElement* animationTimer;
+timerElement* screenClearTimer;
 
 void setup() {
     //Serial.begin(9600,SERIAL_8N1,SERIAL_TX_ONLY); // to limit inbound serial comminucation from interefering
                                                   // with the ir_handling
-    delay(1000);
     Serial.begin(9600);
     Serial.println("starting the setup");
 
 
-    //buildIrConnection();
+    buildIrConnection();
     initVR();
-    //buildRouterConnection();
-    //buildTimeConnection();
-    //initWebserver();
-    //setupMDNS();
-
-    // test timers
-    // print current timer
-    /**
-    struct simpleTime * currentTimeStruct;
-    currentTimeStruct = (struct simpleTime*)malloc(sizeof(struct simpleTime));
-    Serial.println("projecting time");
-    getSimpleTime(currentTimeStruct);
-    Serial.print("hour : ");
-    Serial.print(currentTimeStruct->hour);
-    Serial.print("  min : ");
-    Serial.println(currentTimeStruct->minute);
-    **/
-
-    /**
-    Serial.println("start");
-    Serial.println(millis());
-
-    // start timer for 3 secs
-    struct timerElement * currentTimer = addTimer(5);
-    delay(1000);
-    // start timer for 5 secs
-    struct timerElement * secondTimer = addTimer(9);
-    delay(500);
-    // start both
-
-    Serial.println(millis());
-    while(!checkTimer(currentTimer)){
-        delay(100);
-    }
-
-    Serial.println("got here");
-    Serial.println(millis());
-
-    while(!checkTimer(secondTimer)){
-        delay(100);
-    }
-
-    Serial.println("gegege");
-    Serial.println(millis());
-
-    resetTimer(currentTimer);
-
-    while(!checkTimer(currentTimer)){
-        delay(100);
-    }
-
-    Serial.println("hjfdks");
-    Serial.println(millis());
-    **/
-
-    //Serial.print("hour : ");
-    //Serial.print(currentTimeStruct->hour);
-    //Serial.print("  min : ");
-    //Serial.println(currentTimeStruct->minute);
-
-    //while(!checkTimer(secondTimer)){
-        //delay(100);
-    //}
+    buildRouterConnection();
+    buildTimeConnection();
+    initWebserver();
+    setupMDNS();
 
 
-    //deleteTimer(currentTimer);
-
-    /**
-    // setup for the ledWall
     buildLedConnection();
     initialiseLedMap();
     clearActiveLeds();
-    **/
 
-    //setupEventResponse();
     setupEventMap();
-    testEventResponse();
 
     Serial.println("finishing the setup");
 }
 
 void loop() {
-    //MDNS.update();
-    //loopOTA();
+    MDNS.update();
+    loopOTA();
     handleVR();
-    //cleanUpSockets();
+    cleanUpSockets();
+
+    if(!checkTimer(animationTimer) || endlessAnimation){
+        if(!advanceSlideAnimation()){
+            // animation is done
+            animationActive = false;
+        }
+        Serial.println("animating");
+    }
+    if(checkTimer(screenClearTimer)){
+        clearActiveLeds();
+        deleteTimer(screenClearTimer);
+        screenClearTimer = NULL;
+        Serial.println("cleared screen");
+    }
 
     /**
-    if(animationActive && millis() > currentTime + 150){
-        if(!advanceSlideAnimation()){
-            animationActive = false;
-            if(loopActive){
-                Serial.println("restarting");
-                uint8_t num = serialInput.length();
-                startSlideAnimation(serialInput.c_str(), num);
-                animationActive = true;
-            }
-        }
-        currentTime = millis();
-    }
-    if(toBeCleared && millis() > clearTimer + 5000){
-        clearActiveLeds();
-        clearActiveLeds();
-        toBeCleared = false;
-        Serial.println("clearing Screen");
-    }
-    // remove this serial part as it is only for debugging
-    if(Serial.available() > 0){
-        clearActiveLeds();
-        serialInput = Serial.readStringUntil('\n');
-        if(serialInput.equals("bg")){
-            // toggle background
-            Serial.println("background");
-            backgroundEvent();
-        } else if (serialInput.equals("e")) {
-            // print example string message
-            const char* exampleString = "Hello World";
+    char* weatherDescription = (char*)malloc(25 * sizeof(char));
+    getWeatherDescription(weatherDescription);
 
-            uint8_t num = strlen(exampleString);
-            startSlideAnimation(exampleString, num);
-            animationActive = true;
+    uint8_t num = strlen(weatherDescription);
+    Serial.println(num);
+    Serial.print("weather data = ");
+    Serial.println(weatherDescription);
+    startSlideAnimation(weatherDescription, num);
 
-        } else if (serialInput.equals("loop")) {
-            Serial.println("loop on");
+    animationActive = true;
+    free(weatherDescription);
 
-            serialInput = "Hallo";
-
-            uint8_t num = 5;
-            startSlideAnimation(serialInput.c_str(), num);
-            loopActive = !loopActive;
-            animationActive = true;
-
-            Serial.println("done");
-        } else if (serialInput.equals("we")){
-            Serial.println("WeatherData");
-            char* weatherDescription = (char*)malloc(25 * sizeof(char));
-            getWeatherDescription(weatherDescription);
-
-            uint8_t num = strlen(weatherDescription);
-            Serial.println(num);
-            Serial.print("weather data = ");
-            Serial.println(weatherDescription);
-            startSlideAnimation(weatherDescription, num);
-
-            animationActive = true;
-            free(weatherDescription);
-
-            Serial.println("done");
-        } else if(serialInput.equals("m")){
-            mothersDayMessage();
-            animationActive = true;
-        } else {
-
-            Serial.print("Printing: ");
-            Serial.println(serialInput);
-
-            uint8_t num = serialInput.length();
-            startSlideAnimation(serialInput.c_str(), num);
-            animationActive = true;
-
-        }
-    }
-
+    Serial.println("done");
+    **/
 
     irInput = decodeIR();
     // will later be replaced by some proper mapping of each button to a
@@ -214,6 +102,17 @@ void loop() {
         case 0x0c:
             httpGetRequestIgnoreResponse("http://lighting.local/lowerBrightness");
             break;
+        case 0x03:
+            currentTimeStruct = (struct simpleTime*)malloc(sizeof(struct simpleTime));
+            Serial.println("projecting time");
+            getSimpleTime(currentTimeStruct);
+            projectTime(currentTimeStruct->hour, currentTimeStruct->minute);
+            screenClearTimer = addTimer(5);
+            free(currentTimeStruct);
+            break;
+        case 0x1a:
+            httpGetRequestIgnoreResponse("http://pcModule.local/pcPowerOn");
+            break;
         case 0x01:
             Serial.println("Example String");
 
@@ -232,27 +131,7 @@ void loop() {
 
             Serial.println("done");
             break;
-            /**
-        case 0x03:
-            currentTimeStruct = (struct simpleTime*)malloc(sizeof(struct simpleTime));
-            Serial.println("projecting time");
-            getSimpleTime(currentTimeStruct);
-            projectTime(currentTimeStruct->hour, currentTimeStruct->minute);
-            free(currentTimeStruct);
-            break;
-        case 0x0e:
-            Serial.println("raising brightness");
-            httpGetRequestIgnoreResponse("http://lighting.local/raiseBrightness");
-            break;
-        case 0x0c:
-            Serial.println("lowering brightness");
-            httpGetRequestIgnoreResponse("http://lighting.local/lowerBrightness");
-            break;
-        case 0x1a:
-            httpGetRequestIgnoreResponse("http://pcModule.local/pcPowerOn");
-            break;
-        **/
-    //}
+    }
 
 }
 
@@ -269,7 +148,6 @@ void showTime(){
     projectTime(currentTimeStruct->hour, currentTimeStruct->minute);
 
     clearTimer = millis();
-    toBeCleared = true;
 
     free(currentTimeStruct);
 }
