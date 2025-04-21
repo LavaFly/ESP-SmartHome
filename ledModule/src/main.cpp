@@ -23,34 +23,101 @@ bool toBeCleared = false;
 void setup() {
     //Serial.begin(9600,SERIAL_8N1,SERIAL_TX_ONLY); // to limit inbound serial comminucation from interefering
                                                   // with the ir_handling
+    delay(1000);
     Serial.begin(9600);
     Serial.println("starting the setup");
 
-    buildIrConnection();
+
+    //buildIrConnection();
     initVR();
-    buildRouterConnection();
-    buildTimeConnection();
-    initWebserver();
-    setupMDNS();
+    //buildRouterConnection();
+    //buildTimeConnection();
+    //initWebserver();
+    //setupMDNS();
+
+    // test timers
+    // print current timer
+    /**
+    struct simpleTime * currentTimeStruct;
+    currentTimeStruct = (struct simpleTime*)malloc(sizeof(struct simpleTime));
+    Serial.println("projecting time");
+    getSimpleTime(currentTimeStruct);
+    Serial.print("hour : ");
+    Serial.print(currentTimeStruct->hour);
+    Serial.print("  min : ");
+    Serial.println(currentTimeStruct->minute);
+    **/
+
+    /**
+    Serial.println("start");
+    Serial.println(millis());
+
+    // start timer for 3 secs
+    struct timerElement * currentTimer = addTimer(5);
+    delay(1000);
+    // start timer for 5 secs
+    struct timerElement * secondTimer = addTimer(9);
+    delay(500);
+    // start both
+
+    Serial.println(millis());
+    while(!checkTimer(currentTimer)){
+        delay(100);
+    }
+
+    Serial.println("got here");
+    Serial.println(millis());
+
+    while(!checkTimer(secondTimer)){
+        delay(100);
+    }
+
+    Serial.println("gegege");
+    Serial.println(millis());
+
+    resetTimer(currentTimer);
+
+    while(!checkTimer(currentTimer)){
+        delay(100);
+    }
+
+    Serial.println("hjfdks");
+    Serial.println(millis());
+    **/
+
+    //Serial.print("hour : ");
+    //Serial.print(currentTimeStruct->hour);
+    //Serial.print("  min : ");
+    //Serial.println(currentTimeStruct->minute);
+
+    //while(!checkTimer(secondTimer)){
+        //delay(100);
+    //}
 
 
+    //deleteTimer(currentTimer);
+
+    /**
     // setup for the ledWall
     buildLedConnection();
     initialiseLedMap();
     clearActiveLeds();
+    **/
 
-    setupEventResponse();
+    //setupEventResponse();
+    setupEventMap();
+    testEventResponse();
 
-    currentTime = millis();
     Serial.println("finishing the setup");
 }
 
 void loop() {
-    MDNS.update();
-    loopOTA();
+    //MDNS.update();
+    //loopOTA();
     handleVR();
-    cleanUpSockets();
+    //cleanUpSockets();
 
+    /**
     if(animationActive && millis() > currentTime + 150){
         if(!advanceSlideAnimation()){
             animationActive = false;
@@ -185,7 +252,8 @@ void loop() {
             httpGetRequestIgnoreResponse("http://pcModule.local/pcPowerOn");
             break;
         **/
-    }
+    //}
+
 }
 
 void showTime(){

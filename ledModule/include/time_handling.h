@@ -26,5 +26,6 @@ bool checkTimer(timerElement* timerPtr);
 timerElement* addTimer(uint8_t seconds);
 uint8_t deleteTimer(timerElement* timerPtr);
 timerElement* resetTimer(timerElement* timerPtr);
+timerElement* resetTimer(timerElement* timerPtr, uint8_t seconds);
 
 #endif

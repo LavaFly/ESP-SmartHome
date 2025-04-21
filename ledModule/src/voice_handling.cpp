@@ -39,12 +39,13 @@ vrEvent eventMap[14];
 
 
 // D7 - TX, D8 - RX
-VR myVR(13,15);
+VR myVR(14,12);
 uint8_t records[7];
 uint8_t buf[64];
 char requestUrl[64];
 uint8_t eventMapIndex;
 timerElement* vrTimer;
+uint8_t currentEvent = 0;
 
 uint8_t (*EventResponse[12])();
 //void (*EventResponse[12])(void (*responseCallback)());
@@ -73,7 +74,9 @@ void loadDefaultResponse(){
     records[4] = VR_TEMPERATURE;
     records[5] = VR_CO2;
 
-    myVR.load(records, 6);
+    if(myVR.load(records, 6) == -1){
+        Serial.println("bad load inside vr");
+    }
 }
 
 bool loadEventResponse(uint8_t indexOfRecord){
@@ -82,10 +85,6 @@ bool loadEventResponse(uint8_t indexOfRecord){
         // 255 = empty
         if(eventMap[indexOfRecord].recordMap[i] != 255){
             records[i] = eventMap[indexOfRecord].recordMap[i];
-            Serial.print("i = ");
-            Serial.print(i);
-            Serial.print(" val = ");
-            Serial.println(records[i]);
             emptyRecordMap = false;
         }
     }
@@ -95,6 +94,7 @@ bool loadEventResponse(uint8_t indexOfRecord){
     return emptyRecordMap;
 }
 
+// delete
 void loadOnOff(){
     myVR.clear();
 
@@ -105,6 +105,7 @@ void loadOnOff(){
     myVR.load(records, 2);
 }
 
+// delete
 void loadOnOffBrighterDarker(){
     myVR.clear();
 
@@ -118,63 +119,67 @@ void loadOnOffBrighterDarker(){
 }
 
 void handleVR(){
-    int ret = myVR.recognize(buf, 50);
-    // set ret by Serial input
+    // i am aware that this method can be simplified and that
+    // there is redundancy and will fix this at some point
+    // but
+    // works for now
+    int ret = 0;
+    ret = myVR.recognize(buf, 50);
+
+
     if(Serial.available() > 0){
-        ret = Serial.readStringUntil('\n').toInt();
-    }
-    if(ret > 0){
+        ret = Serial.parseInt();
+        Serial.print("pressed = ");
+        Serial.println(ret);
+
+    // currently testing via serial
+    //if(ret > 0){
         // buf[2] contains record index ( > 7 )
         // buf[3] contains length of signature if present
         // buf[4 - x] contains the signature
 
         uint8_t indexOfRecord = buf[2];
-        while(Serial.available() == 0){
-        }
-        indexOfRecord = Serial.readStringUntil('\n').toInt();
+        // this is confusing and unnecessary
+        indexOfRecord = ret;
         // set indexOfRecord by serial input
         eventMapIndex = indexOfRecord;
         //  load new records / call EventRespose
         uint8_t isLeaf = eventMap[indexOfRecord].nodeType;
 
         if(!isLeaf){
-            //vrTimerIndex = setTimerSeconds(3);
-            vrTimer = addTimer(3);
+            vrTimer = resetTimer(vrTimer, 3);
             loadEventResponse(indexOfRecord);
-        }
-
-        // timer must exist and not have run out, otherwise leave function
-        //if(vrTimerIndex != 0 && !checkTimer(vrTimerIndex)){
-            //return;
-        //}
-        if(vrTimer != NULL){
-            Serial.println("hel");
-        }
-        if(!checkTimer(vrTimer)){
-            Serial.println("hjerhje");
-        }
-        if(vrTimer != NULL && !checkTimer(vrTimer)){
-            Serial.println("this debug");
+            if(currentEvent != indexOfRecord){
+                // transition from node to somewhere new, so manipulate url
+                eventMap[eventMapIndex].eventResponse();
+            }
             return;
         }
 
+        currentEvent = indexOfRecord;
+        if(vrTimer != NULL){
+            deleteTimer(vrTimer);
+            vrTimer = NULL;
+        }
+
         eventMap[eventMapIndex].eventResponse();
-        deleteTimer(vrTimer);
+        Serial.print("url = ");
+        Serial.println(requestUrl);
+        requestUrl[0] = '\0';
         eventMapIndex = 0;
 
+        // reset requestUrl
         loadDefaultResponse();
     }
 
     if(vrTimer != NULL){
-        Serial.println("1");
         // check timer
         if(checkTimer(vrTimer)){
-            Serial.println("2");
-            Serial.println(eventMapIndex);
             eventMap[eventMapIndex].eventResponse();
-            Serial.println("3");
+            Serial.print("url = ");
+            Serial.println(requestUrl);
+            requestUrl[0] = '\0';
             deleteTimer(vrTimer);
-            Serial.println("4");
             eventMapIndex = 0;
             vrTimer = NULL;
         }
@@ -182,6 +187,7 @@ void handleVR(){
 }
 
 
+// delete
 void addToEventReponse(uint8_t index, uint8_t (*response)()){
     EventResponse[index] = response;
 }
@@ -190,7 +196,7 @@ void addToEventReponse(uint8_t index, uint8_t (*response)()){
 unsigned long vrClearTimer = 0;
 
 
-// all of this will be moved to vr_handling at some point
+// delete
 void setupEventResponse(){
     addToEventReponse(0, vr_pc);
     addToEventReponse(1, vr_light);
@@ -249,6 +255,25 @@ void setupEventMap(){
     eventMap[6].recordMap[0] = VR_TENT;
     eventMap[6].nodeType = 1;
     eventMap[6].eventResponse = vr_empty;
+
+    eventMap[7].recordMap[0] = VR_TENT;
+    eventMap[7].nodeType = 1;
+    eventMap[7].eventResponse = vr_empty;
+
+    eventMap[8].nodeType = 1;
+    eventMap[8].eventResponse = vr_on;
+
+    eventMap[9].nodeType = 1;
+    eventMap[9].eventResponse = vr_off;
+
+    eventMap[10].nodeType = 1;
+    eventMap[10].eventResponse = vr_brighter;
+
+    eventMap[11].nodeType = 1;
+    eventMap[11].eventResponse = vr_darker;
+
+    eventMap[12].nodeType = 1;
+    eventMap[12].eventResponse = vr_empty;
 }
 
 uint8_t vr_pc(){
@@ -258,9 +283,9 @@ uint8_t vr_pc(){
 }
 uint8_t vr_light(){
     Serial.println("light");
-    strcat(requestUrl, "raiseBrightness");
-    loadOnOffBrighterDarker();
-    vrClearTimer = millis();
+    strcpy(requestUrl, "http://led.local/");
+    Serial.print("set to = ");
+    Serial.println(requestUrl);
     return 0;
 
 }
@@ -278,11 +303,13 @@ uint8_t vr_weather(){
 }
 uint8_t vr_temperature(){
     Serial.println("temperature");
+    // show time
     return 0;
 
 }
 uint8_t vr_co2(){
     Serial.println("co2");
+    // show co2
     return 0;
 
 }
@@ -298,7 +325,11 @@ uint8_t vr_off(){
 }
 uint8_t vr_brighter(){
     Serial.println("brighter");
+    Serial.print("str = ");
+    Serial.println(requestUrl);
     strcat(requestUrl, "raiseBrightness");
+    Serial.print("afterstr = ");
+    Serial.println(requestUrl);
     //httpGetRequestIgnoreResponse("http://lightingModule.local/raiseBrightness");
     return 0;
 }

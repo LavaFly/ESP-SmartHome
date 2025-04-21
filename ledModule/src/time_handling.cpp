@@ -2,6 +2,7 @@
 #include "wl_definitions.h"
 #include <WiFiUdp.h>
 #include <NTPClient.h>
+#include <cstddef>
 #include "time_handling.h"
 
 
@@ -14,7 +15,7 @@ typedef struct timerElement{
     uint32_t timeStamp;
     struct timerElement* next;
     uint8_t durationSeconds;
-    uint8_t hasRunOut;
+    uint8_t hasRunOut = false;
 } timerElement;
 
 timerElement* head = nullptr;
@@ -66,16 +67,20 @@ timerElement* addTimer(uint8_t seconds){
     }
     newTimer->timeStamp = millis();
     newTimer->durationSeconds = seconds;
+    newTimer->hasRunOut = false;
+    newTimer->next = NULL;
 
     if(head == NULL){
         head = newTimer;
+        Serial.println("new head");
     } else {
         //append to end of list
         timerElement *iterator = head->next;
         while(iterator != NULL){
             iterator = iterator->next;
         }
-        iterator->next = newTimer;
+        iterator = newTimer;
+        Serial.println("new tail");
     }
     return newTimer;
 }
@@ -83,33 +88,60 @@ timerElement* addTimer(uint8_t seconds){
 bool checkTimer(timerElement* timerPtr){
     uint32_t currentTime = millis();
 
-    if(timerPtr->hasRunOut || timerPtr->timeStamp + timerPtr->durationSeconds * 1000 < currentTime){
+    if(timerPtr->hasRunOut){
+        Serial.println("flag set");
+        return true;
+    }
+
+    if(timerPtr->timeStamp + timerPtr->durationSeconds * 1000 < currentTime){
+        Serial.println("has run out");
         timerPtr->hasRunOut = true;
         return true;
     }
+
     return false;
 }
 
 uint8_t deleteTimer(timerElement* timerPtr){
-    // traverse list until ptr is found
     timerElement *iterator = head;
     if(head == NULL){
-        Serial.println("bad");
+        Serial.println("list is empty/head = null, dangling timer???");
+        free(timerPtr);
         return 0;
     }
 
-    if(head->next == NULL){
-        Serial.println("also bad");
-        return 0;
+    if(timerPtr == NULL){
+        Serial.println("timerPtr is NULL");
+        return 1;
     }
 
+    if(timerPtr == head){
+        Serial.println("timer is head");
+        if(timerPtr->next != NULL){
+            Serial.println("with tail");
+            head = timerPtr->next;
+            free(timerPtr);
+        } else {
+            Serial.println("no tail");
+            head = NULL;
+            free(timerPtr);
+        }
+        return 1;
+    }
+
+    Serial.println("iterating");
     while(iterator->next != timerPtr){
         iterator = iterator->next;
     }
-    timerElement *prev = iterator;
-    timerElement *post = iterator->next->next;
 
-    prev->next = post;
+    // iterator->next->next == timerPtr->next
+    if(iterator->next->next != NULL){
+        Serial.println("next next != NULL");
+        iterator->next = timerPtr->next;
+    } else {
+        Serial.println("not next next != NULL");
+        iterator->next = NULL;
+    }
 
     free(timerPtr);
 
@@ -117,9 +149,20 @@ uint8_t deleteTimer(timerElement* timerPtr){
 }
 
 timerElement* resetTimer(timerElement* timerPtr){
-    timerPtr->hasRunOut = false;
-    timerPtr->timeStamp = millis();
-    return timerPtr;
+    if(timerPtr != NULL){
+        timerPtr->hasRunOut = false;
+        timerPtr->timeStamp = millis();
+        return timerPtr;
+    }
+    return addTimer(3);
+}
+timerElement* resetTimer(timerElement* timerPtr, uint8_t seconds){
+    if(timerPtr != NULL){
+        timerPtr->hasRunOut = false;
+        timerPtr->timeStamp = millis();
+        return timerPtr;
+    }
+    return addTimer(seconds);
 }
 
 
