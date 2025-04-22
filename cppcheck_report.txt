@@ -217,6 +217,9 @@ ledModule/src/voice_handling.cpp:254:31: note: eventMap[6].eventResponse is assi
 ledModule/src/voice_handling.cpp:259:31: note: eventMap[6].eventResponse is overwritten
     eventMap[6].eventResponse = vr_empty;
                               ^
+tentModule/src/sd_handling.cpp:143:7: style: Variable 't' is assigned a value that is never used. [unreadVariable]
+    t = millis() - t;
+      ^
 baseModule/src/sensor_handling.cpp:17:9: error: The one definition rule is violated, different classes/structs have the same name 'sensor_reading' [ctuOneDefinitionRuleViolation]
 typedef struct {
         ^
@@ -295,10 +298,16 @@ baseModule/lib/VoiceRecognitionV3/VoiceRecognitionV3.cpp:1044:0: style: The func
 baseModule/lib/VoiceRecognitionV3/VoiceRecognitionV3.cpp:1056:0: style: The function 'cpy' is never used. [unusedFunction]
 
 ^
+tentModule/src/sd_handling.cpp:38:0: style: The function 'createDir' is never used. [unusedFunction]
+
+^
 baseModule/lib/VoiceRecognitionV3/VoiceRecognitionV3.cpp:347:0: style: The function 'deleteSignature' is never used. [unusedFunction]
 
 ^
 baseModule/lib/VoiceRecognitionV3/VoiceRecognitionV3.cpp:968:0: style: The function 'disableAutoLoad' is never used. [unusedFunction]
+
+^
+tentModule/src/sd_handling.cpp:162:0: style: The function 'dumpSDInfo' is never used. [unusedFunction]
 
 ^
 growModule/src/actuator_handling.cpp:9:0: style: The function 'getActuatorStatus' is never used. [unusedFunction]
@@ -347,6 +356,18 @@ ledModule/src/led_handling.cpp:381:0: style: The function 'projectStringCentric'
 
 ^
 ledModule/src/led_handling.cpp:172:0: style: The function 'projectWord' is never used. [unusedFunction]
+
+^
+tentModule/src/sd_handling.cpp:11:0: style: The function 'readDir' is never used. [unusedFunction]
+
+^
+tentModule/src/sd_handling.cpp:104:0: style: The function 'readFromFile' is never used. [unusedFunction]
+
+^
+tentModule/src/sd_handling.cpp:119:0: style: The function 'readJsonFile' is never used. [unusedFunction]
+
+^
+tentModule/src/sd_handling.cpp:30:0: style: The function 'removeDir' is never used. [unusedFunction]
 
 ^
 baseModule/lib/VoiceRecognitionV3/VoiceRecognitionV3.cpp:880:0: style: The function 'resetIO' is never used. [unusedFunction]
@@ -404,6 +425,12 @@ ledModule/src/voice_handling.cpp:217:0: style: The function 'testEventResponse' 
 
 ^
 baseModule/lib/VoiceRecognitionV3/VoiceRecognitionV3.cpp:180:0: style: The function 'trainWithSignature' is never used. [unusedFunction]
+
+^
+tentModule/src/sd_handling.cpp:68:0: style: The function 'writeJsonToFile' is never used. [unusedFunction]
+
+^
+tentModule/src/sd_handling.cpp:54:0: style: The function 'writeToFile' is never used. [unusedFunction]
 
 ^
 nofile:0:0: information: Cppcheck cannot find all the include files (use --check-config for details) [missingInclude]
