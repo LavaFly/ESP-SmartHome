@@ -103,10 +103,10 @@ camModule/src/app_httpd.cpp:194:21: error: va_list 'arg' was opened but not clos
 camModule/src/main.cpp:130:0: information: Skipping configuration 'LED_GPIO_NUM' since the value of 'LED_GPIO_NUM' is unknown. Use -D if you want to check it. You can use -U to skip it explicitly. [ConfigurationNotChecked]
   setupLedFlash(LED_GPIO_NUM);
 ^
-displayModule/src/HelloWorld.cpp:123:17: style: Variable 'httpCode' is assigned a value that is never used. [unreadVariable]
+displayModule/src/HelloWorld.cpp:126:17: style: Variable 'httpCode' is assigned a value that is never used. [unreadVariable]
    int httpCode = http.GET();
                 ^
-displayModule/src/HelloWorld.cpp:182:9: style: Variable 'disp' is assigned a value that is never used. [unreadVariable]
+displayModule/src/HelloWorld.cpp:187:9: style: Variable 'disp' is assigned a value that is never used. [unreadVariable]
    disp = lv_tft_espi_create(TFT_HOR_RES, TFT_VER_RES, draw_buf, DRAW_BUF_SIZE);
         ^
 ledModule/lib/VoiceRecognitionV3/VoiceRecognitionV3.cpp:320:10: warning: Opposite inner 'if' condition leads to a dead code block. [oppositeInnerCondition]
@@ -349,10 +349,10 @@ ledModule/src/led_handling.cpp:390:0: style: The function 'middleOutEffect' is n
 ledModule/src/led_handling.cpp:184:0: style: The function 'mothersDayMessage' is never used. [unusedFunction]
 
 ^
-displayModule/src/HelloWorld.cpp:128:0: style: The function 'my_disp_flush' is never used. [unusedFunction]
+displayModule/src/HelloWorld.cpp:131:0: style: The function 'my_disp_flush' is never used. [unusedFunction]
 
 ^
-displayModule/src/HelloWorld.cpp:52:0: style: The function 'my_print' is never used. [unusedFunction]
+displayModule/src/HelloWorld.cpp:59:0: style: The function 'my_print' is never used. [unusedFunction]
 
 ^
 baseModule/src/sensor_handling.cpp:137:0: style: The function 'printCurrentReading' is never used. [unusedFunction]
