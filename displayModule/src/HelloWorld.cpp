@@ -5,6 +5,9 @@
  * 
  * You can always edit your own lv_conf.h later and exclude the example options once the build environment is working.
  * 
+ * Note you MUST move the 'examples' and 'demos' folders into the 'src' folder inside the lvgl library folder 
+ * otherwise this will not compile, please see README.md in the repo.
+ * 
  */
  #include <lvgl.h>
 
@@ -42,9 +45,13 @@
  /*Set to your screen resolution*/
  #define TFT_HOR_RES   320
  #define TFT_VER_RES   240
+ #define TFT_ROTATION  LV_DISPLAY_ROTATION_0
+ 
  
  /*LVGL draw into this buffer, 1/10 screen size usually works well. The size is in bytes*/
  #define DRAW_BUF_SIZE (TFT_HOR_RES * TFT_VER_RES / 10 * (LV_COLOR_DEPTH / 8))
+ uint8_t* draw_buf;
+ 
  
  #define LV_USE_LOG 1
  
@@ -62,10 +69,6 @@
  void example_buttonmatrix_1(void);
  static void event_handler(lv_event_t * e);
  void httpGetRequestIgnoreResponse(const char* path);
- 
- 
- 
- 
  
  
  static const char * btnm_map[] = {"On", "PC", "Off", "L+", "L-", "\n",
@@ -158,8 +161,9 @@
    }
  }
  
+ 
  lv_indev_t * indev; //Touchscreen input device
- uint8_t* draw_buf;  //draw_buf is allocated on heap otherwise the static area is too big on ESP32 at compile
+ //uint8_t* draw_buf;  //draw_buf is allocated on heap otherwise the static area is too big on ESP32 at compile
  uint32_t lastTick = 0;  //Used to track the tick timer
  
  void setup()
@@ -177,8 +181,9 @@
  
    //Initialise LVGL
    lv_init();
-   draw_buf = new uint8_t[DRAW_BUF_SIZE];
+ 
    lv_display_t * disp;
+   draw_buf = new uint8_t[DRAW_BUF_SIZE];
    disp = lv_tft_espi_create(TFT_HOR_RES, TFT_VER_RES, draw_buf, DRAW_BUF_SIZE);
  
    //Initialize the XPT2046 input device driver
@@ -189,7 +194,7 @@
    //example_buttonmatrix_1();
    example_buttonmatrix_2();
  
-   WiFi.begin(APSSID, APPASS);
+   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
    while(WiFi.status() != WL_CONNECTED) {
      delay(500);
      Serial.print(".");
