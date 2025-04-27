@@ -22,6 +22,10 @@ bool endlessAnimation = false;
 timerElement* animationTimer;
 timerElement* screenClearTimer;
 
+void showTime();
+
+
+
 void setup() {
     //Serial.begin(9600,SERIAL_8N1,SERIAL_TX_ONLY); // to limit inbound serial comminucation from interefering
                                                   // with the ir_handling
@@ -70,22 +74,6 @@ void loop() {
         screenClearTimer = NULL;
     }
 
-    /**
-    char* weatherDescription = (char*)malloc(25 * sizeof(char));
-    getWeatherDescription(weatherDescription);
-
-    uint8_t num = strlen(weatherDescription);
-    Serial.println(num);
-    Serial.print("weather data = ");
-    Serial.println(weatherDescription);
-    startSlideAnimation(weatherDescription, num);
-
-    animationActive = true;
-    free(weatherDescription);
-
-    Serial.println("done");
-    **/
-
     irInput = decodeIR();
     // will later be replaced by some proper mapping of each button to a
     // function, but havent decided most of them yet so this will suffice
@@ -107,19 +95,16 @@ void loop() {
             httpGetRequestIgnoreResponse("http://lighting.local/lowerBrightness");
             break;
         case 0x03:
-            currentTimeStruct = (struct simpleTime*)malloc(sizeof(struct simpleTime));
-            Serial.println("projecting time");
-            getSimpleTime(currentTimeStruct);
-            projectTime(currentTimeStruct->hour, currentTimeStruct->minute);
-            screenClearTimer = addTimer(5);
-            free(currentTimeStruct);
+            showTime();
             break;
         case 0x1a:
             httpGetRequestIgnoreResponse("http://pcModule.local/pcPowerOn");
             break;
         case 0x01:
-            Serial.println("Example String");
-
+            /**
+             * the current setup is connected on a local network
+             * but has no internet access(one mod runs a ntp setver, which
+             * is how i get the time), this means i cant get the weather data
             Serial.println("WeatherData");
             char* weatherDescription = (char*)malloc(25 * sizeof(char));
             getWeatherDescription(weatherDescription);
@@ -134,6 +119,7 @@ void loop() {
             free(weatherDescription);
 
             Serial.println("done");
+            **/
             break;
     }
 
@@ -145,13 +131,9 @@ void showTime(){
     Serial.println("projecting time");
 
     getSimpleTime(currentTimeStruct);
-    Serial.print(currentTimeStruct->hour);
-    Serial.print(":");
-    Serial.println(currentTimeStruct->minute);
-
     projectTime(currentTimeStruct->hour, currentTimeStruct->minute);
 
-    clearTimer = millis();
+    screenClearTimer = addTimer(3);
 
     free(currentTimeStruct);
 }
