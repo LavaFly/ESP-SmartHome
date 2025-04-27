@@ -30,7 +30,7 @@ void setup() {
 
 
     buildIrConnection();
-    initVR();
+    //initVR();
     buildRouterConnection();
     buildTimeConnection();
     initWebserver();
@@ -49,21 +49,25 @@ void setup() {
 void loop() {
     MDNS.update();
     loopOTA();
-    handleVR();
+    //handleVR();
     cleanUpSockets();
 
-    if(!checkTimer(animationTimer) || endlessAnimation){
-        if(!advanceSlideAnimation()){
-            // animation is done
-            animationActive = false;
+
+    if(animationActive){
+        if(checkTimer(animationTimer)){
+            resetTimer(animationTimer, 1);
+            if(!advanceSlideAnimation()){
+                // animation is done
+                animationActive = false;
+                deleteTimer(animationTimer);
+            }
         }
-        Serial.println("animating");
     }
+
     if(checkTimer(screenClearTimer)){
         clearActiveLeds();
         deleteTimer(screenClearTimer);
         screenClearTimer = NULL;
-        Serial.println("cleared screen");
     }
 
     /**
@@ -160,4 +164,5 @@ void setupTextAnimation(String message){
     uint8_t num = serialInput.length();
     startSlideAnimation(serialInput.c_str(), num);
     animationActive = true;
+    animationTimer = addTimer(1);
 }
