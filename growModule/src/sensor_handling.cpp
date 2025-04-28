@@ -1,9 +1,6 @@
 #include "sensor_handling.h"
 #include "time_handling.h"
 
-JsonDocument jsonResponse;
-
-uint8_t readingsListIndex = 0;
 
 // Soil Moisture-Pin D7
 #define MOISTURE_PIN 13
@@ -12,8 +9,12 @@ uint8_t readingsListIndex = 0;
 #define TRIG_PIN 14
 #define ECHO_PIN 12
 
+JsonDocument jsonResponse;
+
+
+
 /**
- * @brief This Structure holds all information that is stored from a sensor reading
+ * @brief This structure holds the information of a sensor reading
  *
  */
 typedef struct {
@@ -21,24 +22,25 @@ typedef struct {
     // photo
     float waterLevel;
 } sensor_reading;
+
+// this array is used as a ring buffer and holds the sensor information
+// readingsListIndex is the index of the newest reading
 sensor_reading sensor_readings[NUM_READINGS];
+uint8_t readingsListIndex = 0;
 
-void initSensor(){
-    Serial.println("start init");
+
+uint8_t initSensor(){
     pinMode(MOISTURE_PIN, INPUT);
-
-
-    analogRead(A0);
 
     // water level
     pinMode(TRIG_PIN, OUTPUT);
     pinMode(ECHO_PIN, INPUT);
 
-    Serial.println("Sensor setup done");
+    return 1;
 }
 
 
-void getSensorReading(char* formattedResponse, size_t maxResponseLen){
+uint8_t getSensorReading(char* formattedResponse, size_t maxResponseLen){
     float distance = 0;
     long duration = 0;
 
@@ -58,14 +60,13 @@ void getSensorReading(char* formattedResponse, size_t maxResponseLen){
     distance = duration * DISTANCE_CONVERSION;
 
 
-    // do this prettier at some point
+    // this will be usefull, once i add more sensors
     if(true){
-        jsonResponse["sensor"] = "base";
+        jsonResponse["sensor"] = "grow";
         jsonResponse["time"] = getEpochTime();
         jsonResponse["waterLevel"] = distance;
 
     } else {
-        // i should probably print or log this
         jsonResponse["sensor"] = "invalid";
         jsonResponse["time"] = getEpochTime();
         jsonResponse["waterLevel"] = 0;
@@ -73,29 +74,31 @@ void getSensorReading(char* formattedResponse, size_t maxResponseLen){
 
     jsonResponse.shrinkToFit();
     serializeJson(jsonResponse, formattedResponse, maxResponseLen);
+    return 1;
 }
 
-void getSensorReadingFromList(char* formattedResponse, size_t maxResponseLen, uint8_t listIndex){
+uint8_t getSensorReadingFromList(char* formattedResponse, size_t maxResponseLen, uint8_t listIndex){
     // index calculation
     uint8_t numberOfReadings = getNumOfReadingsInList();
     uint8_t temp = (listIndex + readingsListIndex) % numberOfReadings;
 
-    jsonResponse["sensor"] = "base";
+    jsonResponse["sensor"] = "grow";
     jsonResponse["time"] = sensor_readings[temp].time;
     jsonResponse["waterLevel"] = sensor_readings[temp].waterLevel;
 
     jsonResponse.shrinkToFit();
     serializeJson(jsonResponse, formattedResponse, maxResponseLen);
+    return 1;
 }
 
-int getNumOfReadingsInList(){
+uint8_t getNumOfReadingsInList(){
     for(uint8_t numberOfReadings = 0; numberOfReadings < NUM_READINGS; numberOfReadings++){
         if(sensor_readings[numberOfReadings].time < 1) return numberOfReadings;
     }
     return NUM_READINGS;
 }
 
-bool updateSensorValues(){
+uint8_t updateSensorValues(){
     float distance;
     long duration = 0;
 
@@ -114,20 +117,12 @@ bool updateSensorValues(){
 
 
     sensor_readings[readingsListIndex].time = getEpochTime();
-    Serial.println(sensor_readings[readingsListIndex].time);
-    Serial.println("");
     sensor_readings[readingsListIndex].waterLevel = distance;
 
     readingsListIndex = (readingsListIndex + 1) % NUM_READINGS;
-    return true;
+    return 1;
 }
 
 void printCurrentReading(){
-    Serial.println("New Reading");
-    Serial.println(analogRead(A0));
-
-
-    // and some more
-
-    Serial.println("\n");
+    Serial.println("Not implemented");
 }

@@ -9,21 +9,35 @@ void sensorCallback();
 
 void setup() {
     Serial.begin(9600);
-    Serial.println("Starting...");
+    Serial.println("Starting setup");
+    uint8_t hardwareInit = true;
 
-    // this is not really pretty
-    buildRouterConnection();
-    buildTimeConnection();
-    initSensor();
+    // the order of the following build/init functions is important!
+    uint8_t softwareInit = true;
+    softwareInit = softwareInit && buildRouterConnection();
+    softwareInit = softwareInit && buildTimeConnection();
+
+    hardwareInit = hardwareInit && initSensor();
+
+    if(hardwareInit){
+        Serial.println("Hardware init successful");
+    } else {
+        Serial.println("Hardware init failed");
+    }
+
     buildAP();
     buildNTPServer();
 
     initWebserver();
     setupMDNS();
-    Serial.println("setup done");
 
+    if(softwareInit){
+        Serial.println("Software init successful");
+    } else {
+        Serial.println("Software init failed");
+    }
 
-    //createDir();
+    Serial.println("Ending setup\n");
 }
 
 void loop() {

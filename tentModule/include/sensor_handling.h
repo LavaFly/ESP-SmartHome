@@ -1,6 +1,3 @@
-// Handles Connection to
-// -> BME680
-// -> Photoresitor
 #ifndef SENSOR_HANDLING
 #define SENSOR_HANDLING
 
@@ -8,62 +5,75 @@
 #include <ArduinoJson.h>
 #include "Adafruit_BME680.h"
 
-// Maximum Number of concurrent Sensor Readings that will be stored at any time
-// the handleJson function fails after 79 elements(will send 79 elements without
-// the closing ']')
-// will investigate why at some point
 #define NUM_READINGS 120
-
 #define STATUS_PIN 13
-
 #define DHTTYPE DHT11
 
 
-/*
-    Simple Implementation of a ring array by storing number of current Readings and start index of the list
-*/
-
-void initSensor();
-void getSensorReading(char* formattedResponse, size_t maxResponseLen);
-void getSensorReadingFromList(char* formattedResponse, size_t maxResponseLen, uint8_t listIndex);
+/**
+ * @brief 
+ * 
+ * @param
+ * 
+ * @return uint8_t
+ */
+uint8_t initSensor();
 
 
 /**
- * @brief
- *
+ * @brief 
+ * 
+ * @param
+ * 
+ * @return uint8_t
  */
-void buildSensorConnection();
+uint8_t getSensorReading(char* formattedResponse, size_t maxResponseLen);
+
 
 /**
- * @brief
- *
+ * @brief 
+ * 
+ * @param
+ * 
+ * @return uint8_t
  */
-bool updateSensorValues();
+uint8_t getSensorReadingFromList(char* formattedResponse, size_t maxResponseLen, uint8_t listIndex);
+
 
 /**
- * @brief
- *
- * @return int
+ * @brief 
+ * 
+ * @param
+ * 
+ * @return uint8_t
  */
-int addReadingToList();
+uint8_t buildSensorConnection();
+
+
+/**
+ * @brief 
+ * 
+ * @param
+ * 
+ * @return uint8_t
+ */
+uint8_t updateSensorValues();
+
 
 /**
  * @brief Get the Num Of Readings In List object
- *
- * @return int
+ * 
+ * @param
+ * 
+ * @return uint8_t
  */
-int getNumOfReadingsInList();
+uint8_t getNumOfReadingsInList();
 
-/**
- * @brief
- *
- * @return int
- */
-int readAtIndex();
 
 /**
  * @brief Used for debugging, prints current values the Sensor sends back
- *
+ * 
+ * @param
  */
 void printCurrentReading();
 

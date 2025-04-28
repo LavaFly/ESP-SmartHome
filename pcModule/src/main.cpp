@@ -12,13 +12,30 @@ void sensorCallback();
 
 void setup() {
     Serial.begin(9600);
-    delay(1000);
-    Serial.println("Starting...");
-    buildRouterConnection();
+    Serial.println("Starting setup");
+    uint8_t hardwareInit = true;
+    hardwareInit = hardwareInit && initSensor();
+
+    if(hardwareInit){
+        Serial.println("Hardware init successful");
+    } else {
+        Serial.println("Hardware init failed");
+    }
+
+    uint8_t softwareInit = true;
+    softwareInit = softwareInit && buildRouterConnection();
+    //softwareInit = softwareInit && initWebserver();
+    //softwareInit = softwareInit && setupMDNS();
     initWebserver();
     setupMDNS();
-    initSensor();
-    Serial.println("setup done");
+
+    if(softwareInit){
+        Serial.println("Software init successful");
+    } else {
+        Serial.println("Software init failed");
+    }
+
+    Serial.println("Ending setup\n");
 }
 
 void loop() {

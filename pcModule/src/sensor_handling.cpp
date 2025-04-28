@@ -7,10 +7,8 @@ JsonDocument jsonResponse;
 DHT dht(0, DHTTYPE);
 
 
-uint8_t readingsListIndex = 0;
-
 /**
- * @brief This Structure holds all information that is stored from a sensor reading
+ * @brief This structure holds the information of a sensor reading
  *
  */
 typedef struct {
@@ -20,35 +18,94 @@ typedef struct {
     float humidity;
     // add pcStatus?
 } sensor_reading;
+
+// this array is used as a ring buffer and holds the sensor information
+// readingsListIndex is the index of the newest reading
 sensor_reading sensor_readings[NUM_READINGS];
+uint8_t readingsListIndex = 0;
 
 
-void initSensor(){
-
+uint8_t initSensor(){
+    // this shouldnt really be here, oh well
     pinMode(POWERPIN, OUTPUT);
-    dht.begin();
 
-    Serial.println("Sensor setup done");
+    // check if i can confirm the connection somehow
+    dht.begin();
+    return 1;
 }
 
-void getSensorReading(char* formattedResponse, size_t maxResponseLen){
+
+uint8_t getSensorReading(char* formattedResponse, size_t maxResponseLen){
     float humidity = dht.readHumidity();
     float temperature = dht.readTemperature();
 
+    uint8_t readingSuccessful = false;
+
     if(isnan(humidity) || isnan(temperature)){
         jsonResponse["sensor"] = "invalid";
-        jsonResponse["time"] = getEpochTime();
+        jsonResponse["time"] = 0;
         jsonResponse["temperature"] = 0;
         jsonResponse["humidity"] = 0;
     } else {
-        jsonResponse["sensor"] = "dht22";
+        jsonResponse["sensor"] = "pc";
         jsonResponse["time"] = getEpochTime();
         jsonResponse["temperature"] = temperature;
         jsonResponse["humidity"] = humidity;
+        readingSuccessful = true;
+
     }
     jsonResponse.shrinkToFit();
     serializeJson(jsonResponse, formattedResponse, maxResponseLen);
+    return readingSuccessful;
 }
+
+
+uint8_t getSensorReadingFromList(char* formattedResponse, size_t maxResponseLen, uint8_t listIndex){
+    // index calculation
+    uint8_t numberOfReadings = getNumOfReadingsInList();
+    uint8_t temp = (listIndex + readingsListIndex) % numberOfReadings;
+
+    uint8_t validReading = false;
+    if(sensor_readings[temp].time != 0){
+        validReading = true;
+    }
+
+    jsonResponse["sensor"] = "pc";
+    jsonResponse["time"] = sensor_readings[temp].time;
+    jsonResponse["temperature"] = sensor_readings[temp].temperature;
+    jsonResponse["humidity"] = sensor_readings[temp].humidity;
+
+    jsonResponse.shrinkToFit();
+    serializeJson(jsonResponse, formattedResponse, maxResponseLen);
+    return validReading;
+}
+
+
+uint8_t getNumOfReadingsInList(){
+    for(uint8_t numberOfReadings = 0; numberOfReadings < NUM_READINGS; numberOfReadings++){
+        if(sensor_readings[numberOfReadings].time < 1) return numberOfReadings;
+    }
+    return NUM_READINGS;
+}
+
+
+uint8_t updateSensorValues(){
+    float humidity = dht.readHumidity();
+    float temperature = dht.readTemperature();
+
+    // if reading values from the sensor fails, return false, else store values and return true
+    if(isnan(humidity) || isnan(temperature)){
+        return 0;
+    }
+
+    sensor_readings[readingsListIndex].time = getEpochTime();
+    sensor_readings[readingsListIndex].temperature = temperature;
+    sensor_readings[readingsListIndex].humidity = humidity;
+
+    readingsListIndex = (readingsListIndex + 1) % NUM_READINGS;
+    return 1;
+}
+
 
 void printCurrentReading(){
     float humidity = dht.readHumidity();
@@ -58,43 +115,4 @@ void printCurrentReading(){
     Serial.print("humidity ");
     Serial.println(humidity);
     Serial.println();
-}
-
-
-void getSensorReadingFromList(char* formattedResponse, size_t maxResponseLen, uint8_t listIndex){
-    // index calculation
-    uint8_t numberOfReadings = getNumOfReadingsInList();
-    uint8_t temp = (listIndex + readingsListIndex) % numberOfReadings;
-    jsonResponse["sensor"] = "dht22";
-    jsonResponse["time"] = sensor_readings[temp].time;
-    jsonResponse["temperature"] = sensor_readings[temp].temperature;
-    jsonResponse["humidity"] = sensor_readings[temp].humidity;
-
-    jsonResponse.shrinkToFit();
-    serializeJson(jsonResponse, formattedResponse, maxResponseLen);
-}
-
-int getNumOfReadingsInList(){
-    for(uint8_t numberOfReadings = 0; numberOfReadings < NUM_READINGS; numberOfReadings++){
-        if(sensor_readings[numberOfReadings].time < 1) return numberOfReadings;
-    }
-    return NUM_READINGS;
-}
-
-
-bool updateSensorValues(){
-    float humidity = dht.readHumidity();
-    float temperature = dht.readTemperature();
-
-    // if reading values from the sensor fails, return false, else store values and return true
-    if(isnan(humidity) || isnan(temperature)){
-        return false;
-    }
-
-    sensor_readings[readingsListIndex].time = getEpochTime();
-    sensor_readings[readingsListIndex].temperature = temperature;
-    sensor_readings[readingsListIndex].humidity = humidity;
-
-    readingsListIndex = (readingsListIndex + 1) % NUM_READINGS;
-    return true;
 }

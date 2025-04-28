@@ -11,21 +11,43 @@ uint8_t pumpActive = 0;
 
 void setup() {
     Serial.begin(9600);
-    Serial.println("Starting...");
+    Serial.println("Starting setup");
+    uint8_t hardwareInit = true;
+    hardwareInit = hardwareInit && initSensor();
+    hardwareInit = hardwareInit && initActuator();
 
-    initSensor();
-    initActuator();
+    if(hardwareInit){
+        Serial.println("Hardware init successful");
+    } else {
+        Serial.println("Hardware init failed");
+    }
 
-    buildRouterConnection();
-    buildTimeConnection();
+    uint8_t softwareInit = true;
+    softwareInit = softwareInit && buildRouterConnection();
+    softwareInit = softwareInit && buildTimeConnection();
+    //softwareInit = softwareInit && initWebserver();
+    //softwareInit = softwareInit && setupMDNS();
     initWebserver();
     setupMDNS();
-    Serial.println("setup done");
+
+    if(softwareInit){
+        Serial.println("Software init successful");
+    } else {
+        Serial.println("Software init failed");
+    }
+
+    Serial.println("Ending setup\n");
 }
 
 void loop() {
-    MDNS.update();
-    loopOTA();
+    //MDNS.update();
+    //loopOTA();
+
+    digitalWrite(PUMP_POWER, LOW);
+    delay(1000);
+    digitalWrite(PUMP_POWER, HIGH);
+    delay(200);
+    digitalWrite(PUMP_POWER, LOW);
 
     /**
     if(pumpActive){

@@ -4,14 +4,12 @@
 JsonDocument jsonResponse;
 SensirionI2cScd30 co2Sensor;
 RTC_DS3231 rtc;
-static char errMsg[64]; // this is choosen w/o thought
+static char errMsg[64]; // this is choosen w/o thought :D
 static int16_t errNum;
 
-uint8_t readingsListIndex = 0;
 
 /**
- * @brief This Structure holds all information that is stored from a sensor reading
- *  ( the BME680 is capable of reading airpressure, though this is practically unchanging in my application and thus will not be stored )
+ * @brief This structure holds the information of a sensor reading
  *
  */
 typedef struct {
@@ -23,12 +21,14 @@ typedef struct {
     // photo
     uint16_t brightness;
 } sensor_reading;
+
+// this array is used as a ring buffer and holds the sensor information
+// readingsListIndex is the index of the newest reading
 sensor_reading sensor_readings[NUM_READINGS];
+uint8_t readingsListIndex = 0;
 
-void setTimeFromNTP();
-void initSensor(){
-    Serial.println("start init");
-
+uint8_t initSensor(){
+    // should check the following statements for success
     Wire.begin();
     co2Sensor.begin(Wire, SCD30_I2C_ADDR_61);
 
@@ -40,28 +40,26 @@ void initSensor(){
     if(errNum != NO_ERROR){
         Serial.println("Error trying to execute startPeriodicMeasurement(): ");
         Serial.println(errMsg);
-        return;
+        return 0;
     }
 
     rtc.begin();
     //use for testing
     //rtc.adjust(DateTime(__DATE__, __TIME__));
-
     setTimeFromNTP();
 
-    // init photo
-    analogRead(A0);
-
-    Serial.println("Sensor setup done");
+    return 1;
 }
 
-void getSensorReading(char* formattedResponse, size_t maxResponseLen){
-    float temperature = 0.0;
-    float humidity = 0.0;
-    float co2 = 0.0;
+uint8_t getSensorReading(char* formattedResponse, size_t maxResponseLen){
+    float temperature;
+    float humidity;
+    float co2;
     uint16_t dataReady = 0;
 
     dataReady = co2Sensor.getDataReady(dataReady);
+
+    uint8_t readingSuccessful = false;
 
     // the brightness measurement "cannot" fail due to software
     // reasons so only check the scd30 sensor
@@ -69,7 +67,7 @@ void getSensorReading(char* formattedResponse, size_t maxResponseLen){
         Serial.println("no data ready, reading failed");
         // i should probably print or log this
         jsonResponse["sensor"] = "invalid";
-        jsonResponse["time"] = getEpochTime();
+        jsonResponse["time"] = 0;
         jsonResponse["temperature"] = 0;
         jsonResponse["humidity"] = 0;
         jsonResponse["co2"] = 0;
@@ -83,16 +81,23 @@ void getSensorReading(char* formattedResponse, size_t maxResponseLen){
         jsonResponse["humidity"] = humidity;
         jsonResponse["co2"] = co2;
         jsonResponse["brightness"] = analogRead(A0);
+        readingSuccessful = true;
     }
 
     jsonResponse.shrinkToFit();
     serializeJson(jsonResponse, formattedResponse, maxResponseLen);
+    return readingSuccessful;
 }
 
-void getSensorReadingFromList(char* formattedResponse, size_t maxResponseLen, uint8_t listIndex){
+uint8_t getSensorReadingFromList(char* formattedResponse, size_t maxResponseLen, uint8_t listIndex){
     // index calculation
     uint8_t numberOfReadings = getNumOfReadingsInList();
     uint8_t temp = (listIndex + readingsListIndex) % numberOfReadings;
+
+    uint8_t validReading = false;
+    if(sensor_readings[temp].time != 0){
+        validReading = true;
+    }
 
     jsonResponse["sensor"] = "base";
     jsonResponse["time"] = sensor_readings[temp].time;
@@ -103,16 +108,17 @@ void getSensorReadingFromList(char* formattedResponse, size_t maxResponseLen, ui
 
     jsonResponse.shrinkToFit();
     serializeJson(jsonResponse, formattedResponse, maxResponseLen);
+    return validReading;
 }
 
-int getNumOfReadingsInList(){
+uint8_t getNumOfReadingsInList(){
     for(uint8_t numberOfReadings = 0; numberOfReadings < NUM_READINGS; numberOfReadings++){
         if(sensor_readings[numberOfReadings].time < 1) return numberOfReadings;
     }
     return NUM_READINGS;
 }
 
-bool updateSensorValues(){
+uint8_t updateSensorValues(){
     // if reading values from the sensor fails, return false, else store values and return true
     float temperature = 0.0;
     float humidity = 0.0;
@@ -121,7 +127,7 @@ bool updateSensorValues(){
     errNum = co2Sensor.blockingReadMeasurementData(co2, temperature, humidity);
 
     if(errNum != NO_ERROR){
-        return false;
+        return 0;
     }
 
     sensor_readings[readingsListIndex].time = getEpochTime();
@@ -131,34 +137,39 @@ bool updateSensorValues(){
     sensor_readings[readingsListIndex].brightness = analogRead(A0);
 
     readingsListIndex = (readingsListIndex + 1) % NUM_READINGS;
-    return true;
-}
-
-void printCurrentReading(){
-    // brightness
-    Serial.print("brightness ");
-    Serial.println(analogRead(A0));
-    Serial.println("\n");
+    return 1;
 }
 
 
-unsigned long getSensorTime(){
+uint32_t getSensorTime(){
     return rtc.now().unixtime();
 }
 
-void setSensorTime(unsigned long timeStamp){
-    rtc.adjust(timeStamp);
-}
 
-void setTimeFromNTP() {
-
-    if(updateTimeClient()){
-        unsigned long epochTime = getEpochTime();
-
-        rtc.adjust(DateTime(epochTime));
-        Serial.println(epochTime);
-    } else {
-        Serial.println("fuck2");
+uint8_t setSensorTime(unsigned long timeStamp){
+    if(rtc.isrunning()){
+        rtc.adjust(timeStamp);
+        Serial.println("test this method");
+        return 1;
     }
 
+    // i havent tested the isrunning() function
+    // but cant right now, so just in case
+    rtc.adjust(timeStamp);
+    return 1;
+}
+
+
+uint8_t setTimeFromNTP() {
+    if(updateTimeClient()){
+        unsigned long epochTime = getEpochTime();
+        rtc.adjust(DateTime(epochTime));
+        return 1;
+    }
+    return 0;
+}
+
+
+void printCurrentReading(){
+    Serial.println("Not implemented");
 }
