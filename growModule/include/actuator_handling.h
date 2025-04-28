@@ -5,9 +5,43 @@
 
 #define PUMP_POWER 13 // D7
 
-void initActuator();
-bool getActuatorStatus();
-void activateActuator();
-void deactivateActuator();
+/**
+ * @brief 
+ * 
+ * @param
+ * 
+ * @return uint8_t
+ */
+uint8_t initActuator();
+
+
+/**
+ * @brief 
+ * 
+ * @param
+ * 
+ * @return uint8_t
+ */
+uint8_t getActuatorStatus();
+
+
+/**
+ * @brief 
+ * 
+ * @param
+ * 
+ * @return uint8_t
+ */
+uint8_t activateActuator();
+
+
+/**
+ * @brief 
+ * 
+ * @param
+ * 
+ * @return uint8_t
+ */
+uint8_t deactivateActuator();
 
 #endif
