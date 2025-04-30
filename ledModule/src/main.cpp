@@ -30,16 +30,25 @@ void setup() {
     //Serial.begin(9600,SERIAL_8N1,SERIAL_TX_ONLY); // to limit inbound serial comminucation from interefering
                                                   // with the ir_handling
     Serial.begin(9600);
-    Serial.println("starting the setup");
+    Serial.println("Starting setup");
 
 
-    buildIrConnection();
-    //initVR();
-    buildRouterConnection();
-    buildTimeConnection();
-    initWebserver();
-    setupMDNS();
 
+    uint8_t hardwareInit = true;
+    hardwareInit = hardwareInit && buildIrConnection();
+    //hardwareInit = hardwareInit && initVR();
+
+    if(hardwareInit){
+        Serial.println("Hardware init successful");
+    } else {
+        Serial.println("Hardware init failed");
+    }
+
+    uint8_t softwareInit = true;
+    softwareInit = softwareInit && buildRouterConnection();
+    softwareInit = softwareInit && buildTimeConnection();
+    softwareInit = softwareInit && initWebserver();
+    softwareInit = softwareInit && setupMDNS();
 
     buildLedConnection();
     initialiseLedMap();
@@ -47,7 +56,13 @@ void setup() {
 
     setupEventMap();
 
-    Serial.println("finishing the setup");
+    if(softwareInit){
+        Serial.println("Software init successful");
+    } else {
+        Serial.println("Software init failed");
+    }
+
+    Serial.println("Ending setup\n");
 }
 
 void loop() {

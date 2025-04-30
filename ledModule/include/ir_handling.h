@@ -6,7 +6,7 @@
 #define IR_RECEIVE_PIN  5
 #define DECODE_NEC
 
-void buildIrConnection();
+uint8_t buildIrConnection();
 uint8_t decodeIR();
 
 #endif

@@ -21,29 +21,28 @@ HTTPClient http;
 
 
 // only for ap-mode
-IPAddress local_IP(192,168,4,22);
-IPAddress gateway(192,168,4,9);
-IPAddress subnet(255,255,255,0);
+//  see buildAP()
+//IPAddress local_IP(192,168,4,22);
+//IPAddress gateway(192,168,4,9);
+//IPAddress subnet(255,255,255,0);
 
 
-
-bool buildRouterConnection(){
-    Serial.println("Connecting to WiFi");
-
+uint8_t buildRouterConnection(){
     if(WiFi.status() == WL_CONNECTED){
         WiFi.disconnect();
     }
 
     WiFi.begin(SSID, PASS);
     if(WiFi.waitForConnectResult() == WL_CONNECTED){
-        Serial.println("Connected to local network");
-        Serial.println(WiFi.localIP());
-        return true;
+        //Serial.println("Connected to local network");
+        //Serial.println(WiFi.localIP());
+        return 1;
     }
-    return false;
+    return 0;
 }
 
-bool buildAP(){
+
+uint8_t buildAP(){
     // does not build an own ap as i had trouble connecting
     // many clients and dont want to troubleshoot this problem
     // right now, instead connecting to another local network
@@ -58,20 +57,17 @@ bool buildAP(){
     if(WiFi.waitForConnectResult() == WL_CONNECTED){
         Serial.println("Connected to another local network");
         Serial.println(WiFi.localIP());
-        return true;
+        return 1;
     }
-    return false;
+    return 0;
 }
 
-bool buildNTPServer(){
-    //if(WiFi.status() == WL_CONNECTED) check if this is true, if in ap mode
+uint8_t buildNTPServer(){
     if(udp.listen(123)){
-        Serial.println("udp time request");
         udp.onPacket(handleTimeRequest);
-        return true;
+        return 1;
     }
-    return false;
-
+    return 0;
 }
 
 
@@ -79,30 +75,13 @@ void handleTimeRequest(AsyncUDPPacket &packet){
     // Taken from and adapted from
     // https://github.com/Willtech/NTP-Server-for-ESP8266
 
-    // Output IP of NTP request
-    Serial.print("Received NTP request from IP: ");
-    Serial.println(packet.remoteIP());
-
     // Import packet
     byte packetBuffer[48];
     memcpy(packetBuffer, packet.data(), 48);
-    //packet.write(packetBuffer, 48);
-
-
-    Serial.println("Received UDP packet:");
-    for (int i = 0; i < 48; i++) {
-        Serial.print(packetBuffer[i], HEX);
-        Serial.print(" ");
-    }
-    Serial.println();
 
     // Get current RTC DS3231 time
     unsigned long currentTime = getSensorTime();
-    Serial.print("currTime = ");
-    Serial.println(currentTime);
     unsigned long secsSince1900 = currentTime + 2208988800UL - 0;
-    Serial.print("secs = ");
-    Serial.println(secsSince1900);
 
     // Prepare the response packet
     packetBuffer[0] = 0b00100100;  // LI, Version, Mode
@@ -136,25 +115,15 @@ void handleTimeRequest(AsyncUDPPacket &packet){
     packetBuffer[43] = (byte)(secsSince1900);
     memset(packetBuffer + 44, 0, 4);
 
-    // Print the response packet for debugging
-    Serial.println("Response UDP packet:");
-    for (int i = 0; i < 48; i++) {
-    Serial.print(packetBuffer[i], HEX);
-    Serial.print(" ");
-    }
-    Serial.println();
-
-    //uint8_t a = udp.write(packetBuffer, 48);
     AsyncUDPMessage ans(48);
     ans.write(packetBuffer, 48);
     packet.send(ans);
 }
 
 
-bool initWebserver(){
+uint8_t initWebserver(){
     if(WiFi.status() != WL_CONNECTED){
-        Serial.println("fuck this");
-        //return false;
+        return 0;
     }
     server.on("/", handleHTMLRequest);
     server.on("/js", handleJSRequest);
@@ -167,27 +136,24 @@ bool initWebserver(){
     DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "http://base.local");
     server.begin();
     ArduinoOTA.begin();
-    return true;
+    return 1;
 }
 
 void loopOTA(){
     ArduinoOTA.handle();
 }
 
-
-void setupMDNS(){
+uint8_t setupMDNS(){
     if(!MDNS.begin("base")){
-        Serial.println("Error setting up mDNS responder!");
-        while(1){ delay(1000); }
+        return 0;
     }
-    Serial.println("mDNS responder started");
 
     // assumes the server has been started, but should be checked for
     MDNS.addService("http", "tcp", 80);
+    return 1;
 }
 
 void handleLiveStatus(AsyncWebServerRequest *request){
-    Serial.println("got liveStatus Request");
     request->send(200);
 }
 
@@ -205,7 +171,6 @@ void handleJSRequest(AsyncWebServerRequest *request){
     request->send(response);
 }
 
-
 void handleCSSRequest(AsyncWebServerRequest *request){
     const char* dataType = "text/css";
     AsyncWebServerResponse *response = request->beginResponse_P(200, dataType, webpage_css_gz, webpage_css_gz_len);
@@ -214,22 +179,16 @@ void handleCSSRequest(AsyncWebServerRequest *request){
 
 }
 
-
 void handleTimeStringRequest(AsyncWebServerRequest *request){
-    Serial.println("time string request");
     AsyncResponseStream *response = request->beginResponseStream("text/html");
     // get time
     uint32_t timeStamp = getSensorTime();
-    Serial.print("time is = ");
-    Serial.println(timeStamp);
 
     response->print(timeStamp);
     request->send(response);
 }
 
-
 void handleJSONRequest(AsyncWebServerRequest *request){
-    Serial.println("got json request");
     int numberOfCurrentReadings = getNumOfReadingsInList();
     char* sensorData = (char*)malloc(sizeof(char) * 180); // rougly 124 will be used
                                                           // check if null!
@@ -250,6 +209,7 @@ void handleJSONRequest(AsyncWebServerRequest *request){
     request->send(response);
     free(sensorData);
 }
+
 void handleSensorReading(AsyncWebServerRequest *request){
     char* sensorData = (char*)malloc(sizeof(char) * 180); // rougly 124 will be used
 
@@ -262,7 +222,6 @@ void handleSensorReading(AsyncWebServerRequest *request){
     free(sensorData);
 }
 
-
 void handleJQueryRequest(AsyncWebServerRequest *request){
     Serial.println("called jquery");
     const char* dataType = "text/javascript";
@@ -271,7 +230,7 @@ void handleJQueryRequest(AsyncWebServerRequest *request){
     request->send(response);
 }
 
-int httpGetRequestIgnoreResponse(const char* path){
+uint8_t httpGetRequestIgnoreResponse(const char* path){
     if(http.begin(client, path)){
         int httpCode = http.GET();
         if(httpCode == HTTP_CODE_OK){

@@ -10,29 +10,27 @@
 
 AsyncWebServer server(80);
 
-bool buildRouterConnection(){
-    Serial.println("Connecting to WiFi");
-
+uint8_t buildRouterConnection(){
     WiFi.begin(APSSID, APPASS);
     if(WiFi.waitForConnectResult() == WL_CONNECTED){
         Serial.println("Connected to ap network");
         Serial.println(WiFi.localIP());
-        return true;
+        return 1;
     }
 
     WiFi.begin(SSID, PASS);
     if(WiFi.waitForConnectResult() == WL_CONNECTED){
         Serial.println("Connected to local network");
         Serial.println(WiFi.localIP());
-        return true;
+        return 1;
     }
 
-    return false;
+    return 0;
 }
 
-void initWebserver(){
+uint8_t initWebserver(){
     if(WiFi.status() != WL_CONNECTED){
-        return;
+        return 0;
     }
     server.on("/isLive", handleLiveStatus);
     server.on("/pcStatus", handleStatusRequest);
@@ -43,21 +41,23 @@ void initWebserver(){
     DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "http://base.local");
     server.begin();
     ArduinoOTA.begin();
+    return 1;
 }
 
 void loopOTA(){
     ArduinoOTA.handle();
 }
 
-void setupMDNS(){
+uint8_t setupMDNS(){
     if(!MDNS.begin("pc")){
         Serial.println("Error setting up mDNS responder!");
-        while(1){ delay(1000); }
+        return 0;
     }
     Serial.println("mDNS responder started");
 
     // assumes the server has been started, but should be checked for
     MDNS.addService("http", "tcp", 80);
+    return 1;
 }
 
 void handleHTMLRequest(AsyncWebServerRequest *request){
@@ -97,7 +97,7 @@ void handlePowerOn(AsyncWebServerRequest *request){
     // first check if already on
     request->send(200);
     digitalWrite(POWERPIN, HIGH);
-    delay(100);
+    delay(100); // delays during a web response are very bad!
     digitalWrite(POWERPIN, LOW);
 }
 
@@ -106,7 +106,7 @@ void handlePowerOff(AsyncWebServerRequest *request){
     // first check if already off
     request->send(200);
     digitalWrite(POWERPIN, HIGH);
-    delay(100);
+    delay(100); // delays during a web response are very bad!
     digitalWrite(POWERPIN, LOW);
 }
 

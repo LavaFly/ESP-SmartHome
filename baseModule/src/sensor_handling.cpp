@@ -147,11 +147,11 @@ uint32_t getSensorTime(){
 
 
 uint8_t setSensorTime(unsigned long timeStamp){
-    if(rtc.isrunning()){
-        rtc.adjust(timeStamp);
-        Serial.println("test this method");
-        return 1;
-    }
+    //if(rtc.isrunning()){
+    //    rtc.adjust(timeStamp);
+    //    Serial.println("test this method");
+    //    return 1;
+    //}
 
     // i havent tested the isrunning() function
     // but cant right now, so just in case

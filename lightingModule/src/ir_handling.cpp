@@ -6,8 +6,10 @@ IRsend IrSender(4);
 uint8_t signalContent = 0;
 uint32_t signalData;
 
-void buildIrConnection(){
+uint8_t buildIrConnection(){
+    // check if this can fail
     IrSender.begin();
+    return 1;
 }
 
 // the async webserver doesnt like it, when the response functions do too much stuff

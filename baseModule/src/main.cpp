@@ -25,11 +25,11 @@ void setup() {
         Serial.println("Hardware init failed");
     }
 
-    buildAP();
-    buildNTPServer();
+    softwareInit = softwareInit && buildAP();
+    softwareInit = softwareInit && buildNTPServer();
 
-    initWebserver();
-    setupMDNS();
+    softwareInit = softwareInit && initWebserver();
+    softwareInit = softwareInit && setupMDNS();
 
     if(softwareInit){
         Serial.println("Software init successful");

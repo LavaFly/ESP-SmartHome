@@ -8,6 +8,7 @@
 #define NUM_READINGS 60
 #define DHTTYPE DHT11
 #define STATUS_PIN 13
+#define DISTANCE_CONVERSION 17
 
 /**
  * @brief 

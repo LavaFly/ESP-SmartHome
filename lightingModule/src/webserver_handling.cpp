@@ -7,64 +7,54 @@
 
 AsyncWebServer server(80);
 
-bool buildRouterConnection(){
-    //Serial.println("Connecting to WiFi");
-
+uint8_t buildRouterConnection(){
     WiFi.begin(APSSID, APPASS);
     if(WiFi.waitForConnectResult() == WL_CONNECTED){
         //Serial.println("Connected to ap network");
         //Serial.println(WiFi.localIP());
-        return true;
+        return 1;
     }
 
     WiFi.begin(SSID, PASS);
     if(WiFi.waitForConnectResult() == WL_CONNECTED){
         //Serial.println("Connected to local network");
         //Serial.println(WiFi.localIP());
-        return true;
+        return 1;
     }
 
-    return false;
+    return 0;
 }
 
-void setupMDNS(){
+uint8_t setupMDNS(){
     if(!MDNS.begin("lighting")){
-        //Serial.println("Error setting up mDNS responder!");
-        while(1){ delay(1000); }
+        return 0;
     }
     //Serial.println("mDNS responder started");
 
     // assumes the server has been started, but should be checked for
     MDNS.addService("http", "tcp", 80);
+    return 1;
 }
 
 void lightingOn(AsyncWebServerRequest* request){
-    //Serial.println("lighting on");
-
     sendOnSignal();
 
     request->send(200);
 }
 
 void lightingOff(AsyncWebServerRequest* request){
-    //Serial.println("lighting off");
-
     sendOffSignal();
 
     request->send(200);
 }
 
 void raiseBrightness(AsyncWebServerRequest* request){
-    //Serial.println("lighting raise");
-
     sendBrighterSignal();
 
     request->send(200);
 }
 
 void lowerBrightness(AsyncWebServerRequest* request){
-    //Serial.println("lighting lower");
-
     sendDarkerSignal();
 
     request->send(200);
@@ -75,19 +65,17 @@ void handleUnkownRequest(AsyncWebServerRequest* request){
 }
 
 void handleLiveStatus(AsyncWebServerRequest *request){
-    Serial.println("got liveStatus Request");
     request->send(200);
 }
 
 
 void baseResponse(AsyncWebServerRequest* request){
-    //Serial.println("got request");
     request->send(200);
 }
 
-void initWebserver(){
+uint8_t initWebserver(){
     if(WiFi.status() != WL_CONNECTED){
-        return;
+        return 0;
     }
 
     server.on("/", baseResponse);
@@ -99,6 +87,7 @@ void initWebserver(){
     DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "http://base.local");
     server.begin();
     ArduinoOTA.begin();
+    return 1;
 }
 
 void loopOTA(){

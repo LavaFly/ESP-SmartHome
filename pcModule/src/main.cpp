@@ -24,10 +24,8 @@ void setup() {
 
     uint8_t softwareInit = true;
     softwareInit = softwareInit && buildRouterConnection();
-    //softwareInit = softwareInit && initWebserver();
-    //softwareInit = softwareInit && setupMDNS();
-    initWebserver();
-    setupMDNS();
+    softwareInit = softwareInit && initWebserver();
+    softwareInit = softwareInit && setupMDNS();
 
     if(softwareInit){
         Serial.println("Software init successful");

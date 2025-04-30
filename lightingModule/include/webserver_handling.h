@@ -11,31 +11,115 @@ extern uint8_t lightingBrightness;
 extern bool lightingStatus;
 
 /**
- * @brief
- *
+ * @brief 
+ * 
+ * @param
+ * 
+ * @return uint8_t
  */
-bool buildRouterConnection();
+uint8_t buildRouterConnection();
 
-void setupMDNS();
 
-void lightingOn(AsyncWebServerRequest* request);
+/**
+ * @brief 
+ * 
+ * @param
+ * 
+ * @return uint8_t
+ */
+uint8_t initWebserver();
 
-void lightingOff(AsyncWebServerRequest* request);
 
-void raiseBrightness(AsyncWebServerRequest* request);
+/**
+ * @brief 
+ * 
+ * @param
+ * 
+ * @return uint8_t
+ */
+uint8_t setupMDNS();
 
-void lowerBrightness(AsyncWebServerRequest* request);
 
-void handleUnkownRequest(AsyncWebServerRequest* request);
-
-void handleLiveStatus(AsyncWebServerRequest *request);
-
-void baseResponse(AsyncWebServerRequest* request);
-
-void initWebserver();
-
+/**
+ * @brief 
+ * 
+ * @param
+ * 
+ * @return uint8_t
+ */
 void loopOTA();
 
+
+/**
+ * @brief 
+ * 
+ * @param
+ * 
+ * @return uint8_t
+ */
+void lightingOn(AsyncWebServerRequest* request);
+
+
+/**
+ * @brief 
+ * 
+ * @param
+ * 
+ * @return uint8_t
+ */
+void lightingOff(AsyncWebServerRequest* request);
+
+
+/**
+ * @brief 
+ * 
+ * @param
+ * 
+ * @return uint8_t
+ */
+void raiseBrightness(AsyncWebServerRequest* request);
+
+
+/**
+ * @brief 
+ * 
+ * @param
+ * 
+ * @return uint8_t
+ */
+void lowerBrightness(AsyncWebServerRequest* request);
+
+
+/**
+ * @brief 
+ * 
+ * @param
+ * 
+ * @return uint8_t
+ */
+void handleUnkownRequest(AsyncWebServerRequest* request);
+
+
+/**
+ * @brief 
+ * 
+ * @param
+ * 
+ * @return uint8_t
+ */
+void handleLiveStatus(AsyncWebServerRequest *request);
+
+
+/**
+ * @brief 
+ * 
+ * @param
+ * 
+ * @return uint8_t
+ */
+void baseResponse(AsyncWebServerRequest* request);
+
+// needed?
 extern void sendOffSignal();
 extern void sendOnSignal();
 extern void sendBrighterSignal();

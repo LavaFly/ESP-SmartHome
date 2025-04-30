@@ -12,57 +12,204 @@
 
 
 /**
- * @brief
- *
+ * @brief 
+ * 
+ * @param
+ * 
+ * @return uint8_t
  */
-bool buildRouterConnection();
+uint8_t buildRouterConnection();
 
-bool buildAP();
 
-bool buildNTPServer();
+/**
+ * @brief 
+ * 
+ * @param
+ * 
+ * @return uint8_t
+ */
+uint8_t buildAP();
 
-bool initWebserver();
 
-void setupMDNS();
+/**
+ * @brief 
+ * 
+ * @param
+ * 
+ * @return uint8_t
+ */
+uint8_t buildNTPServer();
 
+
+/**
+ * @brief 
+ * 
+ * @param
+ * 
+ * @return uint8_t
+ */
+uint8_t initWebserver();
+
+
+/**
+ * @brief 
+ * 
+ * @param
+ * 
+ * @return uint8_t
+ */
+uint8_t setupMDNS();
+
+
+/**
+ * @brief 
+ * 
+ * @param
+ * 
+ * @return uint8_t
+ */
 void loopOTA();
 
+
+/**
+ * @brief 
+ * 
+ * @param
+ * 
+ * @return uint8_t
+ */
 void handleTimeRequest(AsyncUDPPacket &packet);
+
 
 /**
  * @brief Serves the Client the gzipped webpage from the FLASH Memory
  *  Client will afterwards call handleJSONRequest() to fill the Chart with data
- *
+ * 
+ * @param
+ * 
+ * @return uint8_t
  */
 void handleHTMLRequest(AsyncWebServerRequest *request);
 
 
+/**
+ * @brief 
+ * 
+ * @param
+ * 
+ * @return uint8_t
+ */
 void handleSensorReading(AsyncWebServerRequest *request);
 
-void handleLiveStatus(AsyncWebServerRequest *request);
-void handleTimeStringRequest(AsyncWebServerRequest *request);
 
+/**
+ * @brief 
+ * 
+ * @param
+ * 
+ * @return uint8_t
+ */
+void handleLiveStatus(AsyncWebServerRequest *request);
+
+
+/**
+ * @brief 
+ * 
+ * @param
+ * 
+ * @return uint8_t
+ */
+void handleTimeStringRequest(AsyncWebServerRequest *request);
 
 
 /**
  * @brief Serves the Sensor Readings Array as an JSON structure
  * JSON structure is manually constructed without the use of the ArduinoJSON Library
- *
+ * 
+ * @param
+ * 
+ * @return uint8_t
  */
 void handleJSONRequest(AsyncWebServerRequest*);
 
+
+/**
+ * @brief 
+ * 
+ * @param
+ * 
+ * @return uint8_t
+ */
 void handleJSRequest(AsyncWebServerRequest*);
+
+
+/**
+ * @brief 
+ * 
+ * @param
+ * 
+ * @return uint8_t
+ */
 void handleCSSRequest(AsyncWebServerRequest*);
 
+
+/**
+ * @brief 
+ * 
+ * @param
+ * 
+ * @return uint8_t
+ */
 void handleCanvasRequest(AsyncWebServerRequest*);
+
+
+/**
+ * @brief 
+ * 
+ * @param
+ * 
+ * @return uint8_t
+ */
 void handleJQueryRequest(AsyncWebServerRequest*);
 
-int httpGetRequestIgnoreResponse(const char* path);
 
+/**
+ * @brief 
+ * 
+ * @param
+ * 
+ * @return uint8_t
+ */
+uint8_t httpGetRequestIgnoreResponse(const char* path);
+
+
+/**
+ * @brief 
+ * 
+ * @param
+ * 
+ * @return uint8_t
+ */
 const String* httpGetRequest(const char* path);
 
+
+/**
+ * @brief 
+ * 
+ * @param
+ * 
+ * @return uint8_t
+ */
 WiFiClient& httpGetRequestStream(const char* path);
 
+
+/**
+ * @brief 
+ * 
+ * @param
+ * 
+ * @return uint8_t
+ */
 void httpEndRequestStream();
 
 #endif

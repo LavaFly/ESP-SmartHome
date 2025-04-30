@@ -17,29 +17,27 @@ IPAddress subnet(255,255,255,0);
 extern void setupTextAnimation(String message);
 extern void showTime();
 
-bool buildRouterConnection(){
-    Serial.println("Connecting to WiFi");
-
+uint8_t buildRouterConnection(){
     WiFi.begin(APSSID, APPASS);
     if(WiFi.waitForConnectResult() == WL_CONNECTED){
         Serial.println("Connected to ap network");
         Serial.println(WiFi.localIP());
-        return true;
+        return 1;
     }
 
     WiFi.begin(SSID, PASS);
     if(WiFi.waitForConnectResult() == WL_CONNECTED){
         Serial.println("Connected to local network");
         Serial.println(WiFi.localIP());
-        return true;
+        return 1;
     }
 
-    return false;
+    return 0;
 }
 
-bool initWebserver(){
+uint8_t initWebserver(){
     if(WiFi.status() != WL_CONNECTED){
-        return false;
+        return 0;
     }
 
     ws.onEvent(onEvent);
@@ -53,7 +51,7 @@ bool initWebserver(){
     DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "http://base.local");
     server.begin();
     ArduinoOTA.begin();
-    return true;
+    return 1;
 }
 
 void loopOTA(){
@@ -61,24 +59,21 @@ void loopOTA(){
 }
 
 
-void setupMDNS(){
+uint8_t setupMDNS(){
     if(!MDNS.begin("led")){
-        Serial.println("Error setting up mDNS responder!");
-        while(1){ delay(1000); }
+        return 0;
     }
-    Serial.println("mDNS responder started");
 
     // assumes the server has been started, but should be checked for
     MDNS.addService("http", "tcp", 80);
+    return 1;
 }
 
 void handleHTMLRequest(AsyncWebServerRequest *request){
-    Serial.printf("got request");
     request->send(200);
 }
 
 void handleLiveStatus(AsyncWebServerRequest *request){
-    Serial.println("got liveStatus Request");
     request->send(200);
 }
 
@@ -88,15 +83,18 @@ void handleTimeRequest(AsyncWebServerRequest *request){
 }
 
 void handleJSONRequest(AsyncWebServerRequest *request){
-
+    // apart from a photodiode, this module has no sensors
+    // but may get some in the future, idk
 }
 
 void handleTemperatureRequest(AsyncWebServerRequest *request){
+    // display temperature
 }
 void handleCO2Request(AsyncWebServerRequest *request){
+    // display co2
 }
 
-int httpGetRequestIgnoreResponse(const char* path){
+uint8_t httpGetRequestIgnoreResponse(const char* path){
     if(http.begin(client, path)){
         int httpCode = http.GET();
         if( httpCode == HTTP_CODE_OK){
@@ -129,13 +127,12 @@ void httpEndRequestStream(){
     http.end();
 }
 
-
 void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
     AwsFrameInfo *info = (AwsFrameInfo*)arg;
     if (info->final && info->index == 0 && info->len == len && info->opcode == WS_TEXT) {
         data[len] = 0;
-        Serial.print("got message:  ");
-        Serial.println((char*)data);
+        //Serial.print("got message:  ");
+        //Serial.println((char*)data);
         setupTextAnimation((char*)data);
     }
 }
@@ -156,6 +153,8 @@ void onEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventTyp
     }
 }
 
-void cleanUpSockets(){
+uint8_t cleanUpSockets(){
+    // check if this can fail
     ws.cleanupClients();
+    return 1;
 }

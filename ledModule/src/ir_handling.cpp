@@ -3,8 +3,10 @@
 #include <IRremote.hpp>
 
 
-void buildIrConnection(){
+uint8_t buildIrConnection(){
+    // check this at some point
     IrReceiver.begin(IR_RECEIVE_PIN, true);
+    return 1;
 }
 
 uint8_t decodeIR(){

@@ -13,29 +13,29 @@
 AsyncWebServer server(80);
 
 
-bool buildRouterConnection(){
+uint8_t buildRouterConnection(){
     Serial.println("Connecting to WiFi");
 
     WiFi.begin(APSSID, APPASS);
     if(WiFi.waitForConnectResult() == WL_CONNECTED){
         Serial.println("Connected to ap network");
         Serial.println(WiFi.localIP());
-        return true;
+        return 1;
     }
 
     WiFi.begin(SSID, PASS);
     if(WiFi.waitForConnectResult() == WL_CONNECTED){
         Serial.println("Connected to local network");
         Serial.println(WiFi.localIP());
-        return true;
+        return 1;
     }
 
-    return false;
+    return 0;
 }
 
-void initWebserver(){
+uint8_t initWebserver(){
     if(WiFi.status() != WL_CONNECTED){
-        return;
+        return 0;
     }
     server.on("/isLive", handleLiveStatus);
     // calling this url will crash the mc, i will fix this someday
@@ -48,6 +48,7 @@ void initWebserver(){
     DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "http://base.local");
     server.begin();
     ArduinoOTA.begin();
+    return 1;
 }
 
 void loopOTA(){
@@ -55,15 +56,16 @@ void loopOTA(){
 }
 
 
-void setupMDNS(){
+uint8_t setupMDNS(){
     if(!MDNS.begin("tent")){
         Serial.println("Error setting up mDNS responder!");
-        while(1){ delay(1000); }
+        return 0;
     }
     Serial.println("mDNS responder started");
 
     // assumes the server has been started, but should be checked for
     MDNS.addService("http", "tcp", 80);
+    return 1;
 }
 
 void handleLiveStatus(AsyncWebServerRequest *request){

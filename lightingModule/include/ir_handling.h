@@ -9,7 +9,7 @@
 #define LIGHT_BRIGHTER  0x0e
 #define LIGHT_DARKER    0x0c
 
-void buildIrConnection();
+uint8_t buildIrConnection();
 void sendOffSignal();
 void sendOnSignal();
 void sendBrighterSignal();
