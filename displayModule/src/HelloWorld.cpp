@@ -1,3 +1,6 @@
+// note from me, i dont really like this code but i dislike writing a proper ui even more
+// so i wont be cleaning or fixing it, maybe at some point in the future
+
 /* Using LVGL with Arduino requires some extra steps...
  *
  * Be sure to read the docs here: https://docs.lvgl.io/master/integration/framework/arduino.html
@@ -67,7 +70,21 @@
  void example_buttonmatrix_1(void);
  static void event_handler(lv_event_t * e);
  void httpGetRequestIgnoreResponse(const char* path);
- 
+ unsigned long timeOfLastTouch = 0;
+ bool displayOn = false;
+ void turnDisplayOff(){
+  Serial.println("display off");
+  digitalWrite(LCD_BACK_LIGHT_PIN, LOW);
+  setCpuFrequencyMhz(80);
+  displayOn = false;
+ }
+
+ void turnDisplayOn(){
+  Serial.println("display on");
+  digitalWrite(LCD_BACK_LIGHT_PIN, HIGH);
+  setCpuFrequencyMhz(240);
+  displayOn = true;
+ }
  
  static const char * btnm_map[] = {"On", "PC", "Off", "L+", "L-", "\n",
                                    "1", "2", "3", "4", "5", "\n",
@@ -171,6 +188,7 @@
    LVGL_Arduino += String('V') + lv_version_major() + "." + lv_version_minor() + "." + lv_version_patch();
    Serial.begin(115200);
    Serial.println(LVGL_Arduino);
+   pinMode(LCD_BACK_LIGHT_PIN, OUTPUT);
 
    //Initialise the touchscreen
    touchscreenSpi.begin(XPT2046_CLK, XPT2046_MISO, XPT2046_MOSI, XPT2046_CS); /* Start second SPI bus for touchscreen */
@@ -198,16 +216,29 @@
      Serial.print(".");
    }
 
+   turnDisplayOff();
+
    //Done
    Serial.println( "Setup done" );
  }
 
  void loop()
  {
-     lv_tick_inc(millis() - lastTick); //Update the tick timer. Tick is new for LVGL 9
-     lastTick = millis();
-     lv_timer_handler();               //Update the UI
-     delay(5);
+     if(displayOn){
+      lv_tick_inc(millis() - lastTick); //Update the tick timer. Tick is new for LVGL 9
+      lastTick = millis();
+      lv_timer_handler();
+    }
+    delay(5);
+
+    if(!displayOn && touchscreen.touched()){
+      turnDisplayOn();
+      example_buttonmatrix_2();
+      timeOfLastTouch = millis();
+    }
+    if(displayOn && (millis() - timeOfLastTouch) > 5000){
+      turnDisplayOff();
+    }
  }
 
 
