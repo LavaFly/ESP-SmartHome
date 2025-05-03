@@ -1,17 +1,17 @@
 # pcModule
-alias pcOn="curl http://pcModule.local/pcPowerOn"
+alias pcOn="curl http://pc.local/on"
 
 # lightingModule
-alias lightOn="curl http://lightingModule.local/lightingOn"
-alias lightOff="curl http://lightingModule.local/lightingOff"
-alias lightp="curl http://lightingModule.local/raiseBrightness"
-alias lightm="curl http://lightingModule.local/lowerBrightness"
+alias lightOn="curl http://lighting.local/on"
+alias lightOff="curl http://lighting.local/off"
+alias lightp="curl http://lighting.local/raiseBrightness"
+alias lightm="curl http://lighting.local/lowerBrightness"
 
 # ledModule
-alias showTime="curl http://ledModule.local/showTime"
-alias showTemperature="curl http://ledModule.local/showTemperature"
-alias showQuality="curl http://ledModule.local/showQuality"
-alias showCO2="curl http://ledModule.local/showCO2"
+alias showTime="curl http://led.local/showTime"
+alias showTemperature="curl http://led.local/showTemperature"
+alias showQuality="curl http://led.local/showQuality"
+alias showCO2="curl http://led.local/showCO2"
 
 # requires websocat
-alias showText="websocat ws://ledModule.local/ws"
+alias showText="websocat ws://led.local/ws"
