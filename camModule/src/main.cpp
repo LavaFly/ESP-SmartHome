@@ -146,9 +146,13 @@ void setup() {
   Serial.print(WiFi.localIP());
   Serial.println("' to connect");
 
-  if(!MDNS.begin("camModule")){
+  /**
+  if(!MDNS.begin("cam")){
       Serial.println("mDNS setup failed!");
   }
+  **/
+  start_mdns_service();
+
   Serial.println("setup done");
 }
 
@@ -158,11 +162,12 @@ void start_mdns_service(){
       Serial.println("mDNS setup failed!");
       return;
     }
-    ESP_ERROR_CHECK(mdns_hostname_set("camModule"));
+    ESP_ERROR_CHECK(mdns_hostname_set("cam"));
 }
 
 
 void loop() {
   // Do nothing. Everything is done in another task by the web server
+
   delay(10000);
 }
