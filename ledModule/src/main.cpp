@@ -84,6 +84,7 @@ void loop() {
     }
 
     if(checkTimer(screenClearTimer)){
+        Serial.println("screenClearTimer has run out");
         clearActiveLeds();
         deleteTimer(screenClearTimer);
         screenClearTimer = NULL;
@@ -95,27 +96,35 @@ void loop() {
 
     struct simpleTime * currentTimeStruct;
     switch (irInput) {
-        case 0x12:
+        // codes corresponding to the buttons on my remote
+        case 0x12: // on
             Serial.println("lighting on");
             httpGetRequestIgnoreResponse("http://lighting.local/on");
             break;
-        case 0x1e:
+        case 0x1e: // off
             Serial.println("lighting off");
             httpGetRequestIgnoreResponse("http://lighting.local/off");
             break;
-        case 0x0e:
+        case 0x0e: // +
             httpGetRequestIgnoreResponse("http://lighting.local/raiseBrightness");
             break;
-        case 0x0c:
+        case 0x0c: // -
             httpGetRequestIgnoreResponse("http://lighting.local/lowerBrightness");
             break;
-        case 0x03:
+        case 0x03: // 2
             showTime();
             break;
-        case 0x1a:
+        case 0x1a: // timer
             httpGetRequestIgnoreResponse("http://pcModule.local/pcPowerOn");
             break;
-        case 0x01:
+        case 0x01: // 1
+        case 0x04: // 3
+        case 0x06: // 4
+        case 0x07: // 5
+        case 0x09: // 6
+        case 0x0a: // 7
+        case 0x1f: // 8
+        default:
             /**
              * the current setup is connected on a local network
              * but has no internet access(one mod runs a ntp setver, which

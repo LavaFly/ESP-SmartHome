@@ -38,35 +38,15 @@ void setup() {
 }
 
 void loop() {
-    //MDNS.update();
-    //loopOTA();
+    MDNS.update();
+    loopOTA();
 
-    digitalWrite(PUMP_POWER, LOW);
-    delay(1000);
-    digitalWrite(PUMP_POWER, HIGH);
-    delay(200);
-    digitalWrite(PUMP_POWER, LOW);
-
-    /**
     if(pumpActive){
         setTimerSecondsCallback(pumpWorkaround, &deactivateActuator);
+        setTimerSecondsCallback(10, &sensorCallback);
     }
 
     setTimerSecondsCallback(10, &sensorCallback);
-
-    for(uint8_t daysCounter = 0; daysCounter < 2; daysCounter++){
-        for(uint8_t hoursCounter = 0; hoursCounter < 24; hoursCounter++){
-            for(uint8_t minutesCounter = 0; minutesCounter < 60; minutesCounter++){
-                delay(60000);
-            }
-        }
-    }
-
-    //pump 400ml water
-    digitalWrite(PUMP_POWER, HIGH);
-    delay(20000);
-    digitalWrite(PUMP_POWER, LOW);
-    **/
 }
 
 void sensorCallback(){

@@ -13,7 +13,7 @@ AsyncWebServer server(80);
 // check if needed?
 extern uint8_t getSensorReading(char *formattedResponse, size_t maxResponseLen);
 extern uint8_t activateActuator();
-extern uint8_t deactivateActuator();
+extern void deactivateActuator();
 extern uint8_t pumpActive;
 extern uint8_t pumpWorkaround;
 

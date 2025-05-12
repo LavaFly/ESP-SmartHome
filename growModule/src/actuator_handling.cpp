@@ -18,9 +18,8 @@ uint8_t activateActuator(){
     return 1;
 }
 
-uint8_t deactivateActuator(){
+void deactivateActuator(){
     digitalWrite(PUMP_POWER, LOW);
     actuatorActive = 0;
-    return 1;
 }
 
