@@ -26,6 +26,11 @@ void projectCharacter(uint8_t asciiCode, uint8_t xOffset, uint8_t yOffset);
 void projectWord(uint16_t numberOfCharacters, char* string);
 void projectTime(uint8_t hour, uint8_t minute);
 
+// these two are just for convenience so that i dont have to deal with the
+// string manipulation inside the webserver_handling
+void projectTemperature(int temperature);
+void projectCO2(uint16_t co2);
+
 void mothersDayMessage();
 // function takes in string, iterates over the complete length of the string
 // and converts each char to the corresponding index in the characters-array

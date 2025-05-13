@@ -1,5 +1,6 @@
 #include "led_handling.h"
 #include "characters.h"
+#include "time_handling.h"
 #include "alphabet.h"
 #include "alphabet_lower.h"
 
@@ -33,6 +34,11 @@ CHSV returnColor(0, 255, 180);
 uint8_t colorCounter = 0;
 CHSV getRainbowColor();
 void incColor();
+
+
+
+timerElement* animationTimer;
+timerElement* screenClearTimer;
 
 // width = ((num - (height + 1)/2)^2) / height + (height + 1/2)
 
@@ -201,6 +207,30 @@ void mothersDayMessage(){
 
     // project once, afterwards use advanceSlideAnimation()
     projectString(charList, lengthOfProjectedString, offsetList);
+}
+
+
+void showTemperature(int temperature){
+    char tempStringBuf[2]; // if i have temperatures outside -9°C < temp < 100°C, then ive got worse problems...
+    char completeString[8];
+    itoa(temperature, tempStringBuf, 10);
+
+    const char* postFix = "*C";
+    strcat(completeString, tempStringBuf);
+    strcat(completeString, postFix);
+
+    uint8_t *tempCharList = (uint8_t*)malloc(sizeof(uint8_t) * 8);
+    int8_t *tempOffsetList = (int8_t*)malloc(sizeof(int8_t) * 8);
+
+    generateCharList(completeString, 8, tempCharList);
+    generateOffsetList(tempCharList, 8, 6, tempOffsetList);
+    projectString(tempCharList, 8, tempOffsetList);
+
+    screenClearTimer = addTimer(3);
+}
+
+void showCO2(uint16_t co2){
+
 }
 
 void projectCharacter(uint8_t asciiCode, uint8_t xOffset, uint8_t yOffset){

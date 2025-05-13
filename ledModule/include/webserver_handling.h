@@ -10,40 +10,40 @@
 #include <ESP8266HTTPClient.h>
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @param
- * 
+ *
  * @return uint8_t
  */
 uint8_t buildRouterConnection();
 
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @param
- * 
+ *
  * @return uint8_t
  */
 uint8_t initWebserver();
 
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @param
- * 
+ *
  * @return uint8_t
  */
 uint8_t setupMDNS();
 
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @param
- * 
+ *
  * @return uint8_t
  */
 void loopOTA();
@@ -55,60 +55,60 @@ void loopOTA();
  *
  */
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @param
- * 
+ *
  * @return uint8_t
  */
 void handleHTMLRequest(AsyncWebServerRequest*);
 
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @param
- * 
+ *
  * @return uint8_t
  */
 void handleLiveStatus(AsyncWebServerRequest *request);
 
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @param
- * 
+ *
  * @return uint8_t
  */
 void handleTimeRequest(AsyncWebServerRequest *request);
 
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @param
- * 
+ *
  * @return uint8_t
  */
 void handleTemperatureRequest(AsyncWebServerRequest *request);
 
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @param
- * 
+ *
  * @return uint8_t
  */
 void handleQualityRequest(AsyncWebServerRequest *request);
 
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @param
- * 
+ *
  * @return uint8_t
  */
 void handleCO2Request(AsyncWebServerRequest *request);
@@ -120,70 +120,83 @@ void handleCO2Request(AsyncWebServerRequest *request);
  *
  */
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @param
- * 
+ *
  * @return uint8_t
  */
 void handleJSONRequest(AsyncWebServerRequest*);
 
+/**
+ * @brief
+ *
+ */
+/**
+ * @brief
+ *
+ * @param
+ *
+ * @return uint8_t
+ */
+uint8_t jsonDataRequest(const char *path, uint8_t sizeOfData);
+
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @param
- * 
+ *
  * @return uint8_t
  */
 uint8_t httpGetRequestIgnoreResponse(const char* path);
 
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @param
- * 
+ *
  * @return uint8_t
  */
 const String* httpGetRequest(const char* path);
 
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @param
- * 
+ *
  * @return uint8_t
  */
 WiFiClient& httpGetRequestStream(const char* path);
 
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @param
- * 
+ *
  * @return uint8_t
  */
 void httpEndRequestStream();
 
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @param
- * 
+ *
  * @return uint8_t
  */
 void onEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventType type, void * arg, uint8_t *data, size_t len);
 
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @param
- * 
+ *
  * @return uint8_t
  */
 uint8_t cleanUpSockets();

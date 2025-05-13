@@ -19,8 +19,9 @@ unsigned long clearTimer = 0;
 bool loopActive = false;
 bool animationActive = false;
 bool endlessAnimation = false;
-timerElement* animationTimer;
-timerElement* screenClearTimer;
+
+timerElement* mainAnimationTimer;
+timerElement* mainScreenClearTimer;
 
 void showTime();
 
@@ -73,28 +74,27 @@ void loop() {
 
 
     if(animationActive){
-        if(checkTimer(animationTimer)){
-            resetTimer(animationTimer, 1);
+        if(checkTimer(mainAnimationTimer)){
+            resetTimer(mainAnimationTimer, 1);
             if(!advanceSlideAnimation()){
                 // animation is done
                 animationActive = false;
-                deleteTimer(animationTimer);
+                deleteTimer(mainAnimationTimer);
             }
         }
     }
 
-    if(checkTimer(screenClearTimer)){
-        Serial.println("screenClearTimer has run out");
+    if(checkTimer(mainScreenClearTimer)){
+        Serial.println("mainScreenClearTimer has run out");
         clearActiveLeds();
-        deleteTimer(screenClearTimer);
-        screenClearTimer = NULL;
+        deleteTimer(mainScreenClearTimer);
+        mainScreenClearTimer = NULL;
     }
 
     irInput = decodeIR();
     // will later be replaced by some proper mapping of each button to a
     // function, but havent decided most of them yet so this will suffice
 
-    struct simpleTime * currentTimeStruct;
     switch (irInput) {
         // codes corresponding to the buttons on my remote
         case 0x12: // on
@@ -115,11 +115,14 @@ void loop() {
             showTime();
             break;
         case 0x1a: // timer
-            httpGetRequestIgnoreResponse("http://pcModule.local/pcPowerOn");
+            httpGetRequestIgnoreResponse("http://pc.local/on");
             break;
         case 0x01: // 1
+            showTime();
         case 0x04: // 3
+            handleTemperatureRequest(NULL);
         case 0x06: // 4
+            handleCO2Request(NULL);
         case 0x07: // 5
         case 0x09: // 6
         case 0x0a: // 7
@@ -157,7 +160,7 @@ void showTime(){
     getSimpleTime(currentTimeStruct);
     projectTime(currentTimeStruct->hour, currentTimeStruct->minute);
 
-    screenClearTimer = addTimer(3);
+    mainScreenClearTimer = addTimer(3);
 
     free(currentTimeStruct);
 }
@@ -170,5 +173,5 @@ void setupTextAnimation(String message){
     uint8_t num = serialInput.length();
     startSlideAnimation(serialInput.c_str(), num);
     animationActive = true;
-    animationTimer = addTimer(1);
+    mainAnimationTimer = addTimer(1);
 }

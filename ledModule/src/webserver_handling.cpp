@@ -1,6 +1,8 @@
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 #include <ArduinoOTA.h>
+#include <ArduinoJson.h>
+#include <cstdlib>
 #include "webserver_handling.h"
 #include "internet_settings.h"
 
@@ -9,6 +11,8 @@ AsyncWebSocket ws("/ws");
 WiFiClient client;
 HTTPClient http;
 
+extern JsonDocument doc;
+
 // only for ap-mode
 IPAddress local_IP(192,168,4,22);
 IPAddress gateway(192,168,4,9);
@@ -16,6 +20,8 @@ IPAddress subnet(255,255,255,0);
 
 extern void setupTextAnimation(String message);
 extern void showTime();
+extern void showTemperature(int temperature);
+extern void showCO2(uint16_t co2);
 
 uint8_t buildRouterConnection(){
     WiFi.begin(APSSID, APPASS);
@@ -70,6 +76,7 @@ uint8_t setupMDNS(){
 }
 
 void handleHTMLRequest(AsyncWebServerRequest *request){
+    // should this module get a small independant interface/website?
     request->send(200);
 }
 
@@ -78,6 +85,8 @@ void handleLiveStatus(AsyncWebServerRequest *request){
 }
 
 void handleTimeRequest(AsyncWebServerRequest *request){
+    // check if this can fail
+    // what should be the fitting response in case of failure?
     showTime();
     request->send(200);
 }
@@ -85,13 +94,59 @@ void handleTimeRequest(AsyncWebServerRequest *request){
 void handleJSONRequest(AsyncWebServerRequest *request){
     // apart from a photodiode, this module has no sensors
     // but may get some in the future, idk
+    request->send(200);
 }
 
 void handleTemperatureRequest(AsyncWebServerRequest *request){
-    // display temperature
+    // almost the same as how i show the weather data
+    // request current reading from base
+    //getCurrentReading("http://base.local/currentReading", temperature);
+    uint8_t successful =  jsonDataRequest("http://base.local/currentReading", 0);
+    if(!successful){
+        Serial.println("no response or smth");
+        request->send(500);
+        return;
+    }
+    // check if reading is valid
+    if(doc["sensor"] == "invalid"){
+        Serial.println("received invalid reading");
+        request->send(500);
+        return;
+    }
+    // i am just assuming the temperature cant be negative because i havent
+    // implemented displaying negative numbers
+    int temperature = doc["temperature"].as<int>();
+    showTemperature(temperature);
+
+    doc.clear();
+
+    //projectString(
+
+    //   either construct string or
+    //   projectNumber + 2xprojectCharacter
+    //    ° = 65
+    // return 200 / some 500 code
+    if(request != NULL){
+        // i am quietly using this method in main, because i am lazy, so have to
+        // check for NULL hehe
+        request->send(200);
+    }
+
+    request->send(500);
 }
 void handleCO2Request(AsyncWebServerRequest *request){
-    // display co2
+    // request current reading from base
+    // check if reading is valid
+    // if yes
+    //  display co2(%4d ppm)
+    // else
+    //  display "base offline!"
+    // return 200 / some 500 code
+    if(request != NULL){
+        // i am quietly using this method in main, because i am lazy, so have to
+        // check for NULL hehe
+        request->send(200);
+    }
 }
 
 uint8_t httpGetRequestIgnoreResponse(const char* path){
@@ -103,6 +158,20 @@ uint8_t httpGetRequestIgnoreResponse(const char* path){
         http.end();
     }
     return 0;
+}
+
+// the data is loaded into doc, not sure how i like this implementation, but
+// i havent compared different ideas yet
+uint8_t jsonDataRequest(const char *path, uint8_t sizeOfData){
+   const String* response = httpGetRequest(path);
+   DeserializationError err = ArduinoJson::deserializeJson(doc, *(response));
+
+   if(err.Ok){
+       Serial.println(err.c_str());
+       Serial.println(err.code());
+       return 0;
+    }
+    return 1;
 }
 
 const String* httpGetRequest(const char* path){
