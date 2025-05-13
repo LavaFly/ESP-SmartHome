@@ -15,7 +15,7 @@ typedef struct {
     uint32_t time;
     float temperature;
     float humidity;
-    float quality;
+    float resistance;
 
     uint16_t brightness;
     uint8_t co2;
@@ -32,7 +32,7 @@ uint8_t initSensor(){
     // so only the bme680 is relevant
     pinMode(PWM_PIN, INPUT);
 
-    for(uint8_t i = 0; i < 30; i++){
+    for(uint8_t i = 0; i < 200; i++){
         if(bme.begin(119)){
             bme.setTemperatureOversampling(BME680_OS_8X);
             bme.setHumidityOversampling(BME680_OS_2X);
@@ -42,8 +42,9 @@ uint8_t initSensor(){
 
             return 1;
         }
-        delay(100);
+        delay(50);
     }
+    Serial.println("fuck");
 
     return 0;
 }
@@ -65,7 +66,7 @@ uint8_t getSensorReading(char* formattedResponse, size_t maxResponseLen){
         jsonResponse["time"] = getEpochTime();
         jsonResponse["temperature"] = bme.temperature;
         jsonResponse["humidity"] = bme.humidity;
-        jsonResponse["quality"] = bme.gas_resistance;
+        jsonResponse["resistance"] = bme.gas_resistance;
         jsonResponse["brightness"] = analogRead(A0);
         jsonResponse["co2"] = co2;
         readingSuccessful = true;
@@ -74,7 +75,7 @@ uint8_t getSensorReading(char* formattedResponse, size_t maxResponseLen){
         jsonResponse["time"] = 0;
         jsonResponse["temperature"] = 0;
         jsonResponse["humidity"] = 0;
-        jsonResponse["quality"] = 0;
+        jsonResponse["resistance"] = 0;
         jsonResponse["brightness"] = 0;
         jsonResponse["co2"] = 0;
     }
@@ -100,6 +101,7 @@ uint8_t getSensorReadingFromList(char* formattedResponse, size_t maxResponseLen,
     jsonResponse["humidity"] = sensor_readings[temp].humidity;
     jsonResponse["brightness"] = sensor_readings[temp].brightness;
     jsonResponse["co2"] = sensor_readings[temp].co2;
+    jsonResponse["resistance"] = sensor_readings[temp].resistance;
 
     jsonResponse.shrinkToFit();
     serializeJson(jsonResponse, formattedResponse, maxResponseLen);
@@ -128,7 +130,7 @@ uint8_t updateSensorValues(){
     sensor_readings[readingsListIndex].time = getEpochTime();
     sensor_readings[readingsListIndex].temperature = bme.temperature;
     sensor_readings[readingsListIndex].humidity = bme.humidity;
-    sensor_readings[readingsListIndex].quality = bme.gas_resistance;
+    sensor_readings[readingsListIndex].resistance = bme.gas_resistance;
     sensor_readings[readingsListIndex].brightness = analogRead(A0);
     sensor_readings[readingsListIndex].co2 = co2;
 
