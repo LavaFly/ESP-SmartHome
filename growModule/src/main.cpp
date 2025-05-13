@@ -43,10 +43,9 @@ void loop() {
 
     if(pumpActive){
         setTimerSecondsCallback(pumpWorkaround, &deactivateActuator);
-        setTimerSecondsCallback(10, &sensorCallback);
     }
 
-    setTimerSecondsCallback(10, &sensorCallback);
+    setTimerMinutesCallback(10, &sensorCallback);
 }
 
 void sensorCallback(){

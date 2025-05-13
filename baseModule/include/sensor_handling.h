@@ -7,82 +7,82 @@
 #include <RTClib.h>
 
 
-#define NUM_READINGS 75
+#define NUM_READINGS 60
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @param
- * 
+ *
  * @return uint8_t
  */
 uint8_t setTimeFromNTP();
 
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @param
- * 
- * @return 
+ *
+ * @return
  */
 uint32_t getSensorTime();
 
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @param
- * 
+ *
  * @return uint8_t
  */
 uint8_t setSensorTime(uint32_t timeStamp);
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @param
- * 
+ *
  * @return uint8_t
  */
 uint8_t initSensor();
 
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @param
- * 
+ *
  * @return uint8_t
  */
 uint8_t getSensorReading(char* formattedResponse, size_t maxResponseLen);
 
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @param
- * 
+ *
  * @return uint8_t
  */
 uint8_t getSensorReadingFromList(char* formattedResponse, size_t maxResponseLen, uint8_t listIndex);
 
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @param
- * 
+ *
  * @return uint8_t
  */
 uint8_t buildSensorConnection();
 
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @param
- * 
+ *
  * @return uint8_t
  */
 uint8_t updateSensorValues();
@@ -90,9 +90,9 @@ uint8_t updateSensorValues();
 
 /**
  * @brief Get the Num Of Readings In List object
- * 
+ *
  * @param
- * 
+ *
  * @return uint8_t
  */
 uint8_t getNumOfReadingsInList();
@@ -100,7 +100,7 @@ uint8_t getNumOfReadingsInList();
 
 /**
  * @brief Used for debugging, prints current values the Sensor sends back
- * 
+ *
  * @param
  */
 void printCurrentReading();

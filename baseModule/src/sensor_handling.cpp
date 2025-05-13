@@ -34,7 +34,9 @@ uint8_t initSensor(){
 
     co2Sensor.stopPeriodicMeasurement();
     co2Sensor.softReset();
-    co2Sensor.setMeasurementInterval(20);
+    // this makes it so that the blockingReadMeasurementData() method
+    // and in turn the updateSensorValues function takes up to 20s !!!
+    co2Sensor.setMeasurementInterval(10);
 
     errNum = co2Sensor.startPeriodicMeasurement(0);
     if(errNum != NO_ERROR){
@@ -63,11 +65,14 @@ uint8_t getSensorReading(char* formattedResponse, size_t maxResponseLen){
 
     // the brightness measurement "cannot" fail due to software
     // reasons so only check the scd30 sensor
+
+    uint32_t epochTime = getEpochTime();
+
     if(dataReady == 0){
         Serial.println("no data ready, reading failed");
         // i should probably print or log this
         jsonResponse["sensor"] = "invalid";
-        jsonResponse["time"] = 0;
+        jsonResponse["time"] = epochTime;
         jsonResponse["temperature"] = 0;
         jsonResponse["humidity"] = 0;
         jsonResponse["co2"] = 0;
@@ -76,7 +81,7 @@ uint8_t getSensorReading(char* formattedResponse, size_t maxResponseLen){
         co2Sensor.readMeasurementData(co2, temperature, humidity);
 
         jsonResponse["sensor"] = "base";
-        jsonResponse["time"] = getEpochTime();
+        jsonResponse["time"] = epochTime;
         jsonResponse["temperature"] = temperature;
         jsonResponse["humidity"] = humidity;
         jsonResponse["co2"] = co2;
@@ -124,7 +129,23 @@ uint8_t updateSensorValues(){
     float humidity = 0.0;
     float co2 = 0.0;
 
+
     errNum = co2Sensor.blockingReadMeasurementData(co2, temperature, humidity);
+    // as long as the periodic interval(see initSensor) is larger than the interval
+    // at which this method is called(aka setTimerSeconds/MinutesCallback(interval)
+    // then this should be fine
+    // i think
+    //
+    // it didnt work as planned, but will revisit this at some point
+    /**
+    uint16_t readyFlag = 0;
+    errNum = co2Sensor.getDataReady(readyFlag);
+    if(readyFlag != NO_ERROR){
+        Serial.println("Sensor data not ready");
+        return 0;
+    }
+    errNum = co2Sensor.readMeasurementData(co2, temperature, humidity);
+    **/
 
     if(errNum != NO_ERROR){
         return 0;

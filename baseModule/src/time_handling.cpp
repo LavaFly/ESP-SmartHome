@@ -61,11 +61,11 @@ void setTimerMillisecondsCallback(uint8_t milliseconds, void (*callbackFunction)
 
 bool setTimerSeconds(uint8_t seconds){
     uint32_t timeNow = millis()/1000;
-    uint8_t secondsPassed = timeNow - timeLast;
+    uint8_t secondsPassed = (uint8_t)(timeNow - timeLast);
     // assuming the method gets called in loop and a loop does not take longer than 255 seconds
     if(secondsPassed >= seconds){
         timeLast = timeNow;
-        updateTimeClient();
+        //updateTimeClient();
         return true;
     }
     return false;
