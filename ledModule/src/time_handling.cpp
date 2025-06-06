@@ -14,7 +14,8 @@ NTPClient timeClient(ntpUDP, "base.local", 0, 120000);//europe.pool.ntp.org
 typedef struct timerElement{
     uint32_t timeStamp;
     struct timerElement* next;
-    uint8_t durationSeconds;
+    uint16_t duration;
+    uint8_t inMilliseconds = false;
     uint8_t hasRunOut = false;
 } timerElement;
 
@@ -60,13 +61,13 @@ void setTimerMillisecondsCallback(uint8_t milliseconds, void (*callbackFunction)
 }
 
 
-timerElement* addTimer(uint8_t seconds){
+timerElement* addTimer(uint16_t seconds){
     timerElement *newTimer = (timerElement *)malloc(sizeof(timerElement));
     if(newTimer == NULL){
         Serial.println("a great big fuck up");
     }
     newTimer->timeStamp = millis();
-    newTimer->durationSeconds = seconds;
+    newTimer->duration = seconds;
     newTimer->hasRunOut = false;
     newTimer->next = NULL;
 
@@ -75,6 +76,32 @@ timerElement* addTimer(uint8_t seconds){
         Serial.println("new head");
     } else {
         //append to end of list
+        timerElement *iterator = head->next;
+        while(iterator != NULL){
+            iterator = iterator->next;
+        }
+        iterator = newTimer;
+        Serial.println("new tail");
+    }
+    return newTimer;
+}
+
+timerElement* addTimerMilliseconds(uint16_t milliseconds){
+    timerElement *newTimer = (timerElement *)malloc(sizeof(timerElement));
+    if(newTimer == NULL){
+        Serial.println("very very bad");
+    }
+    newTimer->timeStamp = millis();
+    newTimer->duration = milliseconds;
+    newTimer->inMilliseconds = true;
+    newTimer->hasRunOut = false;
+    newTimer->next = NULL;
+
+    if(head == NULL){
+        head = newTimer;
+        Serial.println("new head");
+    } else {
+        // append to end of list
         timerElement *iterator = head->next;
         while(iterator != NULL){
             iterator = iterator->next;
@@ -99,7 +126,7 @@ bool checkTimer(timerElement* timerPtr){
         return true;
     }
 
-    if(timerPtr->timeStamp + timerPtr->durationSeconds * 1000 < currentTime){
+    if(timerPtr->timeStamp + timerPtr->duration * (timerPtr->inMilliseconds ? 1 : 1000) < currentTime){
         //Serial.println("has run out");
         timerPtr->hasRunOut = true;
         return true;

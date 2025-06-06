@@ -24,7 +24,7 @@ timerElement* mainAnimationTimer;
 timerElement* mainScreenClearTimer;
 
 void showTime();
-
+void showExample();
 
 
 void setup() {
@@ -75,7 +75,7 @@ void loop() {
 
     if(animationActive){
         if(checkTimer(mainAnimationTimer)){
-            resetTimer(mainAnimationTimer, 1);
+            resetTimer(mainAnimationTimer);
             if(!advanceSlideAnimation()){
                 // animation is done
                 animationActive = false;
@@ -118,12 +118,14 @@ void loop() {
             httpGetRequestIgnoreResponse("http://pc.local/on");
             break;
         case 0x01: // 1
-            showTime();
+            showExample();
+            break;
         case 0x04: // 3
             handleTemperatureRequest(NULL);
         case 0x06: // 4
             handleCO2Request(NULL);
         case 0x07: // 5
+
         case 0x09: // 6
         case 0x0a: // 7
         case 0x1f: // 8
@@ -164,6 +166,14 @@ void showTime(){
 
     free(currentTimeStruct);
 }
+void showExample(){
+    const char* example = "Hello World";
+
+    uint8_t num = strlen(example);
+    startSlideAnimation(example, num);
+    animationActive = true;
+    mainAnimationTimer = addTimerMilliseconds(200);
+}
 
 void setupTextAnimation(String message){
     Serial.println("starting animation");
@@ -173,5 +183,5 @@ void setupTextAnimation(String message){
     uint8_t num = serialInput.length();
     startSlideAnimation(serialInput.c_str(), num);
     animationActive = true;
-    mainAnimationTimer = addTimer(1);
+    mainAnimationTimer = addTimerMilliseconds(200);
 }
