@@ -15,7 +15,7 @@ typedef struct timerElement{
     uint32_t timeStamp;
     struct timerElement* next;
     uint16_t duration;
-    uint8_t inMilliseconds = false;
+    uint8_t inMilliseconds = 0;
     uint8_t hasRunOut = false;
 } timerElement;
 
@@ -68,6 +68,7 @@ timerElement* addTimer(uint16_t seconds){
     }
     newTimer->timeStamp = millis();
     newTimer->duration = seconds;
+    newTimer->inMilliseconds = 0;
     newTimer->hasRunOut = false;
     newTimer->next = NULL;
 
@@ -93,7 +94,7 @@ timerElement* addTimerMilliseconds(uint16_t milliseconds){
     }
     newTimer->timeStamp = millis();
     newTimer->duration = milliseconds;
-    newTimer->inMilliseconds = true;
+    newTimer->inMilliseconds = 1;
     newTimer->hasRunOut = false;
     newTimer->next = NULL;
 
@@ -126,7 +127,8 @@ bool checkTimer(timerElement* timerPtr){
         return true;
     }
 
-    if(timerPtr->timeStamp + timerPtr->duration * (timerPtr->inMilliseconds ? 1 : 1000) < currentTime){
+    // this is not correct, as the seconds and milliseconds arent properly interpreted
+    if(timerPtr->timeStamp + timerPtr->duration * (timerPtr->inMilliseconds == 1 ? 1 : 1000) < currentTime){
         //Serial.println("has run out");
         timerPtr->hasRunOut = true;
         return true;

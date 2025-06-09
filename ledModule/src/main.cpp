@@ -162,12 +162,13 @@ void showTime(){
     getSimpleTime(currentTimeStruct);
     projectTime(currentTimeStruct->hour, currentTimeStruct->minute);
 
-    mainScreenClearTimer = addTimer(3);
+
+    mainScreenClearTimer = addTimerMilliseconds(3000);
 
     free(currentTimeStruct);
 }
 void showExample(){
-    const char* example = "Hello World";
+    const char* example = "Hallo Lara";
 
     uint8_t num = strlen(example);
     startSlideAnimation(example, num);
@@ -183,5 +184,5 @@ void setupTextAnimation(String message){
     uint8_t num = serialInput.length();
     startSlideAnimation(serialInput.c_str(), num);
     animationActive = true;
-    mainAnimationTimer = addTimerMilliseconds(200);
+    mainAnimationTimer = addTimerMilliseconds(100);
 }
