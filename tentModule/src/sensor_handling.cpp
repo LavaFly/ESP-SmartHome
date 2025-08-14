@@ -49,6 +49,27 @@ uint8_t initSensor(){
     return 0;
 }
 
+float getLatestTemperature(){
+   return sensor_readings[readingsListIndex].temperature;
+}
+
+
+float getLatestHumidity(){
+   return sensor_readings[readingsListIndex].humidity;
+}
+
+float getLatestResistance(){
+   return sensor_readings[readingsListIndex].resistance;
+}
+
+uint16_t getLatestBrightness(){
+   return sensor_readings[readingsListIndex].brightness;
+}
+
+uint8_t getLatestCO2(){
+   return sensor_readings[readingsListIndex].co2;
+}
+
 
 uint8_t getSensorReading(char* formattedResponse, size_t maxResponseLen){
     // calculation for co2
