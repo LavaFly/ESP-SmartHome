@@ -14,7 +14,7 @@ void printSensorsToDisplay();
 void clearDisplay();
 
 
-Adafruit_SSD1306 display2(128, 64, &Wire, -1);
+Adafruit_SSD1306 display(128, 64, &Wire, -1);
 
 uint8_t previousButtonState = false;
 
@@ -29,7 +29,7 @@ void setup() {
     // which could easily used for the same purpose, but i could alsp just treat it as an actor and put it
     // into actor_handling, large refactor with documentation coming soon, for sure...
     // ... at some point even proper testing ...INPUT_PULLUPINPUT_PULLUP
-    if(!display2.begin(SSD1306_SWITCHCAPVCC, 0x3c)) { // Address 0x3D for 128x64
+    if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3c)) { // Address 0x3D for 128x64
         Serial.println("mist");
         while(true){;}
     }
@@ -93,22 +93,22 @@ void sensorCallback(){
 
 
 void printSensorsToDisplay(){
-    display2.setTextSize(1);
-    display2.setTextColor(WHITE);
-    display2.setCursor(0, 30);
+    display.setTextSize(1);
+    display.setTextColor(WHITE);
+    display.setCursor(0, 30);
 
     float temp = getLatestTemperature();
     float humidity = getLatestHumidity();
     float resistance = getLatestResistance();
     uint16_t brightness = getLatestBrightness();
     uint8_t co2 = getLatestCO2();
-    display2.printf(" T=%2.1fC      H=%3.1f%\n", temp, humidity);
-    display2.printf("       B=%u\n", brightness);
-    display2.printf(" Co2=%u     Ohm=%3.1f%\n", co2, resistance);
-    display2.display();
+    display.printf(" T=%2.1fC      H=%3.1f%\n", temp, humidity);
+    display.printf("       B=%u\n", brightness);
+    display.printf(" Co2=%u     Ohm=%3.1f%\n", co2, resistance);
+    display.display();
 }
 
 void clearDisplay(){
-    display2.clearDisplay();
-    display2.display();
+    display.clearDisplay();
+    display.display();
 }

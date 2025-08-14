@@ -105,4 +105,12 @@ uint8_t getNumOfReadingsInList();
  */
 void printCurrentReading();
 
+float getLatestTemperature();
+
+float getLatestHumidity();
+
+uint16_t getLatestBrightness();
+
+float getLatestCO2();
+
 #endif

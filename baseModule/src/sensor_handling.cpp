@@ -36,7 +36,7 @@ uint8_t initSensor(){
     co2Sensor.softReset();
     // this makes it so that the blockingReadMeasurementData() method
     // and in turn the updateSensorValues function takes up to 20s !!!
-    co2Sensor.setMeasurementInterval(10);
+    //co2Sensor.setMeasurementInterval(10);
 
     errNum = co2Sensor.startPeriodicMeasurement(0);
     if(errNum != NO_ERROR){
@@ -59,9 +59,13 @@ uint8_t getSensorReading(char* formattedResponse, size_t maxResponseLen){
     float co2;
     uint16_t dataReady = 0;
 
+    //co2Sensor.awaitDataReady();
     dataReady = co2Sensor.getDataReady(dataReady);
 
+
+    //co2Sensor.readMeasurementData(co2, temperature, humidity);
     uint8_t readingSuccessful = false;
+
 
     // the brightness measurement "cannot" fail due to software
     // reasons so only check the scd30 sensor
@@ -73,12 +77,15 @@ uint8_t getSensorReading(char* formattedResponse, size_t maxResponseLen){
         // i should probably print or log this
         jsonResponse["sensor"] = "invalid";
         jsonResponse["time"] = epochTime;
-        jsonResponse["temperature"] = 0;
-        jsonResponse["humidity"] = 0;
-        jsonResponse["co2"] = 0;
+        jsonResponse["temperature"] = 23;
+        jsonResponse["humidity"] = 30;
+        jsonResponse["co2"] = 890;
         jsonResponse["brightness"] = 0;
     } else {
-        co2Sensor.readMeasurementData(co2, temperature, humidity);
+        //co2Sensor.readMeasurementData(co2, temperature, humidity);
+        Serial.println("got data");
+        Serial.print("Temp = ");
+        Serial.println(temperature);
 
         jsonResponse["sensor"] = "base";
         jsonResponse["time"] = epochTime;
@@ -131,6 +138,8 @@ uint8_t updateSensorValues(){
 
 
     errNum = co2Sensor.blockingReadMeasurementData(co2, temperature, humidity);
+    Serial.print("new reading, temp = ");
+    Serial.println(temperature);
     // as long as the periodic interval(see initSensor) is larger than the interval
     // at which this method is called(aka setTimerSeconds/MinutesCallback(interval)
     // then this should be fine
@@ -193,4 +202,21 @@ uint8_t setTimeFromNTP() {
 
 void printCurrentReading(){
     Serial.println("Not implemented");
+}
+
+
+float getLatestTemperature(){
+    return sensor_readings[readingsListIndex].temperature;
+}
+
+float getLatestHumidity(){
+    return sensor_readings[readingsListIndex].humidity;
+}
+
+uint16_t getLatestBrightness(){
+    return sensor_readings[readingsListIndex].brightness;
+}
+
+float getLatestCO2(){
+    return sensor_readings[readingsListIndex].co2;
 }
