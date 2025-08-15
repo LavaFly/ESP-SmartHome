@@ -25,6 +25,7 @@ typedef struct {
 // readingsListIndex is the index of the newest reading
 sensor_reading sensor_readings[NUM_READINGS];
 uint8_t readingsListIndex = 0;
+uint8_t latestReading = 0;
 
 
 uint8_t initSensor(){
@@ -50,24 +51,24 @@ uint8_t initSensor(){
 }
 
 float getLatestTemperature(){
-   return sensor_readings[readingsListIndex].temperature;
+   return sensor_readings[latestReading].temperature;
 }
 
 
 float getLatestHumidity(){
-   return sensor_readings[readingsListIndex].humidity;
+   return sensor_readings[latestReading].humidity;
 }
 
 float getLatestResistance(){
-   return sensor_readings[readingsListIndex].resistance;
+   return sensor_readings[latestReading].resistance;
 }
 
 uint16_t getLatestBrightness(){
-   return sensor_readings[readingsListIndex].brightness;
+   return sensor_readings[latestReading].brightness;
 }
 
 uint8_t getLatestCO2(){
-   return sensor_readings[readingsListIndex].co2;
+   return sensor_readings[latestReading].co2;
 }
 
 
@@ -155,6 +156,7 @@ uint8_t updateSensorValues(){
     sensor_readings[readingsListIndex].brightness = analogRead(A0);
     sensor_readings[readingsListIndex].co2 = co2;
 
+    latestReading = readingsListIndex;
     readingsListIndex = (readingsListIndex + 1) % NUM_READINGS;
     return 1;
 }

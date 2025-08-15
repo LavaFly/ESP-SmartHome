@@ -110,9 +110,9 @@ void printSensorsToDisplay(){
     float humidity = getLatestHumidity();
     uint16_t brightness = getLatestBrightness();
     float co2 = getLatestCO2();
-    display.printf(" T=%2.fC     H=%3.1f%\n", temp, humidity);
-    display.printf("      B=%u\n", brightness);
-    display.printf("      Co2=%3.1f\n", co2);
+    display.printf(" T = %2.fC   H = %3.1f%\n", temp, humidity);
+    display.printf("      B = %u\n", brightness);
+    display.printf("   Co2 = %3.1f\n", co2);
 
     display.display();
 }
