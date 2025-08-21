@@ -1,4 +1,4 @@
-#include "ir_handling.h"
+#include "touch_handling.h"
 #include "webserver_handling.h"
 
 void setup(){
@@ -40,8 +40,9 @@ void loop(){
         sendSignal();
     }
     **/
-    uint8_t touchResponse = digitalRead(13);
-    Serial.print("Touch = ");
-    Serial.println(touchResponse);
-    delay(200);
+    uint8_t touchResponse = checkForEvent();
+    if(touchResponse != 0){
+        Serial.print("Touch = ");
+        Serial.println(touchResponse);
+    }
 }
