@@ -1,150 +1,119 @@
 #include "touch_handling.h"
-// tap type     |       timing
-// single       |       timePressed = 10..200ms
-// double       |       pauseTime = 100..1000ms
-// n-tap        |
-// tap+hold     |       holdTime = 200..5000ms
 
+#define BUTTON_PIN 13
 
-// everything w/ single press -> ledModule
-//               double press -> lightingModule
-uint8_t statusOfControl = 0; // bad name
-uint8_t previousButtonStatus = 0;
-uint32_t buttonDownTime = 0;
-uint32_t buttonLastReleasedTime = 0;
+const uint32_t DEBOUNCE = 10;
+const uint32_t SINGLE_PRESS = 200;
+const uint32_t EVENT_TIMEOUT = 700;
+const uint32_t DOUBLE_PRESS_TIME = 200;
 
+//uint8_t currentState;
 
-// current idea
-// do main loop where checking if currently pressed
-//  if
-//   check which state i currenty am in, based on the value of currentState
-//    0 -> reset
-//    1 -> single tap
-//    2 -> double tap
-//  else
-//   check if any timer is present and has run out, perform action based on currentState
-//    0 -> impossible, but who knows
-//    1 -> turn on ledModule lighting
-//    2 -> turn on lightingModule lighting
-//    3 -> turn on ledModule time
-//    4 -> specify brightness for ledModule
-//    5 -> specify brightness for lighting
-//    6 -> specify color for ledModule
+uint8_t previousButtonState;
 
+uint32_t timeoutStart;
+uint32_t lastPressTime;
+uint8_t followingButtonPresses;
+uint8_t buttonPressed;
 
+enum ButtonState{
+    IDLE,
+    FIRST_PRESS_DETECTED,
+    SINGLE_PRESS_MODE,
+    DOUBLE_PRESS_MODE
+};
 
-// returns the state of the automata
-uint8_t checkForEvent(){
-    // if is pressed and
-    // put action into queue
-    uint8_t currentButtonStatus = digitalRead(13);
-    uint32_t currentTime = millis();
-    char buff[100];
-    uint8_t retCode = 0;
-    //Serial.print("entering method at: ");
-    //Serial.println(currentTime);
+ButtonState currentState = IDLE;
 
-    // if button is currently pressed and was not pressed before, save timestamp
-    if(currentButtonStatus == HIGH && previousButtonStatus == LOW){
-        buttonDownTime = currentTime;
-        Serial.println("curr = high, prev = low, setting buttonDownTime");
-        sprintf(buff, "c = %u, b = %u, pB = %u\n", statusOfControl, currentButtonStatus, previousButtonStatus);
-        //Serial.print(buff);
-        sprintf(buff, "bd = %l, blr = %l, curr = %l\n\n", buttonDownTime, buttonLastReleasedTime, currentTime);
-        //Serial.print(buff);
+void handleSinglePress(uint8_t numberOfFollowingPresses);
+void handleDoublePress(uint8_t numberOfFollowingPresses);
+void resetStateMachine();
 
-    // if button is currently pressed and was pressed before, check timestamp
-    } else if(currentButtonStatus == HIGH && previousButtonStatus == HIGH){
-        Serial.println("curr = high, prev = high, default");
-        sprintf(buff, "c = %u, b = %u, pB = %u\n", statusOfControl, currentButtonStatus, previousButtonStatus);
-        //Serial.print(buff);
-        sprintf(buff, "bd = %l, blr = %l, curr = %l\n\n", buttonDownTime, buttonLastReleasedTime, currentTime);
-        //Serial.print(buff);
+void touchLoop(){
+    handleButtonInput();
+    updateStateMachine();
+}
 
-        // if time over
-        if((currentTime - buttonDownTime) > 200){
-            //Serial.println("curr = high, prev = high, holding the button");
-            sprintf(buff, "c = %u, b = %u, pB = %u\n", statusOfControl, currentButtonStatus, previousButtonStatus);
-            //Serial.print(buff);
-            sprintf(buff, "bd = %l, blr = %l, curr = %l\n\n", buttonDownTime, buttonLastReleasedTime, currentTime);
-            //Serial.print(buff);
-
-            // now holding the button down
-            retCode = 3;
-        }
-
-    // if button is not currently pressed and was pressed before, check timestamp
-    } else if(currentButtonStatus == LOW && previousButtonStatus == HIGH){
-        buttonLastReleasedTime = currentTime;
-
-        Serial.println("curr = low, prev = high, default");
-        sprintf(buff, "c = %u, b = %u, pB = %u\n", statusOfControl, currentButtonStatus, previousButtonStatus);
-        //Serial.print(buff);
-        sprintf(buff, "bd = %l, blr = %l, curr = %l\n\n", buttonDownTime, buttonLastReleasedTime, currentTime);
-        //Serial.print(buff);
-
-
-        // if
-        //  time was to short for anything, jitter
-        if((buttonLastReleasedTime - buttonDownTime) < 10){
-
-            Serial.println("curr = low, prev = high, jittwe");
-            sprintf(buff, "c = %u, b = %u, pB = %u\n", statusOfControl, currentButtonStatus, previousButtonStatus);
-            //Serial.print(buff);
-            sprintf(buff, "bd = %l, blr = %l, curr = %l\n\n", buttonDownTime, buttonLastReleasedTime, currentTime);
-            //Serial.print(buff);
-            retCode = 0;
-
-
-        //  time was long enough for button press
-        } else if((buttonLastReleasedTime - buttonDownTime) < 200){
-            Serial.println("curr = low, prev = high, normal press");
-            sprintf(buff, "c = %u, b = %u, pB = %u\n", statusOfControl, currentButtonStatus, previousButtonStatus);
-            //Serial.print(buff);
-            sprintf(buff, "bd = %l, blr = %l, curr = %l\n\n", buttonDownTime, buttonLastReleasedTime, currentTime);
-            //Serial.print(buff);
-            statusOfControl = 1;
-            retCode = 1;
-
-        //  time was to long for press, was holding(do not to action for normal release)
-        } else {
-            Serial.println("curr = low, prev = high, was holding");
-            sprintf(buff, "c = %u, b = %u, pB = %u\n", statusOfControl, currentButtonStatus, previousButtonStatus);
-            //Serial.print(buff);
-            sprintf(buff, "bd = %l, blr = %l, curr = %l\n\n", buttonDownTime, buttonLastReleasedTime, currentTime);
-            //Serial.print(buff);
-            retCode = 0;
-        }
-
-    } else { // current low, previous low
-        // reset all after 1 second of nothing
-        if((currentTime - buttonLastReleasedTime) > 1000){
-            buttonDownTime = 0;
-            buttonLastReleasedTime = 0;
-            //Serial.println("curr = low, prev = low, resetting all");
-            sprintf(buff, "c = %u, b = %u, pB = %u\n", statusOfControl, currentButtonStatus, previousButtonStatus);
-            //Serial.print(buff);
-            sprintf(buff, "bd = %l, blr = %l, curr = %l\n\n", buttonDownTime, buttonLastReleasedTime, currentTime);
-            //Serial.print(buff);
+void handleButtonInput(){
+    uint8_t currentButtonState = digitalRead(BUTTON_PIN);
+    if(previousButtonState == HIGH && currentButtonState == LOW){
+        delay(DEBOUNCE); // check for debounce
+        if(digitalRead(BUTTON_PIN) == LOW){
+            buttonPressed = true;
+            lastPressTime = millis();
         }
     }
-
-    previousButtonStatus = currentButtonStatus;
-    return retCode;
+    previousButtonState = currentButtonState;
 }
 
-void handleDoublePress(){
-    //
+void updateStateMachine(){
+    uint32_t currentTime = millis();
+
+    switch(currentState){
+        case IDLE:
+            if(buttonPressed){
+                currentState = FIRST_PRESS_DETECTED;
+                timeoutStart = currentTime;
+                followingButtonPresses = 0;
+                Serial.println("first press");
+                buttonPressed = false;
+            }
+            break;
+
+        case FIRST_PRESS_DETECTED:
+            if(buttonPressed && (currentTime - lastPressTime) <= DOUBLE_PRESS_TIME){
+                currentState = DOUBLE_PRESS_MODE;
+                timeoutStart = currentTime;
+                Serial.println("now double mode");
+                buttonPressed = false;
+            } else if((currentTime - lastPressTime) > DOUBLE_PRESS_TIME){
+                currentState = SINGLE_PRESS_MODE;
+                timeoutStart = currentTime;
+                Serial.println("single press mode");
+            }
+            break;
+
+        case DOUBLE_PRESS_MODE:
+            if(buttonPressed){
+                followingButtonPresses++;
+                timeoutStart = currentTime;
+                Serial.println("add press double");
+                buttonPressed = false;
+            } else if((currentTime - timeoutStart) > EVENT_TIMEOUT){
+                handleDoublePress(followingButtonPresses);
+                resetStateMachine();
+            }
+            break;
+
+        case SINGLE_PRESS_MODE:
+            if(buttonPressed){
+                followingButtonPresses++;
+                timeoutStart = currentTime;
+                Serial.println("add press single");
+                buttonPressed = false;
+            } else if((currentTime - timeoutStart) > EVENT_TIMEOUT){
+                handleSinglePress(followingButtonPresses);
+                resetStateMachine();
+            }
+            break;
+    }
 }
 
-void handleNPress(){
-    // from to 1 to 4, different levels of brightness for selected light source
+void resetStateMachine(){
+    currentState = IDLE;
+    followingButtonPresses = 0;
+    buttonPressed = false;
 }
 
-void handleHold(){
-
+void handleSinglePress(uint8_t numberOfFollowingPresses){
+    Serial.println("");
+    Serial.print("i was pressed once and ");
+    Serial.println(numberOfFollowingPresses);
+    Serial.println("");
 }
-
-void handlePressThenHold(){
-
+void handleDoublePress(uint8_t numberOfFollowingPresses){
+    Serial.println("");
+    Serial.print("i was pressed double and ");
+    Serial.println(numberOfFollowingPresses);
+    Serial.println("");
 }
