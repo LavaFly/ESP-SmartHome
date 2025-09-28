@@ -30,6 +30,10 @@ void setup(){
 void loop(){
     MDNS.update();
     loopOTA();
+    if(checkReset()){
+        resetTheBrightness();
+    }
+
     if(checkForNewMessage() != 0){
         sendSignal();
     }

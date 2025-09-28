@@ -16,5 +16,8 @@ void sendBrighterSignal();
 void sendDarkerSignal();
 void sendSignal();
 uint8_t checkForNewMessage();
+void setBrightness(uint8_t brightnessLevel);
+void resetTheBrightness();
+uint8_t checkReset();
 
 #endif

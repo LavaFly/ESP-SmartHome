@@ -6,115 +6,111 @@
 #include <ESPAsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 #include <ESP8266mDNS.h>
-
-extern uint8_t lightingBrightness;
-extern bool lightingStatus;
-
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @param
- * 
+ *
  * @return uint8_t
  */
 uint8_t buildRouterConnection();
 
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @param
- * 
+ *
  * @return uint8_t
  */
 uint8_t initWebserver();
 
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @param
- * 
+ *
  * @return uint8_t
  */
 uint8_t setupMDNS();
 
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @param
- * 
+ *
  * @return uint8_t
  */
 void loopOTA();
 
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @param
- * 
+ *
  * @return uint8_t
  */
 void lightingOn(AsyncWebServerRequest* request);
 
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @param
- * 
+ *
  * @return uint8_t
  */
 void lightingOff(AsyncWebServerRequest* request);
 
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @param
- * 
+ *
  * @return uint8_t
  */
 void raiseBrightness(AsyncWebServerRequest* request);
 
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @param
- * 
+ *
  * @return uint8_t
  */
 void lowerBrightness(AsyncWebServerRequest* request);
 
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @param
- * 
+ *
  * @return uint8_t
  */
 void handleUnkownRequest(AsyncWebServerRequest* request);
 
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @param
- * 
+ *
  * @return uint8_t
  */
 void handleLiveStatus(AsyncWebServerRequest *request);
 
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @param
- * 
+ *
  * @return uint8_t
  */
 void baseResponse(AsyncWebServerRequest* request);
@@ -124,5 +120,8 @@ extern void sendOffSignal();
 extern void sendOnSignal();
 extern void sendBrighterSignal();
 extern void sendDarkerSignal();
+extern void resetBrightness();
+extern void toggleLight();
+extern void setBrightness(uint8_t);
 
 #endif
