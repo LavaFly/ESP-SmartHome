@@ -1,6 +1,5 @@
 #include "touch_handling.h"
 
-#define BUTTON_PIN 13
 
 const uint32_t DEBOUNCE = 10;
 const uint32_t SINGLE_PRESS = 200;

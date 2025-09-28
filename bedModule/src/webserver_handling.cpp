@@ -26,7 +26,7 @@ uint8_t buildRouterConnection(){
 }
 
 uint8_t setupMDNS(){
-    if(!MDNS.begin("lighting")){
+    if(!MDNS.begin("bed")){
         return 0;
     }
     //Serial.println("mDNS responder started");
@@ -34,30 +34,6 @@ uint8_t setupMDNS(){
     // assumes the server has been started, but should be checked for
     MDNS.addService("http", "tcp", 80);
     return 1;
-}
-
-void lightingOn(AsyncWebServerRequest* request){
-    sendOnSignal();
-
-    request->send(200);
-}
-
-void lightingOff(AsyncWebServerRequest* request){
-    sendOffSignal();
-
-    request->send(200);
-}
-
-void raiseBrightness(AsyncWebServerRequest* request){
-    sendBrighterSignal();
-
-    request->send(200);
-}
-
-void lowerBrightness(AsyncWebServerRequest* request){
-    sendDarkerSignal();
-
-    request->send(200);
 }
 
 void handleUnkownRequest(AsyncWebServerRequest* request){
@@ -80,10 +56,6 @@ uint8_t initWebserver(){
 
     server.on("/", baseResponse);
     server.on("/isLive", handleLiveStatus);
-    server.on("/on", lightingOn);
-    server.on("/off", lightingOff);
-    server.on("/raiseBrightness", raiseBrightness);
-    server.on("/lowerBrightness", lowerBrightness);
     DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "http://base.local");
     server.begin();
     ArduinoOTA.begin();

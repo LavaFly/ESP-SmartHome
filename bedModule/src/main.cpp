@@ -4,18 +4,8 @@
 void setup(){
     Serial.begin(9600);
     Serial.println("Starting setup");
-    pinMode(13, INPUT);
-
-    /**
-
-    uint8_t hardwareInit = true;
-    //hardwareInit = hardwareInit && buildIrConnection();
-
-    if(hardwareInit){
-        Serial.println("Hardware init successful");
-    } else {
-        Serial.println("Hardware init failed");
-    }
+    pinMode(BUTTON_PIN, INPUT);
+    // there is no real hardware init, as the button is just a digitalRead
 
     uint8_t softwareInit = true;
     softwareInit = softwareInit && buildRouterConnection();
@@ -27,22 +17,15 @@ void setup(){
     } else {
         Serial.println("Software init failed");
     }
-    **/
 
     Serial.println("Ending setup\n");
 }
 
+extern void newLoop();
+
 void loop(){
-    /**
     MDNS.update();
     loopOTA();
-    if(checkForNewMessage() != 0){
-        sendSignal();
-    }
-    **/
-    uint8_t touchResponse = checkForEvent();
-    if(touchResponse != 0){
-        Serial.print("Touch = ");
-        Serial.println(touchResponse);
-    }
+    handleButtonInput();
+    updateStateMachine();
 }
