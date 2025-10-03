@@ -8,16 +8,17 @@
 AsyncWebServer server(80);
 
 uint8_t buildRouterConnection(){
-    WiFi.begin(APSSID, APPASS);
-    if(WiFi.waitForConnectResult() == WL_CONNECTED){
-        //Serial.println("Connected to ap network");
-        //Serial.println(WiFi.localIP());
-        return 1;
-    }
 
     WiFi.begin(SSID, PASS);
     if(WiFi.waitForConnectResult() == WL_CONNECTED){
         //Serial.println("Connected to local network");
+        //Serial.println(WiFi.localIP());
+        return 1;
+    }
+
+    WiFi.begin(APSSID, APPASS);
+    if(WiFi.waitForConnectResult() == WL_CONNECTED){
+        //Serial.println("Connected to ap network");
         //Serial.println(WiFi.localIP());
         return 1;
     }

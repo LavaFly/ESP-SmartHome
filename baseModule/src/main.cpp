@@ -43,8 +43,23 @@ void setup() {
         Serial.println("Hardware init failed");
     }
 
-    softwareInit = softwareInit && buildAP();
-    softwareInit = softwareInit && buildNTPServer();
+
+    //last time i wrote this, i set up all the modules inside their own little network, but i also
+    //wrote the option once to use the base in ap mode and have the modules collected this way,
+    //this run into issues at rougly 8 modules as clients, i tried to fix it for a short while, im pretty
+    //sure i found something claiming that it has been fixed or there is a solution, but this was long ago
+    //and i just bought a small router and set it up without internet connection. this way the base connects
+    //to the local network with internet, requests the time from a time server, sets the time in a rtc module,
+    //connects to the network with all the modules and functions as the time server for them.
+    //but i will most likely connect all the modules to the internet again, as i have moved.
+    //dont really know what to do with the code i have written to solve these issues, will maybe do some sort of
+    //build flag, that way i can switch between these three setups, but this is a very low priority, as i wont
+    //be switching often and therefore dont really need this function, for now just dirty hacking and commenting out
+    //old code :D
+    //stop me if you want or fix it yourself
+
+    //softwareInit = softwareInit && buildAP();
+    //softwareInit = softwareInit && buildNTPServer();
 
     softwareInit = softwareInit && initWebserver();
     softwareInit = softwareInit && setupMDNS();

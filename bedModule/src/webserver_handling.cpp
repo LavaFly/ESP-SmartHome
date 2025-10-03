@@ -4,20 +4,25 @@
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
 #include <ArduinoOTA.h>
+#include <ESP8266HTTPClient.h>
+#include <WiFiClient.h>
 
 AsyncWebServer server(80);
+WiFiClient client;
+HTTPClient http;
 
 uint8_t buildRouterConnection(){
-    WiFi.begin(APSSID, APPASS);
-    if(WiFi.waitForConnectResult() == WL_CONNECTED){
-        //Serial.println("Connected to ap network");
-        //Serial.println(WiFi.localIP());
-        return 1;
-    }
 
     WiFi.begin(SSID, PASS);
     if(WiFi.waitForConnectResult() == WL_CONNECTED){
         //Serial.println("Connected to local network");
+        //Serial.println(WiFi.localIP());
+        return 1;
+    }
+
+    WiFi.begin(APSSID, APPASS);
+    if(WiFi.waitForConnectResult() == WL_CONNECTED){
+        //Serial.println("Connected to ap network");
         //Serial.println(WiFi.localIP());
         return 1;
     }
@@ -66,3 +71,14 @@ void loopOTA(){
     ArduinoOTA.handle();
 }
 
+uint8_t httpGetRequestIgnoreResponse(const char* path){
+    uint8_t retCode = 0;
+    if(http.begin(client, path)){
+        int httpCode = http.GET();
+        if(httpCode == HTTP_CODE_OK){
+            retCode = 1;
+        }
+        http.end();
+    }
+    return retCode;
+}

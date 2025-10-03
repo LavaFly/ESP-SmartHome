@@ -20,16 +20,16 @@ extern uint8_t pumpWorkaround;
 uint8_t buildRouterConnection(){
     Serial.println("Connecting to WiFi");
 
-    WiFi.begin(APSSID, APPASS);
+    WiFi.begin(SSID, PASS);
     if(WiFi.waitForConnectResult() == WL_CONNECTED){
-        Serial.println("Connected to ap network");
+        Serial.println("Connected to local network");
         Serial.println(WiFi.localIP());
         return 1;
     }
 
-    WiFi.begin(SSID, PASS);
+    WiFi.begin(APSSID, APPASS);
     if(WiFi.waitForConnectResult() == WL_CONNECTED){
-        Serial.println("Connected to local network");
+        Serial.println("Connected to ap network");
         Serial.println(WiFi.localIP());
         return 1;
     }

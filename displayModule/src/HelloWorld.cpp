@@ -1,13 +1,13 @@
 /* Using LVGL with Arduino requires some extra steps...
- *  
+ *
  * Be sure to read the docs here: https://docs.lvgl.io/master/integration/framework/arduino.html
  * but note you should use the lv_conf.h from the repo as it is pre-edited to work.
- * 
+ *
  * You can always edit your own lv_conf.h later and exclude the example options once the build environment is working.
- * 
- * Note you MUST move the 'examples' and 'demos' folders into the 'src' folder inside the lvgl library folder 
+ *
+ * Note you MUST move the 'examples' and 'demos' folders into the 'src' folder inside the lvgl library folder
  * otherwise this will not compile, please see README.md in the repo.
- * 
+ *
  */
 #include <lvgl.h>
 
@@ -122,7 +122,7 @@ static void event_handler(lv_event_t * e){
         uint32_t id = lv_buttonmatrix_get_selected_button(obj);
         const char * txt = lv_buttonmatrix_get_button_text(obj, id);
         LV_UNUSED(txt);
-        LV_LOG_USER("%s was pressed\n", txt);  
+        LV_LOG_USER("%s was pressed\n", txt);
         httpGetRequestIgnoreResponse(path_map[id]);
     }
 }
@@ -140,10 +140,10 @@ void example_buttonmatrix_2(void)
     //lv_obj_add_style(btnm1, &style_btn, LV_PART_ITEMS);
     lv_obj_set_size(btnm1, 300, 200);
     // rewrite this to the better version mentioned in the docs
-    lv_buttonmatrix_set_button_width(btnm1, 5, 2); 
-    lv_buttonmatrix_set_button_width(btnm1, 6, 2); 
+    lv_buttonmatrix_set_button_width(btnm1, 5, 2);
+    lv_buttonmatrix_set_button_width(btnm1, 6, 2);
     lv_buttonmatrix_set_button_width(btnm1, 7, 2);
-    lv_buttonmatrix_set_button_width(btnm1, 9, 2); 
+    lv_buttonmatrix_set_button_width(btnm1, 9, 2);
 
     lv_buttonmatrix_set_button_ctrl(btnm1, 11, LV_BUTTONMATRIX_CTRL_CHECKED);
     lv_obj_align(btnm1, LV_ALIGN_CENTER, 0, 0);
@@ -262,7 +262,7 @@ void setup()
   Serial.println(LVGL_Arduino);
   pinMode(LCD_BACK_LIGHT_PIN, OUTPUT);
 
-    
+
   //Initialise the touchscreen
   touchscreenSpi.begin(XPT2046_CLK, XPT2046_MISO, XPT2046_MOSI, XPT2046_CS); /* Start second SPI bus for touchscreen */
   touchscreen.begin(touchscreenSpi); /* Touchscreen init */
@@ -273,17 +273,17 @@ void setup()
 
   draw_buf = new uint8_t[DRAW_BUF_SIZE];
   disp = lv_tft_espi_create(TFT_HOR_RES, TFT_VER_RES, draw_buf, DRAW_BUF_SIZE);
-  
+
 
   //Initialize the XPT2046 input device driver
   indev = lv_indev_create();
-  lv_indev_set_type(indev, LV_INDEV_TYPE_POINTER);  
+  lv_indev_set_type(indev, LV_INDEV_TYPE_POINTER);
   lv_indev_set_read_cb(indev, my_touchpad_read);
 
   example_buttonmatrix_2();
 
 
-  WiFi.begin(APSSID, APPASS);
+  WiFi.begin(SSID, PASS);
    while(WiFi.status() != WL_CONNECTED) {
      delay(500);
      Serial.print(".");
@@ -296,7 +296,7 @@ void setup()
 }
 
 void loop()
-{   
+{
     if(displayOn){
       lv_tick_inc(millis() - lastTick); //Update the tick timer. Tick is new for LVGL 9
       lastTick = millis();
@@ -315,11 +315,11 @@ void loop()
       timeOfLastMessage = millis();
     }
 
-  
+
 
     if((millis() - timeOfLastMessage) > 5 * 1000 * 60){
       timeOfLastMessage = millis();
-      uint8_t successful =  jsonDataRequest("http://base.local/currentReading", 0); 
+      uint8_t successful =  jsonDataRequest("http://base.local/currentReading", 0);
 
       if(!successful){
         Serial.println("no response or smth");
