@@ -10,6 +10,9 @@
 AsyncWebServer server(80);
 WiFiClient client;
 HTTPClient http;
+WebSocketsClient webSocket;
+
+uint8_t isConnected;
 
 uint8_t buildRouterConnection(){
 
@@ -82,3 +85,49 @@ uint8_t httpGetRequestIgnoreResponse(const char* path){
     }
     return retCode;
 }
+
+void webSocketEvent(WStype_t type, uint8_t * payload, size_t length){
+    switch(type){
+        case WStype_DISCONNECTED:
+            isConnected = false;
+            break;
+        case WStype_CONNECTED:
+            isConnected = true;
+            break;
+    }
+}
+
+void webSocketSend(char* inputText){
+    // connect to webSocket
+    webSocket.begin("ws://led.local", 81, "/");
+    delay(50);
+    if(isConnected){
+        webSocket.sendTXT(inputText);
+    } else {
+        Serial.println("not connected");
+    }
+}
+
+const String* httpGetRequest(const char* path){
+    if(http.begin(client, path)){
+        int httpCode = http.GET();
+        if(httpCode == HTTP_CODE_OK){
+           return &http.getString();
+        }
+        http.end();
+    }
+    return 0;
+}
+
+
+WiFiClient& httpGetRequestStream(const char* path){
+    http.useHTTP10(true);
+    http.begin(client, path);
+    http.GET();
+    return http.getStream();
+}
+
+void httpEndRequestStream(){
+    http.end();
+}
+

@@ -6,6 +6,7 @@
 #include <ESPAsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 #include <ESP8266mDNS.h>
+#include <WebSocketsClient.h>
 
 extern uint8_t lightingBrightness;
 extern bool lightingStatus;
@@ -49,6 +50,9 @@ uint8_t setupMDNS();
  */
 void loopOTA();
 
+uint8_t httpGetRequestIgnoreResponse(const char* path);
+
+const String* httpGetRequest(const char* path);
 
 /**
  * @brief
@@ -57,27 +61,7 @@ void loopOTA();
  *
  * @return uint8_t
  */
-void lightingOn(AsyncWebServerRequest* request);
-
-
-/**
- * @brief
- *
- * @param
- *
- * @return uint8_t
- */
-void lightingOff(AsyncWebServerRequest* request);
-
-
-/**
- * @brief
- *
- * @param
- *
- * @return uint8_t
- */
-void raiseBrightness(AsyncWebServerRequest* request);
+WiFiClient& httpGetRequestStream(const char* path);
 
 
 /**
@@ -87,7 +71,8 @@ void raiseBrightness(AsyncWebServerRequest* request);
  *
  * @return uint8_t
  */
-void lowerBrightness(AsyncWebServerRequest* request);
+void httpEndRequestStream();
+
 
 
 /**
@@ -118,5 +103,7 @@ void handleLiveStatus(AsyncWebServerRequest *request);
  * @return uint8_t
  */
 void baseResponse(AsyncWebServerRequest* request);
+
+void webSocketEvent(WStype_t type, uint8_t * payload, size_t length);
 
 #endif
