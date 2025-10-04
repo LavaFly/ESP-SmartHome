@@ -460,7 +460,7 @@ window.onload = function () {
             });
             tentData.resistance.push({
                 x: new Date(data[i].time),
-                y: data[i].quality
+                y: data[i].resistance
             });
         }
 

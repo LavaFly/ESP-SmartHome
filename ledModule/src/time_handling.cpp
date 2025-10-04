@@ -9,7 +9,7 @@
 // this should be a linked list
 unsigned long timeLast = 0;
 WiFiUDP ntpUDP;
-NTPClient timeClient(ntpUDP, "base.local", 0, 120000);//europe.pool.ntp.org
+NTPClient timeClient(ntpUDP, "europe.pool.ntp.org", 0, 120000);//base.local
 
 typedef struct timerElement{
     uint32_t timeStamp;

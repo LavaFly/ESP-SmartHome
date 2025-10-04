@@ -310,7 +310,7 @@ static esp_err_t bmp_handler(httpd_req_t *req)
 
     httpd_resp_set_type(req, "image/x-windows-bmp");
     httpd_resp_set_hdr(req, "Content-Disposition", "inline; filename=capture.bmp");
-    httpd_resp_set_hdr(req, "Access-Control-Allow-Origin", "*");
+    httpd_resp_set_hdr(req, "Access-Control-Allow-Origin", "http://base.local");
 
     char ts[32];
     snprintf(ts, 32, "%ld.%06ld", fb->timestamp.tv_sec, fb->timestamp.tv_usec);
@@ -1383,7 +1383,7 @@ void startCameraServer()
     }
 }
 
-void setupLedFlash(int pin) 
+void setupLedFlash(int pin)
 {
     #if CONFIG_LED_ILLUMINATOR_ENABLED
     ledcSetup(LED_LEDC_CHANNEL, 5000, 8);
