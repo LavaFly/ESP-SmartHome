@@ -3,9 +3,14 @@
 
 #include <Arduino.h>
 
-#define BUTTON_PIN 13
+#define NUM_BUTTONS  2
+#define BUTTON_PIN1 13
+#define BUTTON_PIN2 12
 
-void handleButtonInput();
-void updateStateMachine();
+
+void handleButtonInput(uint8_t indexInButtonList);
+void updateStateMachine(uint8_t indexInButtonList);
+uint8_t setupButtons();
+void touchLoop();
 
 #endif

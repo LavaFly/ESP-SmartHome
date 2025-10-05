@@ -7,6 +7,6 @@ void printWeatherData();
 
 void printForecastData();
 
-void getWeatherDescription(char* weatherDescription);
+void getWeatherDescription(char* weatherDescription, uint8_t hourOfTheDay);
 
 #endif

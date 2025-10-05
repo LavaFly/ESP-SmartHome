@@ -63,9 +63,9 @@ void printForecastData(){
     doc.clear();
 }
 
-void getWeatherDescription(char* weatherDescription){
-    char path[120] = "http://api.openweathermap.org/data/2.5/forecast?lat=49.0047&lon=8.3858&units=metric&appid=";
-    char completePath[128];
+void getWeatherDescription(char* weatherDescription, uint8_t hourOfTheDay){
+    char path[130] = "http://api.openweathermap.org/data/3.0/onecall?lat=49,5986&lon=10.9675&exclude=current,minutely,daily,alerts&units=metric&appid=";
+    char completePath[130 + 48];
     strcpy(completePath, path);
     strcat(completePath, API);
     JsonDocument filter;
@@ -88,6 +88,14 @@ void getWeatherDescription(char* weatherDescription){
     Serial.println(doc["list"][3]["main"]["temp"].as<float>());
     Serial.println(doc["list"][3]["weather"][0]["description"].as<String>());
     **/
+
+    // i need to filter for the specified hour of the day
+    //  get current time from ntp server
+    //  calculate current hour of day
+    //  if currHour > speciHour, then weatherDescription = "time already passed"
+    //  else
+    //   speciHour timestamp = (speciHour - currHour) * 3600 + currentTime
+    //   iterate through list and find closest match
 
     const char* data = doc["list"][3]["weather"][0]["description"];
     //data = "rain"; mock
