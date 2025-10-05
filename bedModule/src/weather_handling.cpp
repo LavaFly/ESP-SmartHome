@@ -84,7 +84,6 @@ void getWeatherDescription(char* weatherDescription, uint8_t hourOfTheDay){
 
     Serial.println(doc["hourly"]["temperature_180m"][7]);
     Serial.println(doc["hourly"]["weather_code"][7]);
-    Serial.println(getDescriptionFromWMO(doc["hourly"]["weather_code"][7]));
 
 
     /**
@@ -104,22 +103,19 @@ void getWeatherDescription(char* weatherDescription, uint8_t hourOfTheDay){
     // yeah this is completly wrong, the response it a forecast for the whole day, even though
     // this forecast may contain past events, the index is just the hour of the day
 
-    /**
-    const char* data = doc["list"][3]["weather"][0]["description"];
-    //data = "rain"; mock
-    float tempe = doc["list"][3]["main"]["temp"].as<int>();
+    char* description = (char*)malloc(40 * sizeof(char));
+    getDescriptionFromWMO(doc["hourly"]["weather_code"][hourOfTheDay], description, 40);
+
+    float tempe = doc["hourly"]["weather_code"][hourOfTheDay].as<int>();
     // tempe = 23; mock
     char tempeBuf[5]; // Buffer big enough for 7-character float
-    //dtostrf(tempe, 4, 2, tempeBuf);
+
     itoa(tempe, tempeBuf, 10);
-    Serial.print("temp = ");
-    Serial.println(tempeBuf);
     const char* postFix = "*C";
-    strcpy(weatherDescription, data);
+    strcpy(weatherDescription, description);
     strcat(weatherDescription, " ");
     strcat(weatherDescription, tempeBuf);
     strcat(weatherDescription, postFix);
-    **/
 
     doc.clear();
 }
